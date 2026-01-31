@@ -46,9 +46,7 @@ export function AuthLayout({ children, backgroundImage }: AuthLayoutProps) {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background z-10" />
         <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center">
-          <div className="bg-surface/90 backdrop-blur-sm px-6 py-2 rounded-full shadow-md border border-border">
-            <Logo size="md" href="/" />
-          </div>
+          <Logo size="md" href="/" />
         </div>
       </div>
 
