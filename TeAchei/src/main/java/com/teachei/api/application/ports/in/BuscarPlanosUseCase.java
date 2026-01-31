@@ -18,7 +18,7 @@ public interface BuscarPlanosUseCase {
      * Plan information record.
      */
     record PlanoInfo(
-        PlanoAssinatura id,
+        PlanoAssinatura id, 
         String nome,
         int precoCentavos,
         int duracaoDias,
