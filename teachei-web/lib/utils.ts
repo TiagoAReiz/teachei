@@ -136,6 +136,41 @@ export function generateYearOptions(yearsBack: number = 30): { value: string; la
   return years;
 }
 
+// Optional feature labels mapping
+export const opcionalLabels: Record<string, string> = {
+  VIDRO_ELETRICO: "Vidro Elétrico",
+  AR_CONDICIONADO: "Ar Condicionado",
+  DIRECAO_HIDRAULICA: "Direção Hidráulica",
+  DIRECAO_ELETRICA: "Direção Elétrica",
+  TETO_SOLAR: "Teto Solar",
+  BANCOS_COURO: "Bancos de Couro",
+  SENSOR_ESTACIONAMENTO: "Sensor de Estacionamento",
+  CAMERA_RE: "Câmera de Ré",
+  MULTIMIDIA: "Central Multimídia",
+  BLUETOOTH: "Bluetooth",
+  AIRBAG: "Airbag",
+  ABS: "Freios ABS",
+  ALARME: "Alarme",
+  RODAS_LIGA: "Rodas de Liga",
+  PILOTO_AUTOMATICO: "Piloto Automático",
+};
+
+// Format optional feature name for display
+// Converts "VIDRO_ELETRICO" to "Vidro Elétrico"
+export function formatOpcional(opcional: string): string {
+  // Return mapped label if exists
+  if (opcionalLabels[opcional]) {
+    return opcionalLabels[opcional];
+  }
+  
+  // Fallback: convert SNAKE_CASE to Title Case
+  return opcional
+    .toLowerCase()
+    .split("_")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 // Vehicle colors
 export const vehicleColors = [
   { value: "BRANCO", label: "Branco", hex: "#FFFFFF" },

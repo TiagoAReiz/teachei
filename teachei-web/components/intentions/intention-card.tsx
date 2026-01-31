@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Bookmark, Share2, Car, Bike, Truck } from "lucide-react";
 import { Card, CardContent, Badge } from "@/components/ui";
-import { cn, formatCurrency, formatRelativeTime, vehicleTypeLabels } from "@/lib/utils";
+import { cn, formatCurrency, formatRelativeTime, vehicleTypeLabels, formatOpcional } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
 import type { Anuncio, TipoVeiculo } from "@/types";
 
@@ -156,7 +156,7 @@ export function IntentionCard({ intention }: IntentionCardProps) {
             <div className="flex flex-wrap gap-1.5">
               {intention.veiculo.opcionais.slice(0, 2).map((opcional) => (
                 <Badge key={opcional} variant="outline" size="sm" className="text-primary border-primary/30">
-                  {opcional}
+                  {formatOpcional(opcional)}
                 </Badge>
               ))}
               {intention.veiculo.opcionais.length > 2 && (

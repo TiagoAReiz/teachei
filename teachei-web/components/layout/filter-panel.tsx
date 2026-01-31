@@ -357,7 +357,7 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
             Opcionais
           </label>
           <div className="grid grid-cols-1 gap-1.5 max-h-40 overflow-y-auto">
-            {vehicleOptions.slice(0, 8).map((option) => {
+            {vehicleOptions.map((option) => {
               const isSelected = filters.opcionais.includes(option.value);
               return (
                 <button

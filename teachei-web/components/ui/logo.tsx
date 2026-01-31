@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
@@ -8,39 +7,54 @@ interface LogoProps {
   href?: string;
 }
 
-const imageSizes = {
-  xs: { width: 60, height: 24 },
-  sm: { width: 80, height: 32 },
-  md: { width: 100, height: 40 },
-  lg: { width: 140, height: 56 },
-  xl: { width: 180, height: 72 },
+const textSizes = {
+  xs: "text-lg",
+  sm: "text-xl",
+  md: "text-2xl",
+  lg: "text-3xl",
+  xl: "text-4xl",
 };
 
 const containerPadding = {
-  xs: "px-2 py-1",
-  sm: "px-3 py-1.5",
-  md: "px-4 py-2",
-  lg: "px-5 py-2.5",
-  xl: "px-6 py-3",
+  xs: "px-1 py-0.5",
+  sm: "px-1.5 py-0.5",
+  md: "px-2 py-1",
+  lg: "px-2.5 py-1.5",
+  xl: "px-3 py-2",
 };
 
 function LogoContent({ size, className }: { size: "xs" | "sm" | "md" | "lg" | "xl"; className?: string }) {
-  const { width, height } = imageSizes[size];
-  
   return (
     <div className={cn(
-      "flex items-center rounded-2xl overflow-hidden",
+      "flex items-center select-none",
       containerPadding[size],
       className
     )}>
-      <Image
-        src="/logo.png"
-        alt="TeAchei"
-        width={width}
-        height={height}
-        className="object-contain rounded-xl"
-        priority
-      />
+      <span 
+        className={cn(
+          "font-extrabold tracking-tight",
+          textSizes[size]
+        )}
+        style={{ 
+          fontStyle: "italic",
+          transform: "skewX(-2deg)",
+        }}
+      >
+        {/* "te" em azul claro */}
+        <span 
+          className="transition-colors"
+          style={{ color: "#3b9eff" }}
+        >
+          te
+        </span>
+        {/* "achei" em azul escuro/navy */}
+        <span 
+          className="transition-colors"
+          style={{ color: "#1a365d" }}
+        >
+          achei
+        </span>
+      </span>
     </div>
   );
 }
@@ -48,7 +62,10 @@ function LogoContent({ size, className }: { size: "xs" | "sm" | "md" | "lg" | "x
 function Logo({ size = "md", className, href = "/" }: LogoProps) {
   if (href) {
     return (
-      <Link href={href} className="hover:opacity-90 transition-opacity">
+      <Link 
+        href={href} 
+        className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+      >
         <LogoContent size={size} className={className} />
       </Link>
     );

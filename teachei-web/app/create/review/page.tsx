@@ -8,7 +8,7 @@ import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, Di
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { useCreateIntention } from "@/hooks/use-intentions";
 import { useAuth } from "@/hooks/use-auth";
-import { formatCurrency, vehicleTypeLabels } from "@/lib/utils";
+import { formatCurrency, vehicleTypeLabels, formatOpcional } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 
 export default function CreateReviewPage() {
@@ -289,7 +289,7 @@ export default function CreateReviewPage() {
     ...(opcionais.length > 0 ? [{
       icon: Settings,
       label: "Opcionais",
-      value: opcionais.join(", "),
+      value: opcionais.map(formatOpcional).join(", "),
     }] : []),
   ];
 

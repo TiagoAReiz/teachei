@@ -26,7 +26,7 @@ const vehicleTypeIcons: Record<TipoVeiculo, typeof Car> = {
   CAMINHAO: Truck,
 };
 import { Button, Card, CardContent, Badge } from "@/components/ui";
-import { formatCurrency, formatRelativeTime, formatExpiration, vehicleTypeLabels, getWhatsAppLink, getInstagramLink } from "@/lib/utils";
+import { formatCurrency, formatRelativeTime, formatExpiration, vehicleTypeLabels, getWhatsAppLink, getInstagramLink, formatOpcional } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
 import type { Anuncio } from "@/types";
 
@@ -207,7 +207,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                   <div className="flex flex-wrap gap-2">
                     {intention.veiculo.opcionais.map((opcional) => (
                       <Badge key={opcional} variant="outline" className="text-primary border-primary/30">
-                        {opcional}
+                        {formatOpcional(opcional)}
                       </Badge>
                     ))}
                   </div>
