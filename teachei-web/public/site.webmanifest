@@ -4,8 +4,8 @@
   "description": "Conectando compradores e vendedores de veículos",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0f",
-  "theme_color": "#00d4aa",
+  "background_color": "#f8f6f0",
+  "theme_color": "#137fec",
   "icons": [
     {
       "src": "/logo.png",

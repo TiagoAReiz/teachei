@@ -29,7 +29,7 @@ function LogoContent({ size, className }: { size: "xs" | "sm" | "md" | "lg" | "x
   
   return (
     <div className={cn(
-      "flex items-center bg-white rounded-2xl shadow-sm",
+      "flex items-center rounded-2xl overflow-hidden",
       containerPadding[size],
       className
     )}>
@@ -38,7 +38,7 @@ function LogoContent({ size, className }: { size: "xs" | "sm" | "md" | "lg" | "x
         alt="TeAchei"
         width={width}
         height={height}
-        className="object-contain"
+        className="object-contain rounded-xl"
         priority
       />
     </div>

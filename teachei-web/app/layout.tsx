@@ -54,11 +54,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  icons: {
-    icon: "/logo.png",
-    shortcut: "/logo.png",
-    apple: "/logo.png",
-  },
+  // Favicons são gerados dinamicamente por icon.tsx e apple-icon.tsx
   manifest: "/site.webmanifest",
 };
 
