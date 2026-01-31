@@ -154,7 +154,7 @@ jobs:
               MERCADOPAGO_PUBLIC_KEY="${{ secrets.MERCADOPAGO_PUBLIC_KEY }}" \
               MERCADOPAGO_WEBHOOK_SECRET="${{ secrets.MERCADOPAGO_WEBHOOK_SECRET }}" \
               APP_BASE_URL=https://teachei-api.icybush-e691b538.eastus2.azurecontainerapps.io \
-              FRONTEND_URL=https://teachei.vercel.app
+              FRONTEND_URL=https://teachei-ten.vercel.app
           
           # Configure ingress to target port 8080
           az containerapp ingress update \
