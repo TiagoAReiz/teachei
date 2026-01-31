@@ -8,11 +8,11 @@ interface LogoProps {
 }
 
 const textSizes = {
-  xs: "text-lg",
-  sm: "text-xl",
-  md: "text-2xl",
-  lg: "text-3xl",
-  xl: "text-4xl",
+  xs: "text-xl",
+  sm: "text-2xl",
+  md: "text-3xl",
+  lg: "text-4xl",
+  xl: "text-5xl",
 };
 
 const containerPadding = {
@@ -32,25 +32,35 @@ function LogoContent({ size, className }: { size: "xs" | "sm" | "md" | "lg" | "x
     )}>
       <span 
         className={cn(
-          "font-extrabold tracking-tight",
+          "font-black tracking-tight lowercase",
           textSizes[size]
         )}
         style={{ 
-          fontStyle: "italic",
-          transform: "skewX(-2deg)",
+          fontFamily: "var(--font-logo), 'Nunito', sans-serif",
+          letterSpacing: "-0.02em",
         }}
       >
-        {/* "te" em azul claro */}
+        {/* "te" em azul claro com gradiente sutil */}
         <span 
-          className="transition-colors"
-          style={{ color: "#3b9eff" }}
+          className="relative"
+          style={{ 
+            background: "linear-gradient(135deg, #60b3ff 0%, #3b9eff 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
         >
           te
         </span>
-        {/* "achei" em azul escuro/navy */}
+        {/* "achei" em azul escuro */}
         <span 
-          className="transition-colors"
-          style={{ color: "#1a365d" }}
+          className="relative"
+          style={{ 
+            background: "linear-gradient(135deg, #1e4a7a 0%, #1a365d 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
         >
           achei
         </span>
@@ -64,7 +74,7 @@ function Logo({ size = "md", className, href = "/" }: LogoProps) {
     return (
       <Link 
         href={href} 
-        className="hover:opacity-90 transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+        className="hover:opacity-85 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
       >
         <LogoContent size={size} className={className} />
       </Link>
