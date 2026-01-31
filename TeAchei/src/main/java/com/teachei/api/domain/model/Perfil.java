@@ -59,16 +59,34 @@ public class Perfil {
         atualizadoEm = LocalDateTime.now();
     }
 
+    /**
+     * Updates profile fields. Only non-null values are applied (partial update).
+     * To explicitly clear a field, pass an empty string instead of null.
+     */
     public void atualizar(String nome, String bio, String whatsapp, 
                          String instagram, String facebook, 
                          String cidade, String estado) {
-        this.nome = nome;
-        this.bio = bio;
-        this.whatsapp = whatsapp;
-        this.instagram = instagram;
-        this.facebook = facebook;
-        this.cidade = cidade;
-        this.estado = estado;
+        if (nome != null) {
+            this.nome = nome;
+        }
+        if (bio != null) {
+            this.bio = bio;
+        }
+        if (whatsapp != null) {
+            this.whatsapp = whatsapp;
+        }
+        if (instagram != null) {
+            this.instagram = instagram;
+        }
+        if (facebook != null) {
+            this.facebook = facebook;
+        }
+        if (cidade != null) {
+            this.cidade = cidade;
+        }
+        if (estado != null) {
+            this.estado = estado;
+        }
         this.atualizadoEm = LocalDateTime.now();
     }
 

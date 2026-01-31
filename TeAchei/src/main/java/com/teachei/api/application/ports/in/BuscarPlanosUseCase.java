@@ -11,7 +11,7 @@ public interface BuscarPlanosUseCase {
 
     /**
      * Get all available subscription plans with their prices.
-     */ 
+     */  
     List<PlanoInfo> executar();
 
     /**

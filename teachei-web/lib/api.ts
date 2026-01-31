@@ -75,6 +75,15 @@ export async function apiFetch<T>(
   // Handle non-2xx responses
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
+    
+    // Parse field-specific validation errors
+    if (errorData.fieldErrors && Array.isArray(errorData.fieldErrors) && errorData.fieldErrors.length > 0) {
+      const fieldMessages = errorData.fieldErrors
+        .map((fe: { field: string; message: string }) => `${fe.field}: ${fe.message}`)
+        .join("; ");
+      throw new Error(fieldMessages);
+    }
+    
     throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
   }
 

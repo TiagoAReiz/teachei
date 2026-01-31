@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Plus, Menu, X, Home, Heart, FileText } from "lucide-react";
+import { Plus, Menu, X, Home, Flag, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 // Navigation items for icon nav
 const navItems = [
   { href: "/", icon: Home, label: "Feed" },
-  { href: "/favorites", icon: Heart, label: "Favoritos" },
+  { href: "/favorites", icon: Flag, label: "Favoritos" },
   { href: "/my-intentions", icon: FileText, label: "Meus Anúncios" },
 ];
 

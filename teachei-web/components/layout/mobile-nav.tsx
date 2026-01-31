@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Bookmark, Plus, FileText, User } from "lucide-react";
+import { Home, Flag, Plus, FileText, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 
 const navItems = [
   { href: "/", label: "Feed", icon: Home },
-  { href: "/favorites", label: "Salvos", icon: Bookmark },
+  { href: "/favorites", label: "Salvos", icon: Flag },
   { href: "/create", label: "Criar", icon: Plus, isMain: true },
   { href: "/my-intentions", label: "Intenções", icon: FileText },
   { href: "/profile", label: "Perfil", icon: User },
