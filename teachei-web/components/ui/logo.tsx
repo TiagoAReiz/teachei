@@ -3,23 +3,29 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
-  size?: "sm" | "md" | "lg" | "xl";
+  size?: "xs" | "sm" | "md" | "lg" | "xl";
   className?: string;
   href?: string;
+  rounded?: boolean;
 }
 
 const imageSizes = {
+  xs: { width: 60, height: 24 },
   sm: { width: 80, height: 32 },
-  md: { width: 120, height: 48 },
-  lg: { width: 160, height: 64 },
-  xl: { width: 200, height: 80 },
+  md: { width: 100, height: 40 },
+  lg: { width: 140, height: 56 },
+  xl: { width: 180, height: 72 },
 };
 
-function LogoContent({ size, className }: { size: "sm" | "md" | "lg" | "xl"; className?: string }) {
+function LogoContent({ size, className, rounded }: { size: "xs" | "sm" | "md" | "lg" | "xl"; className?: string; rounded?: boolean }) {
   const { width, height } = imageSizes[size];
   
   return (
-    <div className={cn("flex items-center", className)}>
+    <div className={cn(
+      "flex items-center overflow-hidden",
+      rounded && "rounded-full bg-white/90 px-3 py-1",
+      className
+    )}>
       <Image
         src="/logo.png"
         alt="TeAchei"
@@ -32,16 +38,16 @@ function LogoContent({ size, className }: { size: "sm" | "md" | "lg" | "xl"; cla
   );
 }
 
-function Logo({ size = "md", className, href = "/" }: LogoProps) {
+function Logo({ size = "md", className, href = "/", rounded = false }: LogoProps) {
   if (href) {
     return (
       <Link href={href} className="hover:opacity-90 transition-opacity">
-        <LogoContent size={size} className={className} />
+        <LogoContent size={size} className={className} rounded={rounded} />
       </Link>
     );
   }
 
-  return <LogoContent size={size} className={className} />;
+  return <LogoContent size={size} className={className} rounded={rounded} />;
 }
 
 export { Logo };

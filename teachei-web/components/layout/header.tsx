@@ -42,8 +42,8 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
         </button>
 
         {/* Logo */}
-        <Logo size="md" className="hidden sm:flex" />
-        <Logo size="sm" className="sm:hidden" />
+        <Logo size="sm" rounded className="hidden sm:flex" />
+        <Logo size="xs" rounded className="sm:hidden" />
 
         {/* Icon Navigation (Desktop) */}
         {isAuthenticated && (
