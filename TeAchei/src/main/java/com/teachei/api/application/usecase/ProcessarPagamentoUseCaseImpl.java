@@ -34,11 +34,12 @@ public class ProcessarPagamentoUseCaseImpl implements ProcessarPagamentoUseCase 
 
     @Override
     public void processarWebhook(WebhookPayload payload) {
-        log.info("Processing payment webhook: type={}, action={}, id={}", 
+        log.info("=== PROCESSING WEBHOOK ===");
+        log.info("Webhook data: type={}, action={}, id={}", 
             payload.type(), payload.action(), payload.id());
 
         if (!"payment".equals(payload.type())) {
-            log.debug("Ignoring non-payment webhook type: {}", payload.type());
+            log.info("Ignoring non-payment webhook type: {}", payload.type());
             return;
         }
 
@@ -54,8 +55,18 @@ public class ProcessarPagamentoUseCaseImpl implements ProcessarPagamentoUseCase 
         }
 
         // Get payment status from Mercado Pago
-        PagamentoPort.StatusPagamentoInfo statusInfo = 
-            pagamentoPort.consultarStatus(payload.id());
+        PagamentoPort.StatusPagamentoInfo statusInfo;
+        try {
+            log.info("Fetching payment info from Mercado Pago API: paymentId={}", payload.id());
+            statusInfo = pagamentoPort.consultarStatus(payload.id());
+            log.info("Payment info received: status={}, externalRef={}", 
+                statusInfo.status(), statusInfo.externalReference());
+        } catch (Exception e) {
+            log.error("Failed to fetch payment {} from Mercado Pago API: {}", 
+                payload.id(), e.getMessage());
+            // This is expected for test webhooks with fake IDs
+            return;
+        }
 
         String externalReference = statusInfo.externalReference();
         if (externalReference == null) {
@@ -65,11 +76,14 @@ public class ProcessarPagamentoUseCaseImpl implements ProcessarPagamentoUseCase 
 
         // Only process subscription payments (prefix "sub_")
         if (externalReference.startsWith("sub_")) {
+            log.info("Processing subscription payment: {}", externalReference);
             processarPagamentoAssinatura(payload, statusInfo, externalReference);
         } else {
             // Legacy intention payments are no longer processed
-            log.warn("Ignoring legacy intention payment: {}", externalReference);
+            log.warn("Ignoring non-subscription payment: {}", externalReference);
         }
+        
+        log.info("=== WEBHOOK PROCESSING COMPLETE ===");
     }
 
     private void processarPagamentoAssinatura(WebhookPayload payload, 

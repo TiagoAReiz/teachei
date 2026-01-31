@@ -7,7 +7,6 @@ import com.teachei.api.config.SubscriptionConfig;
 import com.teachei.api.domain.model.Assinatura;
 import com.teachei.api.domain.model.PlanoAssinatura;
 import com.teachei.api.domain.model.StatusAssinatura;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,16 +20,19 @@ public class CriarAssinaturaUseCaseImpl implements CriarAssinaturaUseCase {
     private final PagamentoPort pagamentoPort;
     private final SubscriptionConfig subscriptionConfig;
     private final String frontendUrl;
+    private final String backendUrl;
 
     public CriarAssinaturaUseCaseImpl(
             AssinaturaRepositoryPort assinaturaRepository,
             PagamentoPort pagamentoPort,
             SubscriptionConfig subscriptionConfig,
-            String frontendUrl) {
+            String frontendUrl,
+            String backendUrl) {
         this.assinaturaRepository = assinaturaRepository;
         this.pagamentoPort = pagamentoPort;
         this.subscriptionConfig = subscriptionConfig;
         this.frontendUrl = frontendUrl;
+        this.backendUrl = backendUrl;
     }
 
     @Override
@@ -55,6 +57,9 @@ public class CriarAssinaturaUseCaseImpl implements CriarAssinaturaUseCase {
         String successUrl = frontendUrl + "/assinatura/sucesso?id=" + saved.getId();
         String failureUrl = frontendUrl + "/assinatura/erro?id=" + saved.getId();
         String pendingUrl = frontendUrl + "/assinatura/pendente?id=" + saved.getId();
+        
+        // Notification URL for webhooks - must be set explicitly for test environment
+        String notificationUrl = backendUrl + "/api/v1/pagamentos/webhook";
 
         var preference = pagamentoPort.criarPreferencia(
             externalReference,
@@ -63,7 +68,7 @@ public class CriarAssinaturaUseCaseImpl implements CriarAssinaturaUseCase {
             successUrl,
             failureUrl,
             pendingUrl,
-            null  // notification URL is configured globally
+            notificationUrl
         );
 
         return new AssinaturaPreferencia(

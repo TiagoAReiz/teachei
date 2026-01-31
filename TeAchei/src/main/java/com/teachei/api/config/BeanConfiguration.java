@@ -15,6 +15,9 @@ public class BeanConfiguration {
     @Value("${app.frontend-url:http://localhost:3000}")
     private String frontendUrl;
 
+    @Value("${app.base-url:http://localhost:8080}")
+    private String backendUrl;
+
     // Domain Services
     @Bean
     public AnuncioService anuncioService() {
@@ -125,7 +128,8 @@ public class BeanConfiguration {
             assinaturaRepository,
             pagamentoPort,
             subscriptionConfig,
-            frontendUrl
+            frontendUrl,
+            backendUrl
         );
     }
 
