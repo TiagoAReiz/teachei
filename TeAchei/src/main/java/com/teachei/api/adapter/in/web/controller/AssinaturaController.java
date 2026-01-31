@@ -58,11 +58,21 @@ public class AssinaturaController {
      * Get current user's subscription status.
      */
     @GetMapping("/minha")
-    public ResponseEntity<AssinaturaResponse> minhaAssinatura(
+    public ResponseEntity<?> minhaAssinatura(
             @AuthenticationPrincipal CurrentUser currentUser) {
         var assinatura = verificarAssinaturaUseCase.buscarAssinaturaAtual(currentUser.getId());
-        return ResponseEntity.ok(assinatura.map(AssinaturaResponse::from).orElse(null));
+        if (assinatura.isEmpty()) {
+            // Return a meaningful response when no subscription exists
+            return ResponseEntity.ok(new NoSubscriptionResponse(false, null, null));
+        }
+        return ResponseEntity.ok(AssinaturaResponse.from(assinatura.get()));
     }
+    
+    record NoSubscriptionResponse(
+        boolean assinaturaAtiva,
+        String planoNome,
+        String status
+    ) {}
 
     /**
      * Check if current user has an active subscription.
