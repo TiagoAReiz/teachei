@@ -1,16 +1,16 @@
 import Link from "next/link";
-import { Car, Home, Search } from "lucide-react";
+import { Home, Search } from "lucide-react";
 import { Button } from "@/components/ui";
+import { Logo } from "@/components/ui/logo";
 
 export default function NotFound() {
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <div className="text-center max-w-md">
         {/* Logo */}
-        <Link href="/" className="inline-flex items-center gap-2 text-primary font-extrabold text-2xl tracking-tight mb-8">
-          <Car size={32} />
-          <span>TeAchei</span>
-        </Link>
+        <div className="mb-8 flex justify-center">
+          <Logo size="lg" />
+        </div>
 
         {/* 404 */}
         <div className="text-8xl font-extrabold text-primary/20 mb-4">404</div>
