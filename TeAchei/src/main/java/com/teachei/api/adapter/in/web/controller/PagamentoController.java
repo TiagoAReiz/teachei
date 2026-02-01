@@ -34,25 +34,79 @@ public class PagamentoController {
             @RequestHeader(value = "x-signature", required = false) String xSignature,
             @RequestHeader(value = "x-request-id", required = false) String xRequestId,
             @RequestParam(required = false) String type,
+            @RequestParam(required = false) String topic,
             @RequestParam(required = false, name = "data.id") Long dataId,
+            @RequestParam(required = false) Long id,
             @RequestBody(required = false) Map<String, Object> body) {
         
         log.info("=== MERCADO PAGO WEBHOOK RECEIVED ===");
         log.info("Headers: x-signature={}, x-request-id={}", 
                  xSignature != null ? "[PRESENT]" : "[MISSING]", 
                  xRequestId != null ? xRequestId : "[MISSING]");
-        log.info("Query params: type={}, data.id={}", type, dataId);
+        log.info("Query params: type={}, topic={}, data.id={}, id={}", type, topic, dataId, id);
         log.info("Request body: {}", body);
 
-        // Parse data from body if not in query params
-        if (type == null && body != null) {
-            type = (String) body.get("type");
-            @SuppressWarnings("unchecked")
-            var data = (Map<String, Object>) body.get("data");
-            if (data != null && data.get("id") != null) {
-                dataId = Long.valueOf(data.get("id").toString());
+        // Support both IPN v1 format (topic/id) and Webhook v2 format (type/data.id)
+        // IPN v1: ?topic=payment&id=123456
+        // Webhook v2: ?type=payment&data.id=123456 or in body
+        
+        // Normalize IPN v1 format to v2 format
+        if (topic != null && type == null) {
+            type = topic; // topic=payment -> type=payment
+            log.info("IPN v1 format detected, using topic as type: {}", type);
+        }
+        if (id != null && dataId == null) {
+            dataId = id; // id=123456 -> data.id=123456
+            log.info("IPN v1 format detected, using id as dataId: {}", dataId);
+        }
+
+        // Parse data from body if not in query params (Webhook v2 with JSON body)
+        if (body != null) {
+            // Try to get type from body if not already set
+            if (type == null) {
+                type = (String) body.get("type");
             }
-            log.info("Parsed from body: type={}, dataId={}", type, dataId);
+            // Also check for "action" which contains info like "payment.created", "payment.updated"
+            if (type == null) {
+                String action = (String) body.get("action");
+                if (action != null && action.contains("payment")) {
+                    type = "payment";
+                    log.info("Extracted type from action: {}", action);
+                }
+            }
+            
+            // Try to get dataId from body if not already set
+            if (dataId == null) {
+                // Try data.id first
+                @SuppressWarnings("unchecked")
+                var data = (Map<String, Object>) body.get("data");
+                if (data != null && data.get("id") != null) {
+                    try {
+                        dataId = Long.valueOf(data.get("id").toString());
+                    } catch (NumberFormatException e) {
+                        log.warn("Could not parse data.id as Long: {}", data.get("id"));
+                    }
+                }
+                // Also try "id" directly from body (some formats)
+                if (dataId == null && body.get("id") != null) {
+                    try {
+                        Object bodyId = body.get("id");
+                        // Skip if it's a string ID (like webhook id, not payment id)
+                        if (bodyId instanceof Number) {
+                            dataId = ((Number) bodyId).longValue();
+                        } else {
+                            String idStr = bodyId.toString();
+                            // Only use if it looks like a numeric payment ID
+                            if (idStr.matches("\\d+")) {
+                                dataId = Long.valueOf(idStr);
+                            }
+                        }
+                    } catch (NumberFormatException e) {
+                        log.debug("Body id is not a numeric payment id: {}", body.get("id"));
+                    }
+                }
+            }
+            log.info("After body parsing: type={}, dataId={}", type, dataId);
         }
 
         // Validate webhook signature (security)

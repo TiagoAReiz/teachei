@@ -59,12 +59,20 @@ public class ProcessarPagamentoUseCaseImpl implements ProcessarPagamentoUseCase 
         try {
             log.info("Fetching payment info from Mercado Pago API: paymentId={}", payload.id());
             statusInfo = pagamentoPort.consultarStatus(payload.id());
-            log.info("Payment info received: status={}, externalRef={}", 
-                statusInfo.status(), statusInfo.externalReference());
+            log.info("Payment info received: status={}, externalRef={}, amount={}, method={}", 
+                statusInfo.status(), statusInfo.externalReference(), 
+                statusInfo.valor(), statusInfo.metodoPagamento());
         } catch (Exception e) {
-            log.error("Failed to fetch payment {} from Mercado Pago API: {}", 
-                payload.id(), e.getMessage());
+            log.error("Failed to fetch payment {} from Mercado Pago API: {} - {}", 
+                payload.id(), e.getClass().getSimpleName(), e.getMessage());
             // This is expected for test webhooks with fake IDs
+            // Check if this might be a production/test token mismatch
+            if (e.getMessage() != null && e.getMessage().contains("404")) {
+                log.warn("Payment {} not found - possible causes: " +
+                    "1) Test webhook with fake ID, " +
+                    "2) Token mismatch (test payment with production token or vice-versa), " +
+                    "3) Payment was cancelled/refunded", payload.id());
+            }
             return;
         }
 
