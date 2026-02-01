@@ -75,7 +75,7 @@ payment:
 subscription:
   plans:
     individual:
-      price: ${SUBSCRIPTION_INDIVIDUAL_PRICE:1500}
+      price: ${SUBSCRIPTION_INDIVIDUAL_PRICE:200}
       duration-days: 30
       recurring: false
     quarterly:
