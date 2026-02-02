@@ -240,8 +240,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                   </p>
                 )}
                   
-                {/* TODO: Quando for cobrar, trocar 'false' por 'intention.contatoOculto' (ou lógica de assinatura) */}
-                {false && (
+                {intention.contatoOculto && (
                   <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
                     <p className="text-foreground font-medium mb-2">
                       Informações de contato ocultas
@@ -257,8 +256,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                   </div>
                 )}
 
-                {/* Contato sempre visível por enquanto - TODO: trocar 'true' por '!intention.contatoOculto' quando for cobrar */}
-                {true && (
+                {!intention.contatoOculto && (
                   <div className="flex items-center gap-3">
                     {intention.contato.instagram && (
                       <a

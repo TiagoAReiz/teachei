@@ -138,16 +138,20 @@ public class AnuncioController {
 
         var resultado = buscarAnunciosUseCase.buscar(filtro, pageFinal, sizeFinal);
 
-        // Check if user has active subscription
-        boolean assinaturaAtiva = currentUser != null && 
-            verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
+        // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
+        // boolean assinaturaAtiva = currentUser != null && 
+        //     verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
+        // App gratuito por agora - contato sempre visível
+        boolean assinaturaAtiva = true;
 
         List<AnuncioResponse> content = resultado.items().stream()
             .map(anuncio -> {
-                // Owner always sees their own contact info
-                boolean isOwner = currentUser != null && 
-                    anuncio.getUsuarioId().equals(currentUser.getId());
-                boolean ocultarContato = !isOwner && !assinaturaAtiva;
+                // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
+                // boolean isOwner = currentUser != null && 
+                //     anuncio.getUsuarioId().equals(currentUser.getId());
+                // boolean ocultarContato = !isOwner && !assinaturaAtiva;
+                // App gratuito por agora - contato sempre visível
+                boolean ocultarContato = false;
                 return AnuncioResponse.fromDomain(anuncio, ocultarContato, assinaturaAtiva);
             })
             .toList();
@@ -187,14 +191,15 @@ public class AnuncioController {
             @PathVariable String id) {
         var anuncio = buscarAnunciosUseCase.buscarPorId(id);
         
-        // Check if user has active subscription
-        boolean assinaturaAtiva = currentUser != null && 
-            verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
-        
-        // Owner always sees their own contact info
-        boolean isOwner = currentUser != null && 
-            anuncio.getUsuarioId().equals(currentUser.getId());
-        boolean ocultarContato = !isOwner && !assinaturaAtiva;
+        // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
+        // boolean assinaturaAtiva = currentUser != null && 
+        //     verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
+        // boolean isOwner = currentUser != null && 
+        //     anuncio.getUsuarioId().equals(currentUser.getId());
+        // boolean ocultarContato = !isOwner && !assinaturaAtiva;
+        // App gratuito por agora - contato sempre visível
+        boolean assinaturaAtiva = true;
+        boolean ocultarContato = false;
         
         return ResponseEntity.ok(AnuncioResponse.fromDomain(anuncio, ocultarContato, assinaturaAtiva));
     }
