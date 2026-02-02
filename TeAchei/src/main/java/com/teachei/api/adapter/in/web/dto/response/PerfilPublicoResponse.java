@@ -15,6 +15,7 @@ public record PerfilPublicoResponse(
     String bio,
     String cidade,
     String estado,
+    String fotoBase64,
     double avaliacaoMedia,
     int totalAvaliacoes,
     LocalDateTime criadoEm
@@ -27,6 +28,7 @@ public record PerfilPublicoResponse(
             perfil.getBio(),
             perfil.getCidade(),
             perfil.getEstado(),
+            perfil.getFotoBase64(),
             perfil.getAvaliacaoMedia(),
             perfil.getTotalAvaliacoes(),
             perfil.getCriadoEm()

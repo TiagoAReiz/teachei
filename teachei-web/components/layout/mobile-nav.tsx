@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Flag, Plus, FileText, User } from "lucide-react";
+import { Home, Bookmark, Plus, FileText, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 
 const navItems = [
   { href: "/", label: "Feed", icon: Home },
-  { href: "/favorites", label: "Salvos", icon: Flag },
+  { href: "/favorites", label: "Salvos", icon: Bookmark },
   { href: "/create", label: "Criar", icon: Plus, isMain: true },
   { href: "/my-intentions", label: "Intenções", icon: FileText },
   { href: "/profile", label: "Perfil", icon: User },
@@ -25,7 +25,7 @@ export function MobileNav() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-surface border-t border-border lg:hidden safe-area-bottom">
-      <div className="flex items-center justify-around h-16">
+      <div className="flex items-center justify-around h-20">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
@@ -50,8 +50,8 @@ export function MobileNav() {
                   </div>
                 ) : (
                   <>
-                    <Icon size={24} />
-                    <span className="text-xs">{item.label}</span>
+                    <Icon size={26} />
+                    <span className="text-[11px]">{item.label}</span>
                   </>
                 )}
               </Link>
@@ -77,8 +77,8 @@ export function MobileNav() {
                 </div>
               ) : (
                 <>
-                  <Icon size={24} />
-                  <span className="text-xs">{item.label}</span>
+                  <Icon size={26} />
+                  <span className="text-[11px]">{item.label}</span>
                 </>
               )}
             </Link>

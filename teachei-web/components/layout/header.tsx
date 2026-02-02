@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Plus, Menu, X, Home, Flag, FileText } from "lucide-react";
+import { Plus, Menu, X, Home, Bookmark, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 // Navigation items for icon nav
 const navItems = [
   { href: "/", icon: Home, label: "Feed" },
-  { href: "/favorites", icon: Flag, label: "Favoritos" },
+  { href: "/favorites", icon: Bookmark, label: "Favoritos" },
   { href: "/my-intentions", icon: FileText, label: "Meus Anúncios" },
 ];
 
@@ -33,13 +33,8 @@ export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
   return (
     <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-border">
       <div className="flex items-center gap-4 h-16 px-4 lg:px-6">
-        {/* Menu Button (Mobile) */}
-        <button
-          onClick={onMenuClick}
-          className="lg:hidden p-2 -ml-2 rounded-full text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
-        >
-          {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Menu Button - Hidden on mobile (we have bottom nav), only show on tablet/desktop if needed */}
+        {/* Note: Currently hidden entirely since bottom nav handles mobile and desktop has icon nav */}
 
         {/* Logo */}
         <Logo size="sm" className="hidden sm:flex" />

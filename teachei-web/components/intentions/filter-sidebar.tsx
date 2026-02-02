@@ -323,7 +323,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
             <label className="block text-sm font-medium text-foreground">
               Opcionais
             </label>
-            <div className="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+            <div className="grid grid-cols-2 gap-2">
               {vehicleOptions.map((option) => {
                 const isSelected = filters.opcionais.includes(option.value);
                 return (

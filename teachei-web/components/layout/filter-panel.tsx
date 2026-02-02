@@ -356,7 +356,7 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
           <label className="block text-xs font-medium text-muted uppercase tracking-wide">
             Opcionais
           </label>
-          <div className="grid grid-cols-1 gap-1.5 max-h-40 overflow-y-auto">
+          <div className="grid grid-cols-1 gap-1.5">
             {vehicleOptions.map((option) => {
               const isSelected = filters.opcionais.includes(option.value);
               return (

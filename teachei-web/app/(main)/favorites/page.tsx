@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueries } from "@tanstack/react-query";
-import { Flag } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui";
 import { IntentionCard } from "@/components/intentions";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
@@ -48,7 +48,7 @@ export default function FavoritesPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
         <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
-          <Flag className="text-primary" size={32} />
+          <Bookmark className="text-primary" size={32} />
         </div>
         <h2 className="text-xl font-bold text-foreground mb-2">
           Nenhum favorito ainda

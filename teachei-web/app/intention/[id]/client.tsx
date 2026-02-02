@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
   Bookmark,
@@ -16,6 +18,7 @@ import {
   Car,
   Bike,
   Truck,
+  User,
 } from "lucide-react";
 import type { TipoVeiculo } from "@/types";
 
@@ -25,9 +28,10 @@ const vehicleTypeIcons: Record<TipoVeiculo, typeof Car> = {
   MOTO: Bike,
   CAMINHAO: Truck,
 };
-import { Button, Card, CardContent, Badge } from "@/components/ui";
+import { Button, Card, CardContent, Badge, Avatar } from "@/components/ui";
 import { formatCurrency, formatRelativeTime, formatExpiration, vehicleTypeLabels, getWhatsAppLink, getInstagramLink, formatOpcional } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
+import { getUserProfile } from "@/lib/auth";
 import type { Anuncio } from "@/types";
 
 interface IntentionDetailsClientProps {
@@ -39,6 +43,15 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
   const { isSaved, toggleSave } = useSavedIntentions();
   const intention = initialData;
   const saved = isSaved(intention.id);
+
+  // TODO: Para cobrar assinatura, adicionar verificação de assinaturaAtiva antes de mostrar perfil do vendedor
+  // Consistente com bypass em AnuncioController.java
+  const { data: sellerProfile } = useQuery({
+    queryKey: ["profile", intention.usuarioId],
+    queryFn: () => getUserProfile(intention.usuarioId),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!intention.usuarioId,
+  });
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -165,7 +178,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
               </div>
 
               {/* Specs Grid */}
-              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {specs.map((spec, index) => {
                   const Icon = spec.icon;
                   return (
@@ -230,7 +243,28 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
           {intention.contato && (
             <Card className="mb-6">
               <CardContent className="p-6">
-                <h2 className="font-semibold text-foreground mb-4">Contato</h2>
+                <h2 className="font-semibold text-foreground mb-4">Contato do Comprador</h2>
+                
+                {/* TODO: Para cobrar assinatura, ocultar se !intention.assinaturaAtiva && !isOwner */}
+                {/* Seller Profile Info */}
+                {sellerProfile && (
+                  <Link 
+                    href={`/profile/${intention.usuarioId}`}
+                    className="flex items-center gap-3 p-3 bg-muted/5 rounded-xl hover:bg-muted/10 transition-colors mb-4"
+                  >
+                    <Avatar 
+                      src={sellerProfile.avatarUrl} 
+                      fotoBase64={sellerProfile.fotoBase64} 
+                      fallback={sellerProfile.nome} 
+                      size="lg" 
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-foreground">{sellerProfile.nome}</p>
+                      <p className="text-sm text-muted">Ver perfil</p>
+                    </div>
+                    <User size={18} className="text-muted" />
+                  </Link>
+                )}
                 
                 {/* Location - always visible */}
                 {(intention.contato.cidade || intention.contato.estado) && (
@@ -257,15 +291,40 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                 )}
 
                 {!intention.contatoOculto && (
-                  <div className="flex items-center gap-3">
+                  <div className="space-y-3">
+                    {/* WhatsApp */}
+                    {intention.contato.whatsapp && (
+                      <a
+                        href={intention.contato.whatsappLink || getWhatsAppLink(intention.contato.whatsapp, whatsappMessage)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 p-3 bg-green-500/10 rounded-xl hover:bg-green-500/20 transition-colors"
+                      >
+                        <div className="p-2 bg-green-500 rounded-full">
+                          <Phone size={18} className="text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted">WhatsApp</p>
+                          <p className="font-medium text-foreground">{intention.contato.whatsapp}</p>
+                        </div>
+                      </a>
+                    )}
+                    
+                    {/* Instagram */}
                     {intention.contato.instagram && (
                       <a
                         href={getInstagramLink(intention.contato.instagram)}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 rounded-full bg-muted/10 text-muted hover:text-primary hover:bg-primary/10 transition-colors"
+                        className="flex items-center gap-3 p-3 bg-pink-500/10 rounded-xl hover:bg-pink-500/20 transition-colors"
                       >
-                        <Instagram size={20} />
+                        <div className="p-2 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full">
+                          <Instagram size={18} className="text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-muted">Instagram</p>
+                          <p className="font-medium text-foreground">@{intention.contato.instagram.replace('@', '')}</p>
+                        </div>
                       </a>
                     )}
                   </div>

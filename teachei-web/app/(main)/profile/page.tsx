@@ -32,7 +32,7 @@ export default function ProfilePage() {
       <Card className="mb-6">
         <CardContent className="p-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            <Avatar src={user.avatarUrl} fallback={user.nome} size="xl" />
+            <Avatar src={user.avatarUrl} fotoBase64={user.fotoBase64} fallback={user.nome} size="xl" />
             
             <div className="flex-1 text-center sm:text-left">
               <div className="flex items-center justify-center sm:justify-start gap-2 mb-1">
