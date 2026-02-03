@@ -9,7 +9,6 @@ import {
   ArrowRight,
   Target,
   Instagram,
-  Facebook,
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { Logo } from "@/components/ui/logo";
@@ -54,12 +53,6 @@ const howItWorks = [
     title: "Negociação direta",
     description: "Envie sua proposta diretamente pelo WhatsApp.",
   },
-];
-
-const stats = [
-  { value: "10K+", label: "Intenções de compra" },
-  { value: "5K+", label: "Vendedores ativos" },
-  { value: "95%", label: "Taxa de satisfação" },
 ];
 
 export function LandingPage() {
@@ -118,15 +111,6 @@ export function LandingPage() {
               </Button>
             </div>
 
-            {/* Stats */}
-            <div className="flex flex-wrap gap-8">
-              {stats.map((stat, index) => (
-                <div key={index}>
-                  <p className="text-3xl font-bold text-primary">{stat.value}</p>
-                  <p className="text-muted">{stat.label}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -245,14 +229,6 @@ export function LandingPage() {
                   className="p-2 rounded-full text-muted hover:text-primary hover:bg-primary/10 transition-colors"
                 >
                   <Instagram size={20} />
-                </a>
-                <a
-                  href={siteConfig.links.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full text-muted hover:text-primary hover:bg-primary/10 transition-colors"
-                >
-                  <Facebook size={20} />
                 </a>
               </div>
             </div>

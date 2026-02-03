@@ -11,7 +11,9 @@ import {
   logout as logoutUser,
   updateProfile,
   getUserProfile,
+  changePassword,
   LoginResult,
+  ChangePasswordRequest,
 } from "@/lib/auth";
 import { getToken } from "@/lib/api";
 import type { LoginRequest, RegisterRequest, AtualizarPerfilRequest } from "@/types";
@@ -92,6 +94,11 @@ export function useAuth(options: LoginOptions = {}) {
     },
   });
 
+  // Change password mutation
+  const changePasswordMutation = useMutation({
+    mutationFn: (data: ChangePasswordRequest) => changePassword(data),
+  });
+
   // Logout function
   const logout = useCallback(() => {
     queryClient.clear();
@@ -119,6 +126,10 @@ export function useAuth(options: LoginOptions = {}) {
     updateProfile: updateProfileMutation.mutate,
     updateProfileAsync: updateProfileMutation.mutateAsync,
     isUpdatingProfile: updateProfileMutation.isPending,
+    changePassword: changePasswordMutation.mutate,
+    changePasswordAsync: changePasswordMutation.mutateAsync,
+    isChangingPassword: changePasswordMutation.isPending,
+    changePasswordError: changePasswordMutation.error,
     logout,
   };
 }

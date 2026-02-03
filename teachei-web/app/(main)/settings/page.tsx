@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { User, Mail, Phone, Instagram, Facebook, Camera } from "lucide-react";
+import { User, Mail, Phone, Instagram, Facebook, Camera, Lock, Eye, EyeOff } from "lucide-react";
 import { Button, Input, Card, CardContent, Avatar, LocationPicker } from "@/components/ui";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/toast";
@@ -27,14 +27,32 @@ const profileSchema = z.object({
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>\[\]\-_+=~`]).{8,}$/;
+
+const passwordSchema = z.object({
+  senhaAtual: z.string().min(1, "Senha atual é obrigatória"),
+  novaSenha: z.string()
+    .min(8, "Senha deve ter no mínimo 8 caracteres")
+    .regex(passwordRegex, "Senha deve conter maiúscula, minúscula, número e caractere especial"),
+  confirmarNovaSenha: z.string(),
+}).refine((data) => data.novaSenha === data.confirmarNovaSenha, {
+  message: "As senhas não coincidem",
+  path: ["confirmarNovaSenha"],
+});
+
+type PasswordFormData = z.infer<typeof passwordSchema>;
+
 const MAX_PHOTO_SIZE = 500 * 1024; // 500KB
 
 export default function SettingsPage() {
-  const { user, updateProfile, isUpdatingProfile } = useAuth();
+  const { user, updateProfile, isUpdatingProfile, changePassword, isChangingPassword } = useAuth();
   const { success, error } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Set initial photo preview from user
   useEffect(() => {
@@ -131,6 +149,37 @@ export default function SettingsPage() {
       onSuccess: () => success("Perfil atualizado com sucesso!"),
       onError: (err: Error) => error(err.message || "Erro ao atualizar perfil"),
     });
+  };
+
+  // Password form
+  const {
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
+    reset: resetPassword,
+    formState: { errors: passwordErrors },
+  } = useForm<PasswordFormData>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: {
+      senhaAtual: "",
+      novaSenha: "",
+      confirmarNovaSenha: "",
+    },
+  });
+
+  const onSubmitPassword = (data: PasswordFormData) => {
+    changePassword(
+      { senhaAtual: data.senhaAtual, novaSenha: data.novaSenha },
+      {
+        onSuccess: () => {
+          success("Senha alterada com sucesso!");
+          resetPassword();
+          setShowCurrentPassword(false);
+          setShowNewPassword(false);
+          setShowConfirmPassword(false);
+        },
+        onError: (err: Error) => error(err.message || "Erro ao alterar senha"),
+      }
+    );
   };
 
   return (
@@ -241,6 +290,93 @@ export default function SettingsPage() {
             <div className="flex justify-end pt-4">
               <Button type="submit" isLoading={isUpdatingProfile}>
                 Salvar alterações
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Security Section - Change Password */}
+      <Card className="mt-6">
+        <CardContent className="p-6">
+          <h2 className="text-lg font-semibold text-foreground mb-4">Segurança</h2>
+          
+          <form onSubmit={handleSubmitPassword(onSubmitPassword)} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Senha atual</label>
+              <div className="relative">
+                <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                <input
+                  {...registerPassword("senhaAtual")}
+                  type={showCurrentPassword ? "text" : "password"}
+                  placeholder="Digite sua senha atual"
+                  className="w-full bg-surface border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-xl h-12 pl-12 pr-12 focus:ring-2 focus:ring-primary focus:bg-surface transition-all text-base"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+                >
+                  {showCurrentPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {passwordErrors.senhaAtual && (
+                <p className="mt-2 text-sm text-error">{passwordErrors.senhaAtual.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Nova senha</label>
+              <div className="relative">
+                <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                <input
+                  {...registerPassword("novaSenha")}
+                  type={showNewPassword ? "text" : "password"}
+                  placeholder="Digite sua nova senha"
+                  className="w-full bg-surface border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-xl h-12 pl-12 pr-12 focus:ring-2 focus:ring-primary focus:bg-surface transition-all text-base"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+                >
+                  {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {passwordErrors.novaSenha && (
+                <p className="mt-2 text-sm text-error">{passwordErrors.novaSenha.message}</p>
+              )}
+              <p className="mt-1 text-xs text-muted">
+                Mínimo 8 caracteres, com maiúscula, minúscula, número e caractere especial.
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">Confirmar nova senha</label>
+              <div className="relative">
+                <Lock size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
+                <input
+                  {...registerPassword("confirmarNovaSenha")}
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirme sua nova senha"
+                  className="w-full bg-surface border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-xl h-12 pl-12 pr-12 focus:ring-2 focus:ring-primary focus:bg-surface transition-all text-base"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+              {passwordErrors.confirmarNovaSenha && (
+                <p className="mt-2 text-sm text-error">{passwordErrors.confirmarNovaSenha.message}</p>
+              )}
+            </div>
+
+            <div className="flex justify-end pt-4">
+              <Button type="submit" isLoading={isChangingPassword}>
+                Alterar senha
               </Button>
             </div>
           </form>

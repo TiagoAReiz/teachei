@@ -146,3 +146,18 @@ export async function updateProfile(data: AtualizarPerfilRequest): Promise<User>
 export function isAuthenticated(): boolean {
   return !!getToken();
 }
+
+/**
+ * Change password request
+ */
+export interface ChangePasswordRequest {
+  senhaAtual: string;
+  novaSenha: string;
+}
+
+/**
+ * Change user password
+ */
+export async function changePassword(data: ChangePasswordRequest): Promise<void> {
+  await api.put(API_ENDPOINTS.AUTH_CHANGE_PASSWORD, data);
+}

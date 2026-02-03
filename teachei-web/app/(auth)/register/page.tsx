@@ -12,10 +12,14 @@ import { AuthLayout } from "@/components/layout/auth-layout";
 import { Button, Input } from "@/components/ui";
 import { useAuth } from "@/hooks/use-auth";
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>\[\]\-_+=~`]).{8,}$/;
+
 const registerSchema = z.object({
   nome: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
   email: z.string().email("Email inválido"),
-  senha: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
+  senha: z.string()
+    .min(8, "Senha deve ter no mínimo 8 caracteres")
+    .regex(passwordRegex, "Senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial"),
   confirmarSenha: z.string(),
   telefone: z.string().optional(),
 }).refine((data) => data.senha === data.confirmarSenha, {

@@ -144,6 +144,13 @@ public class BeanConfiguration {
             AssinaturaRepositoryPort assinaturaRepository) {
         return new CancelarAssinaturaUseCaseImpl(assinaturaRepository);
     }
+
+    @Bean
+    public AlterarSenhaUseCase alterarSenhaUseCase(
+            UsuarioRepositoryPort usuarioRepository,
+            PasswordEncoderPort passwordEncoder) {
+        return new AlterarSenhaUseCaseImpl(usuarioRepository, passwordEncoder);
+    }
 }
 
 

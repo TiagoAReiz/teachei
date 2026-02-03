@@ -18,11 +18,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRegister } from "@/hooks/use-auth";
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>\[\]\-_+=~`]).{8,}$/;
+
 const registerSchema = z.object({
   nome: z.string().min(3, "Nome deve ter no mínimo 3 caracteres"),
   email: z.string().email("Email inválido"),
   telefone: z.string().optional(),
-  senha: z.string().min(6, "Senha deve ter no mínimo 6 caracteres"),
+  senha: z.string()
+    .min(8, "Senha deve ter no mínimo 8 caracteres")
+    .regex(passwordRegex, "Senha deve conter maiúscula, minúscula, número e caractere especial"),
   confirmarSenha: z.string(),
 }).refine((data) => data.senha === data.confirmarSenha, {
   message: "As senhas não coincidem",

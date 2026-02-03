@@ -25,8 +25,7 @@ export const siteConfig = {
   
   // Social links
   links: {
-    instagram: "https://instagram.com/teachei",
-    facebook: "https://facebook.com/teachei",
+    instagram: "https://www.instagram.com/teacheiapp",
     whatsapp: "https://wa.me/5511999999999",
   },
   

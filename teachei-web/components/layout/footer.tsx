@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Car, Instagram, Facebook, MessageCircle } from "lucide-react";
+import { Car, Instagram, MessageCircle } from "lucide-react";
 import { siteConfig } from "@/config/site";
 
 export function Footer() {
@@ -26,14 +26,6 @@ export function Footer() {
                 className="p-2 rounded-full text-muted hover:text-primary hover:bg-primary/10 transition-colors"
               >
                 <Instagram size={20} />
-              </a>
-              <a
-                href={siteConfig.links.facebook}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-full text-muted hover:text-primary hover:bg-primary/10 transition-colors"
-              >
-                <Facebook size={20} />
               </a>
               <a
                 href={siteConfig.links.whatsapp}

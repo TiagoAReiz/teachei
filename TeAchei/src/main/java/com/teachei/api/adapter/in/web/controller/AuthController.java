@@ -1,15 +1,19 @@
 package com.teachei.api.adapter.in.web.controller;
 
+import com.teachei.api.adapter.in.web.dto.request.AlterarSenhaRequest;
 import com.teachei.api.adapter.in.web.dto.request.GoogleAuthRequest;
 import com.teachei.api.adapter.in.web.dto.request.LoginRequest;
 import com.teachei.api.adapter.in.web.dto.request.RegistroRequest;
 import com.teachei.api.adapter.in.web.dto.response.AuthResponse;
+import com.teachei.api.application.ports.in.AlterarSenhaUseCase;
 import com.teachei.api.application.ports.in.AutenticarGoogleUseCase;
 import com.teachei.api.application.ports.in.AutenticarUsuarioUseCase;
 import com.teachei.api.application.ports.in.RegistrarUsuarioUseCase;
+import com.teachei.api.config.security.CurrentUser;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,13 +23,16 @@ public class AuthController {
     private final RegistrarUsuarioUseCase registrarUsuarioUseCase;
     private final AutenticarUsuarioUseCase autenticarUsuarioUseCase;
     private final AutenticarGoogleUseCase autenticarGoogleUseCase;
+    private final AlterarSenhaUseCase alterarSenhaUseCase;
 
     public AuthController(RegistrarUsuarioUseCase registrarUsuarioUseCase,
                           AutenticarUsuarioUseCase autenticarUsuarioUseCase,
-                          AutenticarGoogleUseCase autenticarGoogleUseCase) {
+                          AutenticarGoogleUseCase autenticarGoogleUseCase,
+                          AlterarSenhaUseCase alterarSenhaUseCase) {
         this.registrarUsuarioUseCase = registrarUsuarioUseCase;
         this.autenticarUsuarioUseCase = autenticarUsuarioUseCase;
         this.autenticarGoogleUseCase = autenticarGoogleUseCase;
+        this.alterarSenhaUseCase = alterarSenhaUseCase;
     }
 
     @PostMapping("/registrar")
@@ -79,6 +86,21 @@ public class AuthController {
             result.email(),
             result.expiresIn()
         ));
+    }
+
+    @PutMapping("/senha")
+    public ResponseEntity<Void> alterarSenha(
+            @AuthenticationPrincipal CurrentUser currentUser,
+            @Valid @RequestBody AlterarSenhaRequest request) {
+        
+        var command = new AlterarSenhaUseCase.AlterarSenhaCommand(
+            request.senhaAtual(),
+            request.novaSenha()
+        );
+
+        alterarSenhaUseCase.executar(currentUser.getId(), command);
+
+        return ResponseEntity.noContent().build();
     }
 }
 
