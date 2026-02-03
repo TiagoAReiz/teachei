@@ -5,9 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { User, Mail, Phone, Instagram, Facebook, Camera } from "lucide-react";
-import { Button, Input, Card, CardContent, Avatar } from "@/components/ui";
+import { Button, Input, Card, CardContent, Avatar, LocationPicker } from "@/components/ui";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/toast";
+import { isValidUF } from "@/lib/ibge";
 
 const profileSchema = z.object({
   nome: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
@@ -16,7 +17,9 @@ const profileSchema = z.object({
     .optional()
     .or(z.literal("")),
   cidade: z.string().optional(),
-  estado: z.string().optional(),
+  estado: z.string()
+    .refine((val) => !val || isValidUF(val), "Estado inválido")
+    .optional(),
   bio: z.string().max(500, "Bio deve ter no máximo 500 caracteres").optional(),
   instagram: z.string().optional(),
   facebook: z.string().optional(),
@@ -92,6 +95,8 @@ export default function SettingsPage() {
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
@@ -192,20 +197,14 @@ export default function SettingsPage() {
                 error={errors.whatsapp?.message}
               />
 
-              <div className="grid grid-cols-2 gap-2">
-                <Input
-                  {...register("cidade")}
-                  label="Cidade"
-                  placeholder="Sua cidade"
-                  error={errors.cidade?.message}
-                />
-                <Input
-                  {...register("estado")}
-                  label="Estado"
-                  placeholder="UF"
-                  error={errors.estado?.message}
-                />
-              </div>
+              <LocationPicker
+                estado={watch("estado") || ""}
+                cidade={watch("cidade") || ""}
+                onEstadoChange={(val) => setValue("estado", val)}
+                onCidadeChange={(val) => setValue("cidade", val)}
+                estadoError={errors.estado?.message}
+                cidadeError={errors.cidade?.message}
+              />
             </div>
 
             <div>

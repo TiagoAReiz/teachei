@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { CheckCircle, Edit2, Car, Calendar, Palette, DollarSign, Phone, Gauge, Send, Settings } from "lucide-react";
-import { Button, Card, CardContent, Badge, Input } from "@/components/ui";
+import { Button, Card, CardContent, Badge, Input, LocationPicker } from "@/components/ui";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { useCreateIntention } from "@/hooks/use-intentions";
@@ -366,23 +366,14 @@ export default function CreateReviewPage() {
           <p className="text-sm text-muted mb-4">
             Informe sua cidade e estado para os vendedores saberem onde você está.
           </p>
-          <div className="grid grid-cols-2 gap-4">
-            <Input
-              value={cidade}
-              onChange={(e) => setLocalizacao(e.target.value, estado)}
-              label="Cidade"
-              placeholder="São Paulo"
-              error={hasAttemptedPublish && cidade.trim() === "" ? "Obrigatório" : undefined}
-            />
-            <Input
-              value={estado}
-              onChange={(e) => setLocalizacao(cidade, e.target.value)}
-              label="Estado"
-              placeholder="SP"
-              maxLength={2}
-              error={hasAttemptedPublish && estado.trim() === "" ? "Obrigatório" : undefined}
-            />
-          </div>
+          <LocationPicker
+            estado={estado}
+            cidade={cidade}
+            onEstadoChange={(val) => setLocalizacao(cidade, val)}
+            onCidadeChange={(val) => setLocalizacao(val, estado)}
+            estadoError={hasAttemptedPublish && estado.trim() === "" ? "Obrigatório" : undefined}
+            cidadeError={hasAttemptedPublish && cidade.trim() === "" ? "Obrigatório" : undefined}
+          />
         </CardContent>
       </Card>
 

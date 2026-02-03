@@ -3,6 +3,7 @@ package com.teachei.api.adapter.in.web.dto.request;
 import com.teachei.api.domain.model.TipoVeiculo;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 
 import java.math.BigDecimal;
@@ -38,6 +39,9 @@ public record CriarAnuncioRequest(
     boolean dadosManuais,
     
     String cidade,
+    
+    @Pattern(regexp = "^$|^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$", 
+             message = "Estado deve ser uma UF brasileira válida (ex: SP, RJ)")
     String estado
 ) {
     public record VersaoRequest(
