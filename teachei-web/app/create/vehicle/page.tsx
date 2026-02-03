@@ -69,7 +69,7 @@ function SearchInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full bg-background border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-lg h-10 pl-10 pr-10 focus:ring-2 focus:ring-primary transition-all text-sm"
+          className="w-full bg-transparent border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-lg h-10 pl-10 pr-10 focus:ring-2 focus:ring-primary transition-all text-sm"
         />
         {value && (
           <button
