@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 import {
   getCurrentUser,
@@ -22,7 +22,11 @@ import type { LoginRequest, RegisterRequest, AtualizarPerfilRequest } from "@/ty
  */
 export function useAuth() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
+  
+  // Get redirect URL from query params (for post-login redirect)
+  const redirectUrl = searchParams.get("redirect");
 
   // Query current user
   const {
@@ -46,7 +50,8 @@ export function useAuth() {
       if (!result.user.role) {
         router.push("/role-select");
       } else {
-        router.push("/");
+        // Use redirect URL if available, otherwise go to home
+        router.push(redirectUrl || "/");
       }
     },
   });
@@ -70,7 +75,8 @@ export function useAuth() {
       if (!result.user.role) {
         router.push("/role-select");
       } else {
-        router.push("/");
+        // Use redirect URL if available, otherwise go to home
+        router.push(redirectUrl || "/");
       }
     },
   });

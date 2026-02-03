@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { ArrowUpDown, Check, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ArrowUpDown, Check, X, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SortOption } from "@/types";
 
@@ -22,8 +22,27 @@ interface SortDropdownProps {
 
 export function SortDropdown({ value, onChange, className }: SortDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   const selectedOption = SORT_OPTIONS.find((o) => o.value === value) || SORT_OPTIONS[0];
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
+  // Prevent body scroll when modal is open on mobile
+  useEffect(() => {
+    if (isOpen && isMobile) {
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = "";
+      };
+    }
+  }, [isOpen, isMobile]);
 
   const handleSelect = (option: SortOption) => {
     onChange(option);
@@ -36,7 +55,7 @@ export function SortDropdown({ value, onChange, className }: SortDropdownProps) 
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          "flex items-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-xl",
+          "flex items-center justify-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-xl",
           "text-sm font-medium text-foreground hover:bg-muted/10 transition-colors",
           className
         )}
@@ -46,63 +65,58 @@ export function SortDropdown({ value, onChange, className }: SortDropdownProps) 
         <span className="sm:hidden">Ordenar</span>
       </button>
 
-      {/* Bottom Sheet Overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/50 lg:hidden"
-          onClick={() => setIsOpen(false)}
-        >
-          {/* Bottom Sheet */}
-          <div
-            className="absolute bottom-0 left-0 right-0 bg-surface rounded-t-3xl animate-in slide-in-from-bottom duration-300"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Handle */}
-            <div className="flex justify-center pt-3 pb-2">
-              <div className="w-12 h-1.5 bg-muted/30 rounded-full" />
-            </div>
-
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 pb-4 border-b border-border">
-              <h2 className="text-lg font-semibold text-foreground">Ordenar por</h2>
+      {/* Mobile Fullscreen Modal */}
+      {isOpen && isMobile && (
+        <div className="fixed inset-0 z-[60] bg-background animate-in fade-in duration-200">
+          {/* Header */}
+          <header className="sticky top-0 z-10 bg-surface border-b border-border">
+            <div className="flex items-center h-16 px-4">
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 -mr-2 rounded-full text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
+                className="p-2 -ml-2 rounded-full text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
               >
-                <X size={20} />
+                <ArrowLeft size={24} />
               </button>
+              <h1 className="ml-4 text-lg font-semibold text-foreground">Ordenar por</h1>
             </div>
+          </header>
 
-            {/* Options */}
-            <div className="py-2 max-h-[60vh] overflow-y-auto">
-              {SORT_OPTIONS.map((option) => (
+          {/* Options */}
+          <div className="p-4">
+            <div className="bg-surface rounded-2xl border border-border overflow-hidden">
+              {SORT_OPTIONS.map((option, index) => (
                 <button
                   key={option.value}
                   onClick={() => handleSelect(option.value)}
                   className={cn(
-                    "w-full flex items-center justify-between px-6 py-4",
+                    "w-full flex items-center justify-between px-5 py-4",
                     "text-left transition-colors",
+                    index < SORT_OPTIONS.length - 1 && "border-b border-border",
                     option.value === value
-                      ? "bg-primary/5 text-primary"
-                      : "text-foreground hover:bg-muted/5"
+                      ? "bg-primary/5"
+                      : "hover:bg-muted/5"
                   )}
                 >
-                  <span className="font-medium">{option.label}</span>
-                  {option.value === value && <Check size={20} className="text-primary" />}
+                  <span className={cn(
+                    "text-base font-medium",
+                    option.value === value ? "text-primary" : "text-foreground"
+                  )}>
+                    {option.label}
+                  </span>
+                  {option.value === value && (
+                    <Check size={22} className="text-primary" />
+                  )}
                 </button>
               ))}
             </div>
-
-            {/* Safe area for bottom nav */}
-            <div className="h-6" />
           </div>
         </div>
       )}
 
       {/* Desktop Dropdown */}
-      {isOpen && (
+      {isOpen && !isMobile && (
         <div
-          className="hidden lg:block fixed inset-0 z-50"
+          className="fixed inset-0 z-50"
           onClick={() => setIsOpen(false)}
         >
           <div

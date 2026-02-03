@@ -1,8 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/hooks/use-auth";
 import {
   ArrowLeft,
   Bookmark,
@@ -40,9 +41,26 @@ interface IntentionDetailsClientProps {
 
 export function IntentionDetailsClient({ initialData }: IntentionDetailsClientProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { user, isLoading: isLoadingAuth } = useAuth();
   const { isSaved, toggleSave } = useSavedIntentions();
   const intention = initialData;
   const saved = isSaved(intention.id);
+
+  // Redirect to login if not authenticated
+  if (!isLoadingAuth && !user) {
+    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+    return null;
+  }
+
+  // Show loading while checking auth
+  if (isLoadingAuth) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
 
   // TODO: Para cobrar assinatura, adicionar verificação de assinaturaAtiva antes de mostrar perfil do vendedor
   // Consistente com bypass em AnuncioController.java

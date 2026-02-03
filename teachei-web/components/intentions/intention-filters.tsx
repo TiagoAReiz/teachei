@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Filter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui";
 import { FilterSidebar, type FilterState } from "./filter-sidebar";
 import { SortDropdown } from "./sort-dropdown";
 import type { TipoVeiculo, SortOption } from "@/types";
@@ -163,19 +162,18 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     <div className={cn("space-y-4", className)}>
       {/* Mobile Filter/Sort Bar - Sticky below search */}
       <div className="flex items-center gap-3 lg:hidden sticky top-16 z-30 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-sm border-b border-border">
-        <Button
-          variant="outline"
+        <button
           onClick={() => setIsSidebarOpen(true)}
-          className="relative flex-1"
+          className="relative flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-xl text-sm font-medium text-foreground hover:bg-muted/10 transition-colors"
         >
-          <Filter size={18} />
+          <Filter size={16} />
           <span>Filtrar</span>
           {activeFilterCount > 0 && (
             <span className="absolute -top-2 -right-2 min-w-5 h-5 flex items-center justify-center bg-primary text-white text-xs font-bold rounded-full px-1">
               {activeFilterCount}
             </span>
           )}
-        </Button>
+        </button>
 
         <SortDropdown
           value={currentSort}
