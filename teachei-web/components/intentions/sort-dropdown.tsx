@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { ArrowUpDown, Check, X, ArrowLeft } from "lucide-react";
+import { ArrowUpDown, Check, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { SortOption } from "@/types";
 

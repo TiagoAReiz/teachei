@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Plus, Menu, X, Home, Bookmark, FileText } from "lucide-react";
+import { Plus, Home, Bookmark, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
@@ -19,12 +19,7 @@ const navItems = [
   { href: "/my-intentions", icon: FileText, label: "Meus Anúncios" },
 ];
 
-interface HeaderProps {
-  onMenuClick?: () => void;
-  isSidebarOpen?: boolean;
-}
-
-export function Header({ onMenuClick, isSidebarOpen }: HeaderProps) {
+export function Header() {
   const router = useRouter();
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();

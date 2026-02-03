@@ -47,6 +47,15 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
   const intention = initialData;
   const saved = isSaved(intention.id);
 
+  // TODO: Para cobrar assinatura, adicionar verificação de assinaturaAtiva antes de mostrar perfil do vendedor
+  // Consistente com bypass em AnuncioController.java
+  const { data: sellerProfile } = useQuery({
+    queryKey: ["profile", intention.usuarioId],
+    queryFn: () => getUserProfile(intention.usuarioId),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: !!intention.usuarioId && !isLoadingAuth && !!user,
+  });
+
   // Redirect to login if not authenticated
   if (!isLoadingAuth && !user) {
     router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
@@ -61,15 +70,6 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
       </div>
     );
   }
-
-  // TODO: Para cobrar assinatura, adicionar verificação de assinaturaAtiva antes de mostrar perfil do vendedor
-  // Consistente com bypass em AnuncioController.java
-  const { data: sellerProfile } = useQuery({
-    queryKey: ["profile", intention.usuarioId],
-    queryFn: () => getUserProfile(intention.usuarioId),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    enabled: !!intention.usuarioId,
-  });
 
   const handleShare = async () => {
     if (navigator.share) {
