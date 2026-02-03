@@ -3,11 +3,11 @@ package com.teachei.api.application.usecase;
 import com.teachei.api.application.ports.in.AtualizarAnuncioUseCase;
 import com.teachei.api.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.domain.exception.AcessoNegadoException;
-import com.teachei.api.domain.exception.AnuncioInvalidoException;
 import com.teachei.api.domain.exception.AnuncioNaoEncontradoException;
 import com.teachei.api.domain.model.Anuncio;
-import com.teachei.api.domain.model.StatusAnuncio;
+import com.teachei.api.domain.model.VersaoInfo;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -31,22 +31,35 @@ public class AtualizarAnuncioUseCaseImpl implements AtualizarAnuncioUseCase {
             throw new AcessoNegadoException("Você não pode editar este anúncio");
         }
 
-        // Check status - can only update when active
-        if (anuncio.getStatus() != StatusAnuncio.ATIVO) {
-            throw new AnuncioInvalidoException(
-                "Não é possível atualizar uma intenção que não está ativa"
-            );
-        }
+        // Map version commands to domain objects
+        List<VersaoInfo> versoes = command.versoes() != null
+            ? command.versoes().stream()
+                .map(v -> new VersaoInfo(v.codigo(), v.nome()))
+                .toList()
+            : List.of();
 
-        // Update vehicle info
+        // Update vehicle info (brand/model remain unchanged)
         anuncio.getVeiculoInfo().atualizar(
+            versoes,
+            command.todasVersoes(),
             command.anos(),
             command.cores(),
-            command.precoMaximo()
+            command.precoMaximo(),
+            command.quilometragemMinima(),
+            command.quilometragemMaxima(),
+            command.opcionais()
         );
 
         // Update observations
         anuncio.setObservacoes(command.observacoes());
+
+        // Update location in contact info
+        if (command.cidade() != null) {
+            anuncio.getContatoInfo().setCidade(command.cidade());
+        }
+        if (command.estado() != null) {
+            anuncio.getContatoInfo().setEstado(command.estado());
+        }
 
         return anuncioRepository.salvar(anuncio);
     }

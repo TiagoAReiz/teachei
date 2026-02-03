@@ -83,16 +83,38 @@ public class VeiculoInfo {
 
     /**
      * Updates the editable fields of the vehicle info.
+     * Brand and model are immutable.
      */
-    public void atualizar(List<Integer> anos, List<String> cores, BigDecimal precoMaximo) {
+    public void atualizar(List<VersaoInfo> versoes, boolean todasVersoes,
+                          List<Integer> anos, List<String> cores, BigDecimal precoMaximo,
+                          Integer quilometragemMinima, Integer quilometragemMaxima,
+                          List<String> opcionais) {
+        // Update versions
+        this.versoes = versoes != null ? new ArrayList<>(versoes) : new ArrayList<>();
+        this.todasVersoes = todasVersoes;
+        
+        // Update years
         if (anos != null && !anos.isEmpty()) {
             this.anos = new ArrayList<>(anos);
         }
-        if (cores != null && !cores.isEmpty()) {
+        
+        // Update colors (empty list is valid - means "any color")
+        if (cores != null) {
             this.cores = new ArrayList<>(cores);
         }
+        
+        // Update max price
         if (precoMaximo != null && precoMaximo.compareTo(BigDecimal.ZERO) > 0) {
             this.precoMaximo = precoMaximo;
+        }
+        
+        // Update mileage
+        this.quilometragemMinima = quilometragemMinima;
+        this.quilometragemMaxima = quilometragemMaxima;
+        
+        // Update optionals
+        if (opcionais != null) {
+            this.opcionais = new ArrayList<>(opcionais);
         }
     }
 

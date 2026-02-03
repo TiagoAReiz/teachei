@@ -230,6 +230,21 @@ export interface CreateAnuncioRequest {
   estado?: string;
 }
 
+// Request to update an intention (matches AtualizarAnuncioRequest)
+export interface UpdateAnuncioRequest {
+  versoes?: VersaoRequest[];
+  todasVersoes?: boolean;
+  anos: number[];
+  cores?: string[];
+  precoMaximo: number;
+  quilometragemMinima?: number;
+  quilometragemMaxima?: number;
+  opcionais?: string[];
+  observacoes?: string;
+  cidade?: string;
+  estado?: string;
+}
+
 // ============================================
 // Filter Types
 // ============================================

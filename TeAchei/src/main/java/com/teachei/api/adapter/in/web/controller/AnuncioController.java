@@ -244,11 +244,25 @@ public class AnuncioController {
             @PathVariable String id,
             @Valid @RequestBody AtualizarAnuncioRequest request) {
         
+        // Map version requests to commands
+        var versoesCommand = request.versoes() != null 
+            ? request.versoes().stream()
+                .map(v -> new AtualizarAnuncioUseCase.VersaoCommand(v.codigo(), v.nome()))
+                .toList()
+            : List.<AtualizarAnuncioUseCase.VersaoCommand>of();
+        
         var command = new AtualizarAnuncioUseCase.AtualizarAnuncioCommand(
+            versoesCommand,
+            request.todasVersoes(),
             request.anos(),
             request.cores(),
             request.precoMaximo(),
-            request.observacoes()
+            request.quilometragemMinima(),
+            request.quilometragemMaxima(),
+            request.opcionais(),
+            request.observacoes(),
+            request.cidade(),
+            request.estado()
         );
 
         var anuncio = atualizarAnuncioUseCase.executar(currentUser.getId(), id, command);

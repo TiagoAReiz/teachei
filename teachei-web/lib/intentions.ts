@@ -4,6 +4,7 @@ import type {
   Anuncio,
   AvailableFilters,
   CreateAnuncioRequest,
+  UpdateAnuncioRequest,
   PaginatedResponse,
   IntentionFilters,
   TipoVeiculo,
@@ -85,7 +86,7 @@ export async function createIntention(
  */
 export async function updateIntention(
   id: string,
-  data: Partial<CreateAnuncioRequest>
+  data: UpdateAnuncioRequest
 ): Promise<Anuncio> {
   return api.put<Anuncio>(API_ENDPOINTS.INTENTION_BY_ID(id), data);
 }

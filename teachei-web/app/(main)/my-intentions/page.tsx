@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, CheckCircle, AlertCircle, Trash2, Calendar } from "lucide-react";
+import { Plus, CheckCircle, AlertCircle, Trash2, Calendar, Edit2 } from "lucide-react";
 import { Button, Card, CardContent, Badge, Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui";
 import { useMyIntentions, useDeleteIntention } from "@/hooks/use-intentions";
 import { formatCurrency, formatRelativeTime, formatExpiration, statusLabels, vehicleTypeLabels } from "@/lib/utils";
@@ -171,6 +171,18 @@ export default function MyIntentionsPage() {
                   {/* Actions for active intentions */}
                   {intention.status === "ATIVO" && (
                     <div className="flex gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          router.push(`/intention/${intention.id}/edit`);
+                        }}
+                      >
+                        <Edit2 size={16} />
+                        <span>Editar</span>
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"

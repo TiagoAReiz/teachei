@@ -13,7 +13,7 @@ public interface AtualizarAnuncioUseCase {
 
     /**
      * Updates an existing intention.
-     * Only the owner can update, and only when status is PENDENTE_PAGAMENTO.
+     * Only the owner can update.
      *
      * @param usuarioId the ID of the user making the request
      * @param anuncioId the ID of the intention to update
@@ -22,10 +22,19 @@ public interface AtualizarAnuncioUseCase {
      */
     Anuncio executar(UUID usuarioId, String anuncioId, AtualizarAnuncioCommand command);
 
+    record VersaoCommand(String codigo, String nome) {}
+
     record AtualizarAnuncioCommand(
+        List<VersaoCommand> versoes,
+        boolean todasVersoes,
         List<Integer> anos,
         List<String> cores,
         BigDecimal precoMaximo,
-        String observacoes
+        Integer quilometragemMinima,
+        Integer quilometragemMaxima,
+        List<String> opcionais,
+        String observacoes,
+        String cidade,
+        String estado
     ) {}
 }

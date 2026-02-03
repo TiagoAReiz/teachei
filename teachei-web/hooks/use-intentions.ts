@@ -16,7 +16,7 @@ import {
   deleteIntention,
   getAvailableFilters,
 } from "@/lib/intentions";
-import type { CreateAnuncioRequest, IntentionFilters, TipoVeiculo } from "@/types";
+import type { CreateAnuncioRequest, UpdateAnuncioRequest, IntentionFilters, TipoVeiculo } from "@/types";
 
 /**
  * Hook for paginated intentions with filters
@@ -95,7 +95,7 @@ export function useUpdateIntention() {
       data,
     }: {
       id: string;
-      data: Partial<CreateAnuncioRequest>;
+      data: UpdateAnuncioRequest;
     }) => updateIntention(id, data),
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["intentions"] });
