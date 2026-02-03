@@ -71,10 +71,7 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
   return (
     <AuthGuard publicRoutes={PUBLIC_ROUTES}>
       <div className="min-h-screen bg-background">
-        <Header
-          onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          isSidebarOpen={isSidebarOpen}
-        />
+        <Header />
         
         {showSidebar && (
           <Sidebar
