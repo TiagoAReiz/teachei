@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useCallback } from "react";
 import {
   getCurrentUser,
@@ -16,17 +16,20 @@ import {
 import { getToken } from "@/lib/api";
 import type { LoginRequest, RegisterRequest, AtualizarPerfilRequest } from "@/types";
 
+interface LoginOptions {
+  redirectUrl?: string | null;
+}
+
 /**
  * Main authentication hook
  * Handles login, register, logout, and profile management
  */
-export function useAuth() {
+export function useAuth(options: LoginOptions = {}) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
   
-  // Get redirect URL from query params (for post-login redirect)
-  const redirectUrl = searchParams.get("redirect");
+  // Get redirect URL from options (passed by component using useSearchParams in Suspense)
+  const redirectUrl = options.redirectUrl;
 
   // Query current user
   const {

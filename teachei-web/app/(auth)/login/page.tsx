@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,8 +19,10 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
-  const { login, isLoggingIn, loginError, googleLogin, isGoogleLoggingIn, googleLoginError } = useAuth();
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
+  const { login, isLoggingIn, loginError, googleLogin, isGoogleLoggingIn, googleLoginError } = useAuth({ redirectUrl });
   const [showError, setShowError] = useState(false);
 
   const {
@@ -48,7 +51,7 @@ export default function LoginPage() {
   });
 
   return (
-    <AuthLayout>
+    <>
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-foreground mb-2">
           Bem-vindo de volta
@@ -131,9 +134,24 @@ export default function LoginPage() {
           </Link>
         </p>
       </div>
-    </AuthLayout>
+    </>
   );
 }
 
+function LoginFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[300px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+    </div>
+  );
+}
 
-
+export default function LoginPage() {
+  return (
+    <AuthLayout>
+      <Suspense fallback={<LoginFallback />}>
+        <LoginForm />
+      </Suspense>
+    </AuthLayout>
+  );
+}

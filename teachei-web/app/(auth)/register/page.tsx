@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -24,8 +25,10 @@ const registerSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
-export default function RegisterPage() {
-  const { register: registerUser, isRegistering, registerError, googleLogin, isGoogleLoggingIn, googleLoginError } = useAuth();
+function RegisterForm() {
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get("redirect");
+  const { register: registerUser, isRegistering, registerError, googleLogin, isGoogleLoggingIn, googleLoginError } = useAuth({ redirectUrl });
   const [showError, setShowError] = useState(false);
 
   const {
@@ -56,7 +59,7 @@ export default function RegisterPage() {
   });
 
   return (
-    <AuthLayout>
+    <>
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-foreground mb-2">
           Criar sua conta
@@ -169,9 +172,24 @@ export default function RegisterPage() {
           </Link>
         </p>
       </div>
-    </AuthLayout>
+    </>
   );
 }
 
+function RegisterFallback() {
+  return (
+    <div className="flex items-center justify-center min-h-[300px]">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+    </div>
+  );
+}
 
-
+export default function RegisterPage() {
+  return (
+    <AuthLayout>
+      <Suspense fallback={<RegisterFallback />}>
+        <RegisterForm />
+      </Suspense>
+    </AuthLayout>
+  );
+}
