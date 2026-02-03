@@ -1,15 +1,15 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ArrowLeft, AlertCircle, Save, Car, Bike, Truck } from "lucide-react";
 import { Button, Card, CardContent, CurrencyInput, Select, Input, LocationPicker } from "@/components/ui";
 import { useIntention, useUpdateIntention } from "@/hooks/use-intentions";
 import { useToast } from "@/components/ui/toast";
-import { vehicleColors, generateYearOptions, formatCurrency } from "@/lib/utils";
+import { vehicleColors, generateYearOptions } from "@/lib/utils";
 import { vehicleOptions } from "@/lib/vehicle-options";
 import { cn } from "@/lib/utils";
-import type { TipoVeiculo, VersaoRequest } from "@/types";
+import type { TipoVeiculo, VersaoRequest, Anuncio } from "@/types";
 
 // Vehicle type icons
 const vehicleTypeIcons: Record<TipoVeiculo, typeof Car> = {
@@ -24,53 +24,39 @@ const vehicleTypeLabels: Record<TipoVeiculo, string> = {
   CAMINHAO: "Caminhão",
 };
 
-export default function EditIntentionPage() {
+// Form component that receives pre-loaded intention data
+function EditIntentionForm({ intention }: { intention: Anuncio }) {
   const router = useRouter();
-  const params = useParams();
-  const id = params.id as string;
   const { success, error: showError } = useToast();
-  
-  const { data: intention, isLoading, error } = useIntention(id);
   const { mutate: updateIntention, isPending: isUpdating } = useUpdateIntention();
 
-  // Form state
-  const [anoMinimo, setAnoMinimo] = useState<number | null>(null);
-  const [anoMaximo, setAnoMaximo] = useState<number | null>(null);
-  const [cores, setCores] = useState<string[]>([]);
-  const [precoMaximo, setPrecoMaximo] = useState<number | null>(null);
-  const [quilometragemMinima, setQuilometragemMinima] = useState<number | null>(null);
-  const [quilometragemMaxima, setQuilometragemMaxima] = useState<number | null>(null);
-  const [opcionais, setOpcionais] = useState<string[]>([]);
-  const [observacoes, setObservacoes] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [estado, setEstado] = useState("");
-  const [todasVersoes, setTodasVersoes] = useState(false);
-  const [versoes, setVersoes] = useState<VersaoRequest[]>([]);
+  // Compute initial values from intention
+  const veiculo = intention.veiculo;
+  const contato = intention.contato;
 
-  // Initialize form with existing data
-  useEffect(() => {
-    if (intention) {
-      const veiculo = intention.veiculo;
-      const contato = intention.contato;
-      
-      // Set years from array
-      if (veiculo.anos && veiculo.anos.length > 0) {
-        setAnoMinimo(Math.min(...veiculo.anos));
-        setAnoMaximo(Math.max(...veiculo.anos));
-      }
-      
-      setCores(veiculo.cores || []);
-      setPrecoMaximo(veiculo.precoMaximo);
-      setQuilometragemMinima(veiculo.quilometragemMinima || null);
-      setQuilometragemMaxima(veiculo.quilometragemMaxima || null);
-      setOpcionais(veiculo.opcionais || []);
-      setObservacoes(intention.observacoes || "");
-      setCidade(contato?.cidade || "");
-      setEstado(contato?.estado || "");
-      setTodasVersoes(veiculo.todasVersoes || false);
-      setVersoes(veiculo.versoes?.map(v => ({ codigo: v.codigo, nome: v.nome })) || []);
-    }
-  }, [intention]);
+  // Form state - initialized with existing data
+  const [anoMinimo, setAnoMinimo] = useState<number | null>(
+    veiculo.anos?.length > 0 ? Math.min(...veiculo.anos) : null
+  );
+  const [anoMaximo, setAnoMaximo] = useState<number | null>(
+    veiculo.anos?.length > 0 ? Math.max(...veiculo.anos) : null
+  );
+  const [cores, setCores] = useState<string[]>(veiculo.cores || []);
+  const [precoMaximo, setPrecoMaximo] = useState<number | null>(veiculo.precoMaximo);
+  const [quilometragemMinima, setQuilometragemMinima] = useState<number | null>(
+    veiculo.quilometragemMinima || null
+  );
+  const [quilometragemMaxima, setQuilometragemMaxima] = useState<number | null>(
+    veiculo.quilometragemMaxima || null
+  );
+  const [opcionais, setOpcionais] = useState<string[]>(veiculo.opcionais || []);
+  const [observacoes, setObservacoes] = useState(intention.observacoes || "");
+  const [cidade, setCidade] = useState(contato?.cidade || "");
+  const [estado, setEstado] = useState(contato?.estado || "");
+  const [todasVersoes] = useState(veiculo.todasVersoes || false);
+  const [versoes] = useState<VersaoRequest[]>(
+    veiculo.versoes?.map(v => ({ codigo: v.codigo, nome: v.nome })) || []
+  );
 
   // Year options
   const allYearOptions = generateYearOptions(30);
@@ -143,7 +129,7 @@ export default function EditIntentionPage() {
 
     updateIntention(
       {
-        id,
+        id: intention.id,
         data: {
           versoes: todasVersoes ? [] : versoes,
           todasVersoes,
@@ -161,7 +147,7 @@ export default function EditIntentionPage() {
       {
         onSuccess: () => {
           success("Intenção atualizada com sucesso!");
-          router.push(`/intention/${id}`);
+          router.push(`/intention/${intention.id}`);
         },
         onError: (err) => {
           showError(err.message || "Erro ao atualizar intenção");
@@ -169,25 +155,6 @@ export default function EditIntentionPage() {
       }
     );
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-      </div>
-    );
-  }
-
-  if (error || !intention) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
-        <AlertCircle className="text-error mb-4" size={48} />
-        <h2 className="text-xl font-bold text-foreground mb-2">Erro ao carregar</h2>
-        <p className="text-muted mb-4">Não foi possível carregar a intenção.</p>
-        <Button onClick={() => router.back()}>Voltar</Button>
-      </div>
-    );
-  }
 
   const VehicleIcon = vehicleTypeIcons[intention.tipo];
 
@@ -414,4 +381,34 @@ export default function EditIntentionPage() {
       </div>
     </div>
   );
+}
+
+export default function EditIntentionPage() {
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
+  
+  const { data: intention, isLoading, error } = useIntention(id);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      </div>
+    );
+  }
+
+  if (error || !intention) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
+        <AlertCircle className="text-error mb-4" size={48} />
+        <h2 className="text-xl font-bold text-foreground mb-2">Erro ao carregar</h2>
+        <p className="text-muted mb-4">Não foi possível carregar a intenção.</p>
+        <Button onClick={() => router.back()}>Voltar</Button>
+      </div>
+    );
+  }
+
+  // Render form only when intention is loaded
+  return <EditIntentionForm intention={intention} />;
 }
