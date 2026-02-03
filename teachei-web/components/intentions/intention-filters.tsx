@@ -6,7 +6,8 @@ import { Filter, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui";
 import { FilterSidebar, type FilterState } from "./filter-sidebar";
-import type { TipoVeiculo } from "@/types";
+import { SortDropdown } from "./sort-dropdown";
+import type { TipoVeiculo, SortOption } from "@/types";
 
 const vehicleTypeLabels: Record<string, string> = {
   CARRO: "Carros",
@@ -37,6 +38,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
   }), [searchParams]);
 
   const currentSearch = searchParams.get("search") || "";
+  const currentSort = (searchParams.get("ordenar") as SortOption) || "RECENTE";
 
   // Count active filters (excluding search)
   const activeFilterCount = useMemo(() => {
@@ -53,12 +55,28 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
 
   const hasFilters = activeFilterCount > 0 || currentSearch;
 
+  const handleSortChange = (sort: SortOption) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (sort === "RECENTE") {
+      params.delete("ordenar");
+    } else {
+      params.set("ordenar", sort);
+    }
+    const queryString = params.toString();
+    router.push(queryString ? `/?${queryString}` : "/");
+  };
+
   const handleApplyFilters = (filters: FilterState) => {
     const params = new URLSearchParams();
     
     // Preserve search
     if (currentSearch) {
       params.set("search", currentSearch);
+    }
+    
+    // Preserve sort order
+    if (currentSort !== "RECENTE") {
+      params.set("ordenar", currentSort);
     }
     
     // Apply new filters
@@ -143,12 +161,12 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
 
   return (
     <div className={cn("space-y-4", className)}>
-      {/* Filter Button - Mobile Only (filters are in sidebar on desktop) */}
-      <div className="flex items-center gap-3 lg:hidden">
+      {/* Mobile Filter/Sort Bar - Sticky below search */}
+      <div className="flex items-center gap-3 lg:hidden sticky top-16 z-30 -mx-4 px-4 py-3 bg-background/95 backdrop-blur-sm border-b border-border">
         <Button
           variant="outline"
           onClick={() => setIsSidebarOpen(true)}
-          className="relative"
+          className="relative flex-1"
         >
           <Filter size={18} />
           <span>Filtrar</span>
@@ -159,14 +177,28 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
           )}
         </Button>
 
+        <SortDropdown
+          value={currentSort}
+          onChange={handleSortChange}
+          className="flex-1"
+        />
+
         {hasFilters && (
           <button
             onClick={clearFilters}
-            className="text-sm text-muted hover:text-foreground transition-colors"
+            className="text-sm text-muted hover:text-foreground transition-colors whitespace-nowrap"
           >
-            Limpar filtros
+            Limpar
           </button>
         )}
+      </div>
+      
+      {/* Desktop Sort - hidden on mobile */}
+      <div className="hidden lg:flex items-center justify-end">
+        <SortDropdown
+          value={currentSort}
+          onChange={handleSortChange}
+        />
       </div>
 
       {/* Active Filters Display */}

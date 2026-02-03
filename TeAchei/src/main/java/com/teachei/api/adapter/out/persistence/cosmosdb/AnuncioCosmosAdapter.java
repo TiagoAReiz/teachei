@@ -4,11 +4,13 @@ import com.teachei.api.adapter.out.persistence.cosmosdb.mapper.AnuncioDocumentMa
 import com.teachei.api.adapter.out.persistence.cosmosdb.repository.AnuncioCosmosRepository;
 import com.teachei.api.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.domain.model.Anuncio;
+import com.teachei.api.domain.model.OrdemAnuncio;
 import com.teachei.api.domain.model.StatusAnuncio;
 import com.teachei.api.domain.model.TipoVeiculo;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,6 +57,7 @@ public class AnuncioCosmosAdapter implements AnuncioRepositoryPort {
                                   BigDecimal precoMin, BigDecimal precoMax,
                                   String search, List<String> opcionais,
                                   String cidade, String estado,
+                                  OrdemAnuncio ordenar,
                                   int pagina, int tamanho) {
         // Get all active intentions and filter in memory
         // Note: For production, implement proper Cosmos DB query with filters
@@ -114,11 +117,42 @@ public class AnuncioCosmosAdapter implements AnuncioRepositoryPort {
                 (a.getContatoInfo() != null && cidade.equals(a.getContatoInfo().getCidade())))
             .filter(a -> estado == null || 
                 (a.getContatoInfo() != null && estado.equals(a.getContatoInfo().getEstado())))
+            .sorted(getComparator(ordenar))
             .collect(Collectors.toList());
 
         long total = repository.countByStatus(status);
 
         return new ResultadoBusca(filtered, total);
+    }
+
+    private Comparator<Anuncio> getComparator(OrdemAnuncio ordenar) {
+        if (ordenar == null) ordenar = OrdemAnuncio.RECENTE;
+        
+        return switch (ordenar) {
+            case RECENTE -> Comparator.comparing(Anuncio::getCriadoEm, Comparator.nullsLast(Comparator.reverseOrder()));
+            case PRECO_ASC -> Comparator.comparing(
+                a -> a.getVeiculoInfo() != null ? a.getVeiculoInfo().getPrecoMaximo() : null,
+                Comparator.nullsLast(Comparator.naturalOrder())
+            );
+            case PRECO_DESC -> Comparator.comparing(
+                a -> a.getVeiculoInfo() != null ? a.getVeiculoInfo().getPrecoMaximo() : null,
+                Comparator.nullsLast(Comparator.reverseOrder())
+            );
+            case KM_ASC -> Comparator.comparing(
+                a -> a.getVeiculoInfo() != null ? a.getVeiculoInfo().getQuilometragemMaxima() : null,
+                Comparator.nullsLast(Comparator.naturalOrder())
+            );
+            case ANO_DESC -> Comparator.comparing(
+                a -> a.getVeiculoInfo() != null && a.getVeiculoInfo().getAnos() != null && !a.getVeiculoInfo().getAnos().isEmpty()
+                    ? a.getVeiculoInfo().getAnos().stream().max(Integer::compareTo).orElse(0)
+                    : 0,
+                Comparator.reverseOrder()
+            );
+            case NOME_ASC -> Comparator.comparing(
+                a -> a.getVeiculoInfo() != null ? a.getVeiculoInfo().getModeloNome() : "",
+                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)
+            );
+        };
     }
 
     private boolean containsIgnoreCase(String text, String search) {

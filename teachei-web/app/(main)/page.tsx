@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
-import type { TipoVeiculo, IntentionFilters as Filters } from "@/types";
+import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";
 
 function HomeContent() {
   const searchParams = useSearchParams();
@@ -24,6 +24,7 @@ function HomeContent() {
     precoMin: searchParams.get("precoMin") ? parseInt(searchParams.get("precoMin")!) : undefined,
     precoMax: searchParams.get("precoMax") ? parseInt(searchParams.get("precoMax")!) : undefined,
     opcionais: searchParams.get("opcionais")?.split(",").filter(Boolean) || undefined,
+    ordenar: (searchParams.get("ordenar") as SortOption) || undefined,
   };
 
   const {

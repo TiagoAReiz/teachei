@@ -2,9 +2,11 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowLeft, MapPin, Calendar } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar, Car } from "lucide-react";
 import { Button, Card, CardContent, Avatar, Badge } from "@/components/ui";
+import { IntentionCard } from "@/components/intentions";
 import { getUserProfile } from "@/lib/auth";
+import { getIntentionsByUserId } from "@/lib/intentions";
 import { formatRelativeTime } from "@/lib/utils";
 
 // TODO: Para cobrar assinatura, verificar se usuário tem assinatura ativa antes de mostrar perfil
@@ -19,6 +21,15 @@ export default function PublicProfilePage() {
   const { data: profile, isLoading, error } = useQuery({
     queryKey: ["profile", userId],
     queryFn: () => getUserProfile(userId),
+    enabled: !!userId,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  // TODO: Para cobrar assinatura, verificar se usuário tem assinatura ativa antes de buscar intenções
+  // Consistente com bypass em AnuncioController.java
+  const { data: intentions = [], isLoading: isLoadingIntentions } = useQuery({
+    queryKey: ["user-intentions", userId],
+    queryFn: () => getIntentionsByUserId(userId),
     enabled: !!userId,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
@@ -105,17 +116,35 @@ export default function PublicProfilePage() {
           </CardContent>
         </Card>
 
-        {/* Placeholder for user's intentions */}
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="font-semibold text-foreground mb-4">
-              Intenções de {profile.nome?.split(" ")[0]}
-            </h3>
-            <p className="text-muted text-sm">
-              Em breve você poderá ver as intenções de compra deste usuário.
-            </p>
-          </CardContent>
-        </Card>
+        {/* User's Intentions */}
+        <div>
+          <h3 className="font-semibold text-foreground mb-4">
+            Intenções de {profile.nome?.split(" ")[0]}
+          </h3>
+          
+          {isLoadingIntentions ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {[...Array(2)].map((_, i) => (
+                <div key={i} className="h-48 bg-muted/20 rounded-2xl animate-pulse" />
+              ))}
+            </div>
+          ) : intentions.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {intentions.map((intention) => (
+                <IntentionCard key={intention.id} intention={intention} />
+              ))}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <Car size={32} className="text-muted mx-auto mb-3" />
+                <p className="text-muted text-sm">
+                  Este usuário ainda não possui intenções de compra ativas.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
       </main>
     </div>
   );

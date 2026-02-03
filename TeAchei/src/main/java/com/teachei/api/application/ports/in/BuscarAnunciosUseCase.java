@@ -1,6 +1,7 @@
 package com.teachei.api.application.ports.in;
 
 import com.teachei.api.domain.model.Anuncio;
+import com.teachei.api.domain.model.OrdemAnuncio;
 import com.teachei.api.domain.model.TipoVeiculo;
 
 import java.math.BigDecimal;
@@ -53,10 +54,11 @@ public interface BuscarAnunciosUseCase {
         String search,
         List<String> opcionais,
         String cidade,
-        String estado
+        String estado,
+        OrdemAnuncio ordenar // Sort order (default: RECENTE)
     ) {
         public static FiltroAnuncio vazio() {
-            return new FiltroAnuncio(null, null, null, null, null, null, null, null, null, null, null, null);
+            return new FiltroAnuncio(null, null, null, null, null, null, null, null, null, null, null, null, null);
         }
     }
 

@@ -36,6 +36,7 @@ public class BuscarAnunciosUseCaseImpl implements BuscarAnunciosUseCase {
             filtro.opcionais(),
             filtro.cidade(),
             filtro.estado(),
+            filtro.ordenar(),
             pagina,
             tamanho
         );

@@ -1,6 +1,7 @@
 package com.teachei.api.application.ports.out;
 
 import com.teachei.api.domain.model.Anuncio;
+import com.teachei.api.domain.model.OrdemAnuncio;
 import com.teachei.api.domain.model.StatusAnuncio;
 import com.teachei.api.domain.model.TipoVeiculo;
 
@@ -55,6 +56,7 @@ public interface AnuncioRepositoryPort {
      * @param opcionais the optionals filter
      * @param cidade the city filter
      * @param estado the state filter
+     * @param ordenar the sort order (null = RECENTE)
      * @param pagina the page number
      * @param tamanho the page size
      * @return paginated results
@@ -73,6 +75,7 @@ public interface AnuncioRepositoryPort {
         List<String> opcionais,
         String cidade,
         String estado,
+        OrdemAnuncio ordenar,
         int pagina,
         int tamanho
     );

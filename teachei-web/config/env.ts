@@ -22,6 +22,7 @@ export const API_ENDPOINTS = {
   INTENTIONS: "/api/v1/anuncios",
   INTENTION_FILTERS: "/api/v1/anuncios/filtros",
   INTENTION_BY_ID: (id: string) => `/api/v1/anuncios/${id}`,
+  INTENTIONS_BY_USER: (userId: string) => `/api/v1/anuncios/usuario/${userId}`,
   MY_INTENTIONS: "/api/v1/anuncios/meus",
 
   // Vehicles (FIPE)

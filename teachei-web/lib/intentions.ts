@@ -33,6 +33,7 @@ export async function getIntentions(
     // Send each opcional as a separate parameter for proper Spring List parsing
     filters.opcionais.forEach(opcional => params.append("opcionais", opcional));
   }
+  if (filters.ordenar) params.append("ordenar", filters.ordenar);
   if (filters.page !== undefined) params.append("page", filters.page.toString());
   if (filters.size !== undefined) params.append("size", filters.size.toString());
 
@@ -58,6 +59,16 @@ export async function getIntentionById(id: string): Promise<Anuncio> {
  */
 export async function getMyIntentions(): Promise<Anuncio[]> {
   return api.get<Anuncio[]>(API_ENDPOINTS.MY_INTENTIONS);
+}
+
+/**
+ * Fetch intentions by user ID (public endpoint)
+ * TODO: Para cobrar assinatura, verificar se usuário tem assinatura ativa antes de chamar
+ */
+export async function getIntentionsByUserId(userId: string): Promise<Anuncio[]> {
+  return api.get<Anuncio[]>(API_ENDPOINTS.INTENTIONS_BY_USER(userId), {
+    requireAuth: false,
+  });
 }
 
 /**

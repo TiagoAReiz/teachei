@@ -259,6 +259,15 @@ export interface AvailableModelo {
 // Filter Types
 // ============================================
 
+// Sort options for intentions
+export type SortOption = 
+  | "RECENTE"      // Most recent first (default)
+  | "PRECO_ASC"    // Lowest price first
+  | "PRECO_DESC"   // Highest price first
+  | "KM_ASC"       // Lowest km first
+  | "ANO_DESC"     // Newest year first
+  | "NOME_ASC";    // Alphabetical by model name
+
 export interface IntentionFilters {
   tipoVeiculo?: TipoVeiculo;
   search?: string;
@@ -271,6 +280,7 @@ export interface IntentionFilters {
   precoMin?: number;
   precoMax?: number;
   opcionais?: string[];
+  ordenar?: SortOption;
   page?: number;
   size?: number;
 }

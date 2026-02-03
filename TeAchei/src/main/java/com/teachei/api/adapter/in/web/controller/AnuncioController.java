@@ -7,6 +7,7 @@ import com.teachei.api.adapter.in.web.dto.response.FiltrosDisponiveisResponse;
 import com.teachei.api.adapter.in.web.dto.response.PaginaResponse;
 import com.teachei.api.application.ports.in.*;
 import com.teachei.api.config.security.CurrentUser;
+import com.teachei.api.domain.model.OrdemAnuncio;
 import com.teachei.api.domain.model.TipoVeiculo;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -106,6 +107,8 @@ public class AnuncioController {
             @RequestParam(required = false) List<String> opcionais,
             @RequestParam(required = false) String cidade,
             @RequestParam(required = false) String estado,
+            // Sort order
+            @RequestParam(required = false) OrdemAnuncio ordenar,
             // Accept both 'page'/'pagina' and 'size'/'tamanho' parameter names
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) Integer pagina,
@@ -134,7 +137,8 @@ public class AnuncioController {
             anoMinFinal, anoMaxFinal,
             precoMinFinal, precoMax,
             search, opcionais,
-            cidade, estado);
+            cidade, estado,
+            ordenar);
 
         var resultado = buscarAnunciosUseCase.buscar(filtro, pageFinal, sizeFinal);
 
@@ -210,6 +214,26 @@ public class AnuncioController {
         var anuncios = buscarAnunciosUseCase.buscarPorUsuario(currentUser.getId());
         var response = anuncios.stream()
             .map(AnuncioResponse::fromDomain)
+            .toList();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/usuario/{usuarioId}")
+    public ResponseEntity<List<AnuncioResponse>> anunciosPorUsuario(
+            @PathVariable java.util.UUID usuarioId) {
+        // Busca todas as intenções do usuário
+        var anuncios = buscarAnunciosUseCase.buscarPorUsuario(usuarioId);
+        
+        // Filtra apenas intenções ATIVAS e aplica lógica de contato
+        // TODO: Para cobrar assinatura, descomentar verificação de assinatura abaixo
+        // boolean assinaturaAtiva = verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
+        // App gratuito por agora - contato sempre visível
+        boolean assinaturaAtiva = true;
+        boolean ocultarContato = false;
+        
+        var response = anuncios.stream()
+            .filter(a -> a.getStatus() == com.teachei.api.domain.model.StatusAnuncio.ATIVO)
+            .map(a -> AnuncioResponse.fromDomain(a, ocultarContato, assinaturaAtiva))
             .toList();
         return ResponseEntity.ok(response);
     }
