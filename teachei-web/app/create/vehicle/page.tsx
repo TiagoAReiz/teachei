@@ -1,14 +1,88 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import { ArrowRight, ChevronRight, ChevronDown, Check } from "lucide-react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { ArrowRight, ChevronRight, ChevronDown, Check, Search, X } from "lucide-react";
 import { Button } from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useBrands, useModels } from "@/hooks/use-vehicles";
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { groupModelsByBase, getVersionName } from "@/lib/vehicles";
 import { cn } from "@/lib/utils";
+
+/**
+ * Normalize text for search (remove accents, lowercase)
+ */
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+
+/**
+ * Highlight matching text in a string
+ */
+function highlightMatch(text: string, query: string): ReactNode {
+  if (!query.trim()) return text;
+  
+  const normalizedText = normalizeText(text);
+  const normalizedQuery = normalizeText(query);
+  const index = normalizedText.indexOf(normalizedQuery);
+  
+  if (index === -1) return text;
+  
+  const before = text.slice(0, index);
+  const match = text.slice(index, index + query.length);
+  const after = text.slice(index + query.length);
+  
+  return (
+    <>
+      {before}
+      <span className="font-bold text-primary">{match}</span>
+      {after}
+    </>
+  );
+}
+
+/**
+ * Search input component
+ */
+function SearchInput({ 
+  value, 
+  onChange, 
+  placeholder 
+}: { 
+  value: string; 
+  onChange: (value: string) => void; 
+  placeholder: string;
+}) {
+  return (
+    <div className="sticky top-0 bg-surface z-10 pb-2">
+      <div className="relative">
+        <Search 
+          size={18} 
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" 
+        />
+        <input
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="w-full bg-background border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-lg h-10 pl-10 pr-10 focus:ring-2 focus:ring-primary transition-all text-sm"
+        />
+        {value && (
+          <button
+            onClick={() => onChange("")}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors"
+          >
+            <X size={16} />
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function CreateVehiclePage() {
   const router = useRouter();
@@ -24,6 +98,11 @@ export default function CreateVehiclePage() {
     toggleVersao,
     setTodasVersoes,
   } = useCreateIntentionStore();
+
+  // Search states
+  const [brandSearch, setBrandSearch] = useState("");
+  const [modelSearch, setModelSearch] = useState("");
+  const [versionSearch, setVersionSearch] = useState("");
 
   // Redirect if no type selected
   useEffect(() => {
@@ -41,14 +120,54 @@ export default function CreateVehiclePage() {
     return groupModelsByBase(models);
   }, [models]);
 
+  // Filter brands by search
+  const filteredBrands = useMemo(() => {
+    if (!brands) return [];
+    if (!brandSearch.trim()) return brands;
+    
+    const normalizedSearch = normalizeText(brandSearch);
+    return brands.filter((brand) => 
+      normalizeText(brand.nome).includes(normalizedSearch)
+    );
+  }, [brands, brandSearch]);
+
+  // Filter models by search
+  const filteredModels = useMemo(() => {
+    if (!groupedModels.length) return [];
+    if (!modelSearch.trim()) return groupedModels;
+    
+    const normalizedSearch = normalizeText(modelSearch);
+    return groupedModels.filter((group) => 
+      normalizeText(group.baseName).includes(normalizedSearch)
+    );
+  }, [groupedModels, modelSearch]);
+
   // Get the currently selected group's versions
   const currentGroup = useMemo(() => {
     if (!modeloBaseNome) return null;
     return groupedModels.find(g => g.baseName === modeloBaseNome);
   }, [groupedModels, modeloBaseNome]);
 
+  // Filter versions by search
+  const filteredVersions = useMemo(() => {
+    if (!currentGroup) return [];
+    if (!versionSearch.trim()) return currentGroup.versoes;
+    
+    const normalizedSearch = normalizeText(versionSearch);
+    return currentGroup.versoes.filter((version) => 
+      normalizeText(version.nome).includes(normalizedSearch)
+    );
+  }, [currentGroup, versionSearch]);
+
+  const handleSelectBrand = (codigo: string, nome: string) => {
+    setMarca(codigo, nome);
+    setModelSearch("");
+    setVersionSearch("");
+  };
+
   const handleSelectBase = (baseName: string) => {
     setModeloBase(baseName);
+    setVersionSearch("");
   };
 
   const handleToggleVersion = (codigo: string, nome: string) => {
@@ -99,31 +218,46 @@ export default function CreateVehiclePage() {
         </label>
         
         {isLoadingBrands ? (
-          <div className="space-y-2">
+          <div className="space-y-2 border border-border rounded-xl p-2">
             {Array.from({ length: 5 }).map((_, i) => (
-              <Skeleton key={i} className="h-14 w-full rounded-xl" />
+              <Skeleton key={i} className="h-12 w-full rounded-xl" />
             ))}
           </div>
         ) : (
-          <div className="max-h-60 overflow-y-auto space-y-2 border border-border rounded-xl p-2">
-            {brands?.map((brand) => {
-              const isSelected = marcaCodigo === brand.codigo;
-              return (
-                <button
-                  key={brand.codigo}
-                  onClick={() => setMarca(brand.codigo, brand.nome)}
-                  className={cn(
-                    "w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left",
-                    isSelected
-                      ? "bg-primary text-white"
-                      : "hover:bg-muted/10"
-                  )}
-                >
-                  <span className="font-medium">{brand.nome}</span>
-                  <ChevronRight size={18} className={isSelected ? "text-white" : "text-muted"} />
-                </button>
-              );
-            })}
+          <div className="border border-border rounded-xl p-2">
+            <SearchInput
+              value={brandSearch}
+              onChange={setBrandSearch}
+              placeholder="Buscar marca..."
+            />
+            <div className="max-h-60 overflow-y-auto space-y-1">
+              {filteredBrands.length === 0 ? (
+                <div className="p-4 text-center text-muted text-sm">
+                  Nenhuma marca encontrada para &quot;{brandSearch}&quot;
+                </div>
+              ) : (
+                filteredBrands.map((brand) => {
+                  const isSelected = marcaCodigo === brand.codigo;
+                  return (
+                    <button
+                      key={brand.codigo}
+                      onClick={() => handleSelectBrand(brand.codigo, brand.nome)}
+                      className={cn(
+                        "w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left",
+                        isSelected
+                          ? "bg-primary text-white"
+                          : "hover:bg-muted/10"
+                      )}
+                    >
+                      <span className="font-medium">
+                        {isSelected ? brand.nome : highlightMatch(brand.nome, brandSearch)}
+                      </span>
+                      <ChevronRight size={18} className={isSelected ? "text-white" : "text-muted"} />
+                    </button>
+                  );
+                })
+              )}
+            </div>
           </div>
         )}
       </div>
@@ -136,45 +270,60 @@ export default function CreateVehiclePage() {
           </label>
           
           {isLoadingModels ? (
-            <div className="space-y-2">
+            <div className="space-y-2 border border-border rounded-xl p-2">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-14 w-full rounded-xl" />
+                <Skeleton key={i} className="h-12 w-full rounded-xl" />
               ))}
             </div>
           ) : (
-            <div className="max-h-72 overflow-y-auto space-y-2 border border-border rounded-xl p-2">
-              {groupedModels.map((group) => {
-                const isSelected = modeloBaseNome === group.baseName;
-                const versionCount = group.versoes.length;
-                
-                return (
-                  <button
-                    key={group.baseName}
-                    onClick={() => handleSelectBase(group.baseName)}
-                    className={cn(
-                      "w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left",
-                      isSelected
-                        ? "bg-primary text-white"
-                        : "hover:bg-muted/10"
-                    )}
-                  >
-                    <div>
-                      <span className="font-medium">{group.baseName}</span>
-                      <span className={cn(
-                        "ml-2 text-sm",
-                        isSelected ? "text-white/80" : "text-muted"
-                      )}>
-                        ({versionCount} {versionCount === 1 ? "versão" : "versões"})
-                      </span>
-                    </div>
-                    {isSelected ? (
-                      <ChevronDown size={18} className="text-white" />
-                    ) : (
-                      <ChevronRight size={18} className="text-muted" />
-                    )}
-                  </button>
-                );
-              })}
+            <div className="border border-border rounded-xl p-2">
+              <SearchInput
+                value={modelSearch}
+                onChange={setModelSearch}
+                placeholder="Buscar modelo..."
+              />
+              <div className="max-h-72 overflow-y-auto space-y-1">
+                {filteredModels.length === 0 ? (
+                  <div className="p-4 text-center text-muted text-sm">
+                    Nenhum modelo encontrado para &quot;{modelSearch}&quot;
+                  </div>
+                ) : (
+                  filteredModels.map((group) => {
+                    const isSelected = modeloBaseNome === group.baseName;
+                    const versionCount = group.versoes.length;
+                    
+                    return (
+                      <button
+                        key={group.baseName}
+                        onClick={() => handleSelectBase(group.baseName)}
+                        className={cn(
+                          "w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left",
+                          isSelected
+                            ? "bg-primary text-white"
+                            : "hover:bg-muted/10"
+                        )}
+                      >
+                        <div>
+                          <span className="font-medium">
+                            {isSelected ? group.baseName : highlightMatch(group.baseName, modelSearch)}
+                          </span>
+                          <span className={cn(
+                            "ml-2 text-sm",
+                            isSelected ? "text-white/80" : "text-muted"
+                          )}>
+                            ({versionCount} {versionCount === 1 ? "versão" : "versões"})
+                          </span>
+                        </div>
+                        {isSelected ? (
+                          <ChevronDown size={18} className="text-white" />
+                        ) : (
+                          <ChevronRight size={18} className="text-muted" />
+                        )}
+                      </button>
+                    );
+                  })
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -188,6 +337,15 @@ export default function CreateVehiclePage() {
           </label>
           
           <div className="border border-border rounded-xl p-2 space-y-2">
+            {/* Search for versions */}
+            {currentGroup.versoes.length > 5 && (
+              <SearchInput
+                value={versionSearch}
+                onChange={setVersionSearch}
+                placeholder="Buscar versão..."
+              />
+            )}
+
             {/* Select All Option */}
             <button
               onClick={handleSelectAll}
@@ -211,33 +369,41 @@ export default function CreateVehiclePage() {
 
             {/* Individual Versions */}
             <div className="max-h-48 overflow-y-auto space-y-1">
-              {currentGroup.versoes.map((version) => {
-                const isSelected = versoesSelecionadas.some(v => v.codigo === version.codigo);
-                const versionName = getVersionName(version.nome, modeloBaseNome || "");
-                
-                return (
-                  <button
-                    key={version.codigo}
-                    onClick={() => handleToggleVersion(version.codigo, version.nome)}
-                    className={cn(
-                      "w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left",
-                      isSelected
-                        ? "bg-primary/10 text-primary"
-                        : "hover:bg-muted/10"
-                    )}
-                  >
-                    <div className={cn(
-                      "w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0",
-                      isSelected ? "bg-primary border-primary" : "border-muted"
-                    )}>
-                      {isSelected && (
-                        <Check size={14} className="text-white" />
+              {filteredVersions.length === 0 ? (
+                <div className="p-4 text-center text-muted text-sm">
+                  Nenhuma versão encontrada para &quot;{versionSearch}&quot;
+                </div>
+              ) : (
+                filteredVersions.map((version) => {
+                  const isSelected = versoesSelecionadas.some(v => v.codigo === version.codigo);
+                  const versionName = getVersionName(version.nome, modeloBaseNome || "");
+                  
+                  return (
+                    <button
+                      key={version.codigo}
+                      onClick={() => handleToggleVersion(version.codigo, version.nome)}
+                      className={cn(
+                        "w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left",
+                        isSelected
+                          ? "bg-primary/10 text-primary"
+                          : "hover:bg-muted/10"
                       )}
-                    </div>
-                    <span className="font-medium">{versionName}</span>
-                  </button>
-                );
-              })}
+                    >
+                      <div className={cn(
+                        "w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0",
+                        isSelected ? "bg-primary border-primary" : "border-muted"
+                      )}>
+                        {isSelected && (
+                          <Check size={14} className="text-white" />
+                        )}
+                      </div>
+                      <span className="font-medium">
+                        {isSelected ? versionName : highlightMatch(versionName, versionSearch)}
+                      </span>
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
 

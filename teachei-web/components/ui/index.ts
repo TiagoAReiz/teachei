@@ -11,6 +11,7 @@ export { Logo } from "./logo";
 export { Skeleton, SkeletonCard, SkeletonList } from "./skeleton";
 export { ToastProvider, useToast } from "./toast";
 export { LocationPicker, type LocationPickerProps } from "./location-picker";
+export { SearchableList, type SearchableListProps, type SearchableListItem } from "./searchable-list";
 
 
 
