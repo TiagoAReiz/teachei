@@ -88,10 +88,10 @@ export default function PublicProfilePage() {
                 <p className="text-foreground mb-4 max-w-md">{profile.bio}</p>
               )}
 
-              {profile.criadoEm && (
+              {profile.createdAt && (
                 <p className="flex items-center gap-1 text-sm text-muted">
                   <Calendar size={14} />
-                  Membro {formatRelativeTime(profile.criadoEm)}
+                  Membro {formatRelativeTime(profile.createdAt)}
                 </p>
               )}
 
