@@ -369,7 +369,7 @@ export default function CreateReviewPage() {
           <LocationPicker
             estado={estado}
             cidade={cidade}
-            onEstadoChange={(val) => setLocalizacao(cidade, val)}
+            onEstadoChange={(val) => setLocalizacao("", val)}
             onCidadeChange={(val) => setLocalizacao(val, estado)}
             estadoError={hasAttemptedPublish && estado.trim() === "" ? "Obrigatório" : undefined}
             cidadeError={hasAttemptedPublish && cidade.trim() === "" ? "Obrigatório" : undefined}

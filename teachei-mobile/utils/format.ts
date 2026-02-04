@@ -92,5 +92,24 @@ export function formatWhatsAppLink(phone: string, message?: string): string {
   return `https://wa.me/${fullPhone}${encodedMessage ? `?text=${encodedMessage}` : ""}`;
 }
 
+// Format mileage
+export function formatMileage(km: number): string {
+  return `${km.toLocaleString("pt-BR")} km`;
+}
+
+// Format mileage range
+export function formatMileageRange(min?: number, max?: number): string | null {
+  if (min && max) {
+    return `${formatMileage(min)} - ${formatMileage(max)}`;
+  }
+  if (min) {
+    return `A partir de ${formatMileage(min)}`;
+  }
+  if (max) {
+    return `Até ${formatMileage(max)}`;
+  }
+  return null;
+}
+
 
 

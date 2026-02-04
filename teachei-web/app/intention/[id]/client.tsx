@@ -20,6 +20,7 @@ import {
   Bike,
   Truck,
   User,
+  Gauge,
 } from "lucide-react";
 import type { TipoVeiculo } from "@/types";
 
@@ -98,6 +99,18 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
     return min === max ? min.toString() : `${min} - ${max}`;
   })();
 
+  // Format mileage display
+  const formatMileage = (km: number) => `${km.toLocaleString("pt-BR")} km`;
+  const mileageDisplay = (() => {
+    const { quilometragemMinima, quilometragemMaxima } = intention.veiculo;
+    if (quilometragemMinima && quilometragemMaxima) {
+      return `${formatMileage(quilometragemMinima)} - ${formatMileage(quilometragemMaxima)}`;
+    }
+    if (quilometragemMinima) return `A partir de ${formatMileage(quilometragemMinima)}`;
+    if (quilometragemMaxima) return `Até ${formatMileage(quilometragemMaxima)}`;
+    return null;
+  })();
+
   const specs = [
     {
       icon: Calendar,
@@ -114,6 +127,11 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
       label: "Cores",
       value: intention.veiculo.cores.length > 0 ? intention.veiculo.cores.join(", ") : "Qualquer",
     },
+    ...(mileageDisplay ? [{
+      icon: Gauge,
+      label: "Quilometragem",
+      value: mileageDisplay,
+    }] : []),
   ];
 
   return (

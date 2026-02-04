@@ -141,10 +141,13 @@ export interface VeiculoResponse {
   marcaNome: string;
   modeloCodigo: string;
   modeloNome: string;
+  modeloBaseNome?: string;
   anos: number[];
   cores: string[];
   precoMaximo: number;
   precoFipeReferencia?: number;
+  quilometragemMinima?: number;
+  quilometragemMaxima?: number;
   dadosManuais: boolean;
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bookmark, Share2, Car, Bike, Truck } from "lucide-react";
+import { Bookmark, Share2, Car, Bike, Truck, Gauge } from "lucide-react";
 import { Card, CardContent, Badge } from "@/components/ui";
 import { cn, formatCurrency, formatRelativeTime, vehicleTypeLabels, formatOpcional } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
@@ -52,6 +52,18 @@ export function IntentionCard({ intention }: IntentionCardProps) {
     const min = Math.min(...anos);
     const max = Math.max(...anos);
     return min === max ? min.toString() : `${min} - ${max}`;
+  })();
+
+  // Format mileage display
+  const formatMileage = (km: number) => `${km.toLocaleString("pt-BR")} km`;
+  const mileageDisplay = (() => {
+    const { quilometragemMinima, quilometragemMaxima } = intention.veiculo;
+    if (quilometragemMinima && quilometragemMaxima) {
+      return `${formatMileage(quilometragemMinima)} - ${formatMileage(quilometragemMaxima)}`;
+    }
+    if (quilometragemMinima) return `A partir de ${formatMileage(quilometragemMinima)}`;
+    if (quilometragemMaxima) return `Até ${formatMileage(quilometragemMaxima)}`;
+    return null;
   })();
 
   // Get vehicle type icon
@@ -126,6 +138,14 @@ export function IntentionCard({ intention }: IntentionCardProps) {
                   +{intention.veiculo.cores.length - 3}
                 </Badge>
               )}
+            </div>
+          )}
+
+          {/* Mileage */}
+          {mileageDisplay && (
+            <div className="flex items-center gap-1.5 text-sm text-muted">
+              <Gauge size={14} />
+              <span>{mileageDisplay}</span>
             </div>
           )}
 
