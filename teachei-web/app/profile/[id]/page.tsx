@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, MapPin, Calendar, Car } from "lucide-react";
-import { Button, Card, CardContent, Avatar, Badge } from "@/components/ui";
+import { Button, Card, CardContent, Avatar } from "@/components/ui";
 import { IntentionCard } from "@/components/intentions";
 import { getUserProfile } from "@/lib/auth";
 import { getIntentionsByUserId } from "@/lib/intentions";
@@ -105,13 +105,6 @@ export default function PublicProfilePage() {
                   Membro {formatRelativeTime(profile.createdAt)}
                 </p>
               )}
-
-              {/* Role Badge */}
-              <div className="mt-4">
-                <Badge variant={profile.role === "SELLER" ? "info" : "default"}>
-                  {profile.role === "SELLER" ? "Lojista" : "Comprador"}
-                </Badge>
-              </div>
             </div>
           </CardContent>
         </Card>

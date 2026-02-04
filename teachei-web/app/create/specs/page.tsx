@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { ArrowRight, AlertCircle } from "lucide-react";
-import { Button, CurrencyInput, Select, Input } from "@/components/ui";
+import { Button, CurrencyInput, Select, MileageInput } from "@/components/ui";
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { vehicleColors, generateYearOptions } from "@/lib/utils";
 import { vehicleOptions } from "@/lib/vehicle-options";
@@ -202,23 +202,15 @@ export default function CreateSpecsPage() {
           Quilometragem (opcional)
         </label>
         <div className="grid grid-cols-2 gap-4">
-          <Input
-            type="number"
-            placeholder="Mínima (km)"
-            value={quilometragemMinima?.toString() || ""}
-            onChange={(e) => setQuilometragem(
-              e.target.value ? parseInt(e.target.value) : null,
-              quilometragemMaxima
-            )}
+          <MileageInput
+            placeholder="Mínima"
+            value={quilometragemMinima}
+            onChange={(value) => setQuilometragem(value, quilometragemMaxima)}
           />
-          <Input
-            type="number"
-            placeholder="Máxima (km)"
-            value={quilometragemMaxima?.toString() || ""}
-            onChange={(e) => setQuilometragem(
-              quilometragemMinima,
-              e.target.value ? parseInt(e.target.value) : null
-            )}
+          <MileageInput
+            placeholder="Máxima"
+            value={quilometragemMaxima}
+            onChange={(value) => setQuilometragem(quilometragemMinima, value)}
           />
         </div>
         {mileageRangeError && (

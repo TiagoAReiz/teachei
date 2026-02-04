@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { Settings, Edit2, MapPin, Instagram, Facebook, Verified } from "lucide-react";
-import { Button, Avatar, Badge, Card, CardContent } from "@/components/ui";
+import { Button, Avatar, Card, CardContent } from "@/components/ui";
 import { useAuth } from "@/hooks/use-auth";
 import { useMyIntentions } from "@/hooks/use-intentions";
 import { IntentionGrid } from "@/components/intentions";
@@ -76,11 +76,6 @@ export default function ProfilePage() {
                   </a>
                 )}
               </div>
-
-              {/* Role Badge */}
-              <Badge variant={user.role === "SELLER" ? "info" : "default"}>
-                {user.role === "SELLER" ? "Lojista" : "Comprador"}
-              </Badge>
             </div>
 
             {/* Actions */}

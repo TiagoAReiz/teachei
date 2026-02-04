@@ -3,7 +3,7 @@
 import { useRouter, useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ArrowLeft, AlertCircle, Save, Car, Bike, Truck } from "lucide-react";
-import { Button, Card, CardContent, CurrencyInput, Select, Input, LocationPicker } from "@/components/ui";
+import { Button, Card, CardContent, CurrencyInput, Select, LocationPicker, MileageInput } from "@/components/ui";
 import { useIntention, useUpdateIntention } from "@/hooks/use-intentions";
 import { useToast } from "@/components/ui/toast";
 import { vehicleColors, generateYearOptions } from "@/lib/utils";
@@ -275,17 +275,15 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
             Quilometragem (opcional)
           </label>
           <div className="grid grid-cols-2 gap-4">
-            <Input
-              type="number"
-              placeholder="Mínima (km)"
-              value={quilometragemMinima?.toString() || ""}
-              onChange={(e) => setQuilometragemMinima(e.target.value ? parseInt(e.target.value) : null)}
+            <MileageInput
+              placeholder="Mínima"
+              value={quilometragemMinima}
+              onChange={(value) => setQuilometragemMinima(value)}
             />
-            <Input
-              type="number"
-              placeholder="Máxima (km)"
-              value={quilometragemMaxima?.toString() || ""}
-              onChange={(e) => setQuilometragemMaxima(e.target.value ? parseInt(e.target.value) : null)}
+            <MileageInput
+              placeholder="Máxima"
+              value={quilometragemMaxima}
+              onChange={(value) => setQuilometragemMaxima(value)}
             />
           </div>
           {mileageRangeError && (

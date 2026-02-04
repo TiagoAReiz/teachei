@@ -9,11 +9,12 @@ import { Button, Input, Card, CardContent, Avatar, LocationPicker } from "@/comp
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/toast";
 import { isValidUF } from "@/lib/ibge";
+import { isValidBrazilianPhone } from "@/lib/utils";
 
 const profileSchema = z.object({
   nome: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
   whatsapp: z.string()
-    .regex(/^$|^\+?[1-9]\d{10,14}$/, "Use formato internacional: +5511999998888")
+    .refine((val) => !val || isValidBrazilianPhone(val), "Use formato brasileiro: +5511999998888")
     .optional()
     .or(z.literal("")),
   cidade: z.string().optional(),

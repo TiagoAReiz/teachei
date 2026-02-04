@@ -56,6 +56,37 @@ export function getWhatsAppLink(phone: string, message?: string): string {
   return `https://wa.me/${phoneWithCountry}${encodedMessage ? `?text=${encodedMessage}` : ""}`;
 }
 
+// Brazilian phone validation regex
+// Format: +55 + DDD (2 digits) + 9-digit mobile number (starting with 9)
+// Example: +5511999998888
+const BRAZILIAN_PHONE_REGEX = /^\+55[1-9][0-9]9[0-9]{8}$/;
+
+/**
+ * Validate if a phone number is a valid Brazilian mobile number
+ * @param phone - Phone number in format +5511999998888
+ * @returns true if valid Brazilian mobile number
+ */
+export function isValidBrazilianPhone(phone: string): boolean {
+  if (!phone) return true; // Empty is valid (optional field)
+  return BRAZILIAN_PHONE_REGEX.test(phone);
+}
+
+/**
+ * Get Brazilian phone validation error message
+ * @param phone - Phone number to validate
+ * @returns Error message or null if valid
+ */
+export function getBrazilianPhoneError(phone: string): string | null {
+  if (!phone) return null; // Empty is valid
+  if (!phone.startsWith("+55")) {
+    return "Use o código do Brasil: +55";
+  }
+  if (!BRAZILIAN_PHONE_REGEX.test(phone)) {
+    return "Formato inválido. Use: +5511999998888";
+  }
+  return null;
+}
+
 // Generate Instagram link
 export function getInstagramLink(username: string): string {
   const cleaned = username.replace("@", "").replace("https://instagram.com/", "");

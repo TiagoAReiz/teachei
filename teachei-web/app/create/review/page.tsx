@@ -8,7 +8,7 @@ import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, Di
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { useCreateIntention } from "@/hooks/use-intentions";
 import { useAuth } from "@/hooks/use-auth";
-import { formatCurrency, vehicleTypeLabels, formatOpcional } from "@/lib/utils";
+import { formatCurrency, vehicleTypeLabels, formatOpcional, getBrazilianPhoneError } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 
 export default function CreateReviewPage() {
@@ -209,6 +209,13 @@ export default function CreateReviewPage() {
     // Validate contact phone
     if (!telefoneContato || telefoneContato.trim() === "") {
       error("WhatsApp é obrigatório para contato");
+      return;
+    }
+
+    // Validate Brazilian phone format
+    const phoneError = getBrazilianPhoneError(telefoneContato);
+    if (phoneError) {
+      error(phoneError);
       return;
     }
 

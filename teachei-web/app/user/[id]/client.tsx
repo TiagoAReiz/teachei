@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { ArrowLeft, MapPin, Verified, Instagram, Facebook, MessageCircle } from "lucide-react";
-import { Button, Card, CardContent, Badge, Avatar } from "@/components/ui";
+import { Button, Card, CardContent, Avatar } from "@/components/ui";
 import { IntentionGrid } from "@/components/intentions";
 import { getWhatsAppLink, getInstagramLink } from "@/lib/utils";
 import type { User } from "@/types";
@@ -52,10 +52,6 @@ export function UserProfileClient({ user }: UserProfileClientProps) {
                     {[user.cidade, user.estado].filter(Boolean).join(", ")}
                   </p>
                 )}
-
-                <Badge variant={user.role === "SELLER" ? "info" : "default"} className="mb-4">
-                  {user.role === "SELLER" ? "Lojista" : "Comprador"}
-                </Badge>
 
                 {user.bio && (
                   <p className="text-foreground mb-4">{user.bio}</p>
