@@ -50,53 +50,73 @@ export function formatPhone(phone: string): string {
 
 /**
  * Format phone number as user types (Brazilian format)
+ * Only applies formatting if the input already includes +55 or 55 prefix.
+ * Does NOT automatically add +55 - user must type the full number.
  * Input: raw digits or partial input
- * Output: formatted as +55 (XX) XXXXX-XXXX with visual separators
+ * Output: formatted as +55 (XX) XXXXX-XXXX with visual separators (if has +55)
  */
 export function formatBrazilianPhoneInput(value: string): string {
+  if (!value) return "";
+  
+  // Check if input starts with + (indicating country code)
+  const hasPlus = value.startsWith("+");
+  
   // Remove all non-digits
   const digitsOnly = value.replace(/\D/g, "");
   
-  // Handle if starts with 55, remove it (we'll add it back formatted)
-  let digits = digitsOnly;
-  if (digits.startsWith("55") && digits.length > 2) {
-    digits = digits.slice(2);
+  if (digitsOnly.length === 0) {
+    // Keep + if user typed it
+    return hasPlus ? "+" : "";
   }
   
-  // Limit to 11 digits (DDD + 9 digit number)
-  const limitedDigits = digits.slice(0, 11);
-  
-  // Build formatted string with visual separators
-  if (limitedDigits.length === 0) {
-    return ""; // Empty field - no automatic prefix
-  } else if (limitedDigits.length <= 2) {
-    // Just DDD: +55 (XX
-    return `+55 (${limitedDigits}`;
-  } else if (limitedDigits.length <= 7) {
-    // DDD + partial number: +55 (XX) XXXXX
-    const ddd = limitedDigits.slice(0, 2);
-    const number = limitedDigits.slice(2);
-    return `+55 (${ddd}) ${number}`;
-  } else {
-    // Full number: +55 (XX) XXXXX-XXXX
-    const ddd = limitedDigits.slice(0, 2);
-    const firstPart = limitedDigits.slice(2, 7);
-    const secondPart = limitedDigits.slice(7);
-    return `+55 (${ddd}) ${firstPart}-${secondPart}`;
+  // Only apply Brazilian formatting if starts with 55 (country code)
+  if (digitsOnly.startsWith("55")) {
+    // Extract digits after country code
+    const digits = digitsOnly.slice(2);
+    
+    // Limit to 11 digits (DDD + 9 digit number)
+    const limitedDigits = digits.slice(0, 11);
+    
+    if (limitedDigits.length === 0) {
+      return "+55";
+    } else if (limitedDigits.length <= 2) {
+      // Just DDD: +55 (XX
+      return `+55 (${limitedDigits}`;
+    } else if (limitedDigits.length <= 7) {
+      // DDD + partial number: +55 (XX) XXXXX
+      const ddd = limitedDigits.slice(0, 2);
+      const number = limitedDigits.slice(2);
+      return `+55 (${ddd}) ${number}`;
+    } else {
+      // Full number: +55 (XX) XXXXX-XXXX
+      const ddd = limitedDigits.slice(0, 2);
+      const firstPart = limitedDigits.slice(2, 7);
+      const secondPart = limitedDigits.slice(7);
+      return `+55 (${ddd}) ${firstPart}-${secondPart}`;
+    }
   }
+  
+  // For non-Brazilian numbers or numbers without country code, return as typed
+  // Just preserve the + if it was there
+  return hasPlus ? `+${digitsOnly}` : digitsOnly;
 }
 
 /**
  * Strip formatting from phone number (for saving to backend)
+ * Does NOT add +55 automatically - preserves original format
  * Input: +55 (11) 99999-8888
  * Output: +5511999998888
  */
 export function stripPhoneFormatting(phone: string): string {
+  if (!phone) return "";
+  
+  const hasPlus = phone.startsWith("+");
   const digits = phone.replace(/\D/g, "");
-  if (!digits.startsWith("55")) {
-    return `+55${digits}`;
-  }
-  return `+${digits}`;
+  
+  if (!digits) return "";
+  
+  // Preserve the + if it was there, don't add +55 automatically
+  return hasPlus ? `+${digits}` : digits;
 }
 
 // Generate WhatsApp link
@@ -115,11 +135,12 @@ const BRAZILIAN_PHONE_REGEX = /^\+55[1-9][0-9]9[0-9]{8}$/;
 /**
  * Validate if a phone number is a valid Brazilian mobile number
  * Accepts both formatted (+55 (11) 99999-8888) and unformatted (+5511999998888) formats
+ * Requires the +55 country code to be present
  * @param phone - Phone number in any format
  * @returns true if valid Brazilian mobile number
  */
 export function isValidBrazilianPhone(phone: string): boolean {
-  if (!phone || phone.trim() === "" || phone.trim() === "+55" || phone.trim() === "+55 ") {
+  if (!phone || phone.trim() === "" || phone.trim() === "+" || phone.trim() === "+55" || phone.trim() === "+55 ") {
     return true; // Empty is valid (optional field)
   }
   // Strip formatting before validating
@@ -130,20 +151,21 @@ export function isValidBrazilianPhone(phone: string): boolean {
 /**
  * Get Brazilian phone validation error message
  * Accepts both formatted and unformatted formats
+ * Requires the +55 country code to be present
  * @param phone - Phone number to validate
  * @returns Error message or null if valid
  */
 export function getBrazilianPhoneError(phone: string): string | null {
-  if (!phone || phone.trim() === "" || phone.trim() === "+55" || phone.trim() === "+55 ") {
+  if (!phone || phone.trim() === "" || phone.trim() === "+" || phone.trim() === "+55" || phone.trim() === "+55 ") {
     return null; // Empty is valid
   }
   // Strip formatting before validating
   const stripped = stripPhoneFormatting(phone);
   if (!stripped.startsWith("+55")) {
-    return "Use o código do Brasil: +55";
+    return "Use o formato com código do país: +5511999998888";
   }
   if (!BRAZILIAN_PHONE_REGEX.test(stripped)) {
-    return "Formato inválido. Use: +55 (11) 99999-8888";
+    return "Formato inválido. Use: +5511999998888";
   }
   return null;
 }
