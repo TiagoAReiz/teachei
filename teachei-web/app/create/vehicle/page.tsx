@@ -58,7 +58,7 @@ function SearchInput({
   placeholder: string;
 }) {
   return (
-    <div className="sticky top-0 bg-surface z-10 pb-2">
+    <div className="sticky top-0 z-10 pb-2 -mx-2 px-2 bg-background">
       <div className="relative">
         <Search 
           size={18} 
@@ -69,7 +69,7 @@ function SearchInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full bg-transparent border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-lg h-10 pl-10 pr-10 focus:ring-2 focus:ring-primary transition-all text-sm"
+          className="w-full bg-muted/5 border border-border text-foreground placeholder:text-muted rounded-xl h-11 pl-10 pr-10 focus:ring-2 focus:ring-primary focus:border-primary transition-all text-sm"
         />
         {value && (
           <button

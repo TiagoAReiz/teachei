@@ -88,7 +88,7 @@ export function SearchableList<T extends SearchableListItem>({
   return (
     <div className={cn("border border-border rounded-xl overflow-hidden", className)}>
       {/* Search Input */}
-      <div className="sticky top-0 bg-surface border-b border-border p-2">
+      <div className="sticky top-0 bg-background border-b border-border p-2">
         <div className="relative">
           <Search 
             size={18} 
@@ -99,7 +99,7 @@ export function SearchableList<T extends SearchableListItem>({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={placeholder}
-            className="w-full bg-background border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-lg h-10 pl-10 pr-10 focus:ring-2 focus:ring-primary transition-all text-sm"
+            className="w-full bg-muted/5 border border-border text-foreground placeholder:text-muted rounded-xl h-11 pl-10 pr-10 focus:ring-2 focus:ring-primary focus:border-primary transition-all text-sm"
           />
           {search && (
             <button
