@@ -1,7 +1,7 @@
 ## ADDED Requirements
 
 ### Requirement: Google AdSense Integration
-O sistema web DEVE incluir o script do Google AdSense para exibição de anúncios e monetização do tráfego.
+O sistema web SHALL incluir o script do Google AdSense para exibição de anúncios e monetização do tráfego.
 
 #### Scenario: AdSense carregado em produção
 - **GIVEN** o ambiente é produção (`NODE_ENV=production`)
@@ -17,7 +17,7 @@ O sistema web DEVE incluir o script do Google AdSense para exibição de anúnci
 - **AND** nenhum request é feito para `pagead2.googlesyndication.com`
 
 ### Requirement: Arquivo ads.txt
-O sistema DEVE disponibilizar um arquivo `ads.txt` na raiz pública para verificação de autorização do Google AdSense.
+O sistema SHALL disponibilizar um arquivo `ads.txt` na raiz pública para verificação de autorização do Google AdSense.
 
 #### Scenario: ads.txt acessível
 - **GIVEN** o site está publicado
