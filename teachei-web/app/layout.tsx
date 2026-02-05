@@ -81,11 +81,8 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7405468272628923"
-          crossOrigin="anonymous"
-          strategy="beforeInteractive"
-        />
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7405468272628923"
+     crossorigin="anonymous"></script>
       </head>
       <body className={`${plusJakarta.variable} ${nunito.variable} font-display antialiased`}>
         <Providers>{children}</Providers>
