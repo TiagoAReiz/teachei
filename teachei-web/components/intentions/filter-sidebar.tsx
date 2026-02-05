@@ -48,7 +48,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
   );
   
   // Fetch brands and models filtered by selected type/brand
-  const { data: filteredOptions } = useAvailableFilters(
+  const { data: filteredOptions, isLoading: isLoadingFilteredOptions } = useAvailableFilters(
     filters.tipo || null,
     filters.marca || null
   );
@@ -330,7 +330,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               <label className="block text-sm font-medium text-foreground">
                 Opcionais
               </label>
-              {isLoadingFilters ? (
+              {isLoadingFilteredOptions ? (
                 <div className="flex items-center gap-2 py-2">
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
                   <span className="text-sm text-muted">Carregando opcionais...</span>

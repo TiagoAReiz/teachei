@@ -72,11 +72,19 @@ export function IntentionCard({ intention }: IntentionCardProps) {
   return (
     <Link href={`/intention/${intention.id}`}>
       <Card hoverable className="group h-full">
-        {/* Vehicle Icon Area */}
+        {/* Vehicle Image/Icon Area */}
         <div className="relative h-48 overflow-hidden rounded-t-2xl">
-          <div className="absolute inset-0 bg-muted/30 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-            <VehicleIcon size={80} className="text-primary/40" strokeWidth={1.5} />
-          </div>
+          {intention.veiculo.fotoReferenciaUrl ? (
+            <img
+              src={intention.veiculo.fotoReferenciaUrl}
+              alt={`${intention.veiculo.marcaNome} ${intention.veiculo.modeloNome}`}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-muted/30 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+              <VehicleIcon size={80} className="text-primary/40" strokeWidth={1.5} />
+            </div>
+          )}
           
           {/* Vehicle Type Badge */}
           <Badge variant="default" className="absolute top-3 left-3 bg-primary text-white">

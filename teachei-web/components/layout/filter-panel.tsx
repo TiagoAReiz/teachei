@@ -59,7 +59,7 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
   );
   
   // Fetch types and brands filtered by selected type (for brand/model options)
-  const { data: filteredOptions } = useAvailableFilters(
+  const { data: filteredOptions, isLoading: isLoadingFilteredOptions } = useAvailableFilters(
     filters.tipo || null,
     filters.marca || null
   );
@@ -360,7 +360,7 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
             <p className="text-xs text-muted py-2">
               Selecione um tipo de veículo para ver os opcionais
             </p>
-          ) : isLoadingFilters ? (
+          ) : isLoadingFilteredOptions ? (
             <p className="text-xs text-muted py-2">
               Carregando opcionais...
             </p>
