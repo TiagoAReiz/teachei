@@ -142,7 +142,15 @@ export function useAvailableFilters(
 ) {
   return useQuery({
     queryKey: ["intentions", "filters", tipo, marcaCodigo],
-    queryFn: () => getAvailableFilters(tipo || undefined, marcaCodigo || undefined),
+    queryFn: async () => {
+      const result = await getAvailableFilters(tipo || undefined, marcaCodigo || undefined);
+      // Log for debugging (remove in production)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[useAvailableFilters] tipo:', tipo, 'marcaCodigo:', marcaCodigo, 'opcionais count:', result?.opcionais?.length ?? 0);
+      }
+      return result;
+    },
     staleTime: 60 * 1000, // 1 minute - filter options can change as intentions are created
+    retry: 2, // Retry failed requests up to 2 times
   });
 }

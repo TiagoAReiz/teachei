@@ -53,13 +53,13 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
   // Fetch available filter options based on existing intentions
   // Always pass null for tipo to get all available types (we want to show all type buttons)
   // Only marca is filtered based on the selected type
-  const { data: availableFilters, isLoading: isLoadingFilters } = useAvailableFilters(
+  const { data: availableFilters, isLoading: isLoadingFilters, error: filtersError } = useAvailableFilters(
     null, // Always get all types to show all available type buttons
     filters.marca || null
   );
   
   // Fetch types and brands filtered by selected type (for brand/model options)
-  const { data: filteredOptions, isLoading: isLoadingFilteredOptions } = useAvailableFilters(
+  const { data: filteredOptions, isLoading: isLoadingFilteredOptions, error: filteredOptionsError } = useAvailableFilters(
     filters.tipo || null,
     filters.marca || null
   );
@@ -359,6 +359,10 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
           {!filters.tipo ? (
             <p className="text-xs text-muted py-2">
               Selecione um tipo de veículo para ver os opcionais
+            </p>
+          ) : filteredOptionsError ? (
+            <p className="text-xs text-error py-2">
+              Erro ao carregar opcionais. Verifique sua conexão.
             </p>
           ) : isLoadingFilteredOptions ? (
             <p className="text-xs text-muted py-2">

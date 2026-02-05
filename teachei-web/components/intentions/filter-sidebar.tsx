@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { X, Car, Bike, Truck, Loader2 } from "lucide-react";
+import { X, Car, Bike, Truck, Loader2, AlertCircle } from "lucide-react";
 import { Button, Select, CurrencyInput } from "@/components/ui";
 import { useAvailableFilters } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
@@ -42,13 +42,13 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
   }, [initialFilters]);
 
   // Fetch all available types (regardless of current selection)
-  const { data: availableFilters, isLoading: isLoadingFilters } = useAvailableFilters(
+  const { data: availableFilters, isLoading: isLoadingFilters, error: filtersError } = useAvailableFilters(
     null, // Always get all types to show all available type buttons
     null
   );
   
   // Fetch brands and models filtered by selected type/brand
-  const { data: filteredOptions, isLoading: isLoadingFilteredOptions } = useAvailableFilters(
+  const { data: filteredOptions, isLoading: isLoadingFilteredOptions, error: filteredOptionsError } = useAvailableFilters(
     filters.tipo || null,
     filters.marca || null
   );
@@ -330,7 +330,12 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               <label className="block text-sm font-medium text-foreground">
                 Opcionais
               </label>
-              {isLoadingFilteredOptions ? (
+              {filteredOptionsError ? (
+                <div className="flex items-center gap-2 py-2 text-error">
+                  <AlertCircle className="w-4 h-4" />
+                  <span className="text-sm">Erro ao carregar opcionais</span>
+                </div>
+              ) : isLoadingFilteredOptions ? (
                 <div className="flex items-center gap-2 py-2">
                   <Loader2 className="w-4 h-4 animate-spin text-primary" />
                   <span className="text-sm text-muted">Carregando opcionais...</span>

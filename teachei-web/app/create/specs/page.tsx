@@ -37,7 +37,7 @@ export default function CreateSpecsPage() {
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch available optionals using React Query (consistent with filter-panel)
-  const { data: availableFilters, isLoading: loadingOpcionais } = useAvailableFilters(
+  const { data: availableFilters, isLoading: loadingOpcionais, error: opcionaisError } = useAvailableFilters(
     tipoVeiculo || null,
     null // Don't filter by marca for optionals
   );
@@ -278,7 +278,12 @@ export default function CreateSpecsPage() {
           <label className="block text-sm font-medium text-foreground">
             Opcionais desejados
           </label>
-          {loadingOpcionais ? (
+          {opcionaisError ? (
+            <div className="flex items-center gap-2 py-4 text-error">
+              <AlertCircle className="w-4 h-4" />
+              <span className="text-sm">Erro ao carregar opcionais. Verifique sua conexão.</span>
+            </div>
+          ) : loadingOpcionais ? (
             <div className="flex items-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
               <span className="text-sm text-muted">Carregando opcionais...</span>

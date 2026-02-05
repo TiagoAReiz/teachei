@@ -122,6 +122,11 @@ export async function getAvailableFilters(
     ? `${API_ENDPOINTS.INTENTION_FILTERS}?${queryString}`
     : API_ENDPOINTS.INTENTION_FILTERS;
 
+  // Log for debugging (remove in production)
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[getAvailableFilters] Fetching:', url);
+  }
+
   return api.get<AvailableFilters>(url, { requireAuth: false });
 }
 
