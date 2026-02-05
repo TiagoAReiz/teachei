@@ -41,7 +41,7 @@ function SubscriptionSuccessContent() {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer);
-          router.push("/");
+          router.push("/feed");
           return 0;
         }
         return prev - 1;
@@ -88,7 +88,7 @@ function SubscriptionSuccessContent() {
             Seu pagamento está sendo processado. Isso pode levar alguns minutos.
           </p>
           <div className="space-y-3">
-            <Button onClick={() => router.push("/")} className="w-full">
+            <Button onClick={() => router.push("/feed")} className="w-full">
               <span>Ir para o feed</span>
               <ArrowRight size={20} />
             </Button>
@@ -130,7 +130,7 @@ function SubscriptionSuccessContent() {
           Redirecionando em {countdown} segundos...
         </p>
         <div className="space-y-3">
-          <Button onClick={() => router.push("/")} className="w-full">
+          <Button onClick={() => router.push("/feed")} className="w-full">
             <Home size={20} />
             <span>Explorar intenções</span>
           </Button>

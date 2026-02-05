@@ -27,7 +27,7 @@ export default function CreateLayout({ children }: { children: ReactNode }) {
   const handleBack = () => {
     if (currentStepIndex <= 0) {
       // On first step, go to feed
-      router.push("/");
+      router.push("/feed");
     } else {
       // Go to previous step
       router.push(steps[currentStepIndex - 1].path);
@@ -37,7 +37,7 @@ export default function CreateLayout({ children }: { children: ReactNode }) {
   // Handle cancel/exit
   const handleCancel = () => {
     reset();
-    router.push("/");
+    router.push("/feed");
   };
 
   return (
@@ -54,7 +54,7 @@ export default function CreateLayout({ children }: { children: ReactNode }) {
               <ArrowLeft size={24} />
             </button>
             
-            <Link href="/" className="flex items-center gap-2 text-primary font-extrabold text-xl tracking-tight ml-2">
+            <Link href="/feed" className="flex items-center gap-2 text-primary font-extrabold text-xl tracking-tight ml-2">
               <Car size={28} />
               <span className="hidden sm:inline">TeAchei</span>
             </Link>

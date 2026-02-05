@@ -57,7 +57,7 @@ export default function FavoritesPage() {
           Salve intenções de compra para encontrá-las facilmente depois.
           Clique no ícone de salvar em qualquer intenção para adicioná-la aqui.
         </p>
-        <Link href="/">
+        <Link href="/feed">
           <Button>Explorar intenções</Button>
         </Link>
       </div>

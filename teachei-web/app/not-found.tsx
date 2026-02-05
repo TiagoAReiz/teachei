@@ -29,7 +29,7 @@ export default function NotFound() {
               Voltar ao início
             </Button>
           </Link>
-          <Link href="/">
+          <Link href="/feed">
             <Button variant="outline">
               <Search size={18} />
               Explorar intenções

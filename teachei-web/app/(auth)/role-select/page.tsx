@@ -35,7 +35,7 @@ function RoleSelectForm() {
     
     updateProfile({ role: selectedRole }, {
       onSuccess: () => {
-        router.push("/");
+        router.push("/feed");
       },
     });
   };

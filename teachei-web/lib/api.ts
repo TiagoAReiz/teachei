@@ -54,13 +54,13 @@ export async function apiFetch<T>(
     headers,
   });
 
-  // Handle 401 - redirect to login
-  if (response.status === 401) {
+  // Handle 401/403 - remove token and redirect to login
+  if (response.status === 401 || response.status === 403) {
     removeToken();
     if (typeof window !== "undefined") {
       window.location.href = "/login";
     }
-    throw new Error("Unauthorized");
+    throw new Error(response.status === 401 ? "Unauthorized" : "Forbidden");
   }
 
   // Handle 429 - rate limited

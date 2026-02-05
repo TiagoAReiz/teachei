@@ -81,7 +81,7 @@ export default function AssinaturaPage() {
                 {assinaturaAtual.diasRestantes} dias restantes
               </p>
               <div className="space-y-3">
-                <Button onClick={() => router.push("/")} className="w-full">
+                <Button onClick={() => router.push("/feed")} className="w-full">
                   Explorar intenções
                 </Button>
                 <Button

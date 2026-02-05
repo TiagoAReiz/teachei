@@ -62,7 +62,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
       params.set("ordenar", sort);
     }
     const queryString = params.toString();
-    router.push(queryString ? `/?${queryString}` : "/");
+    router.push(queryString ? `/feed?${queryString}` : "/feed");
   };
 
   const handleApplyFilters = (filters: FilterState) => {
@@ -105,14 +105,14 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     if (filters.anoMax !== null) params.set("anoMax", filters.anoMax.toString());
 
     const queryString = params.toString();
-    router.push(queryString ? `/?${queryString}` : "/");
+    router.push(queryString ? `/feed?${queryString}` : "/feed");
   };
 
   const clearFilters = () => {
     if (currentSearch) {
-      router.push(`/?search=${encodeURIComponent(currentSearch)}`);
+      router.push(`/feed?search=${encodeURIComponent(currentSearch)}`);
     } else {
-      router.push("/");
+      router.push("/feed");
     }
   };
 
@@ -145,7 +145,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     }
     
     const queryString = params.toString();
-    router.push(queryString ? `/?${queryString}` : "/");
+    router.push(queryString ? `/feed?${queryString}` : "/feed");
   };
 
   // Remove range filters (min and max) in a single navigation
@@ -155,7 +155,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     params.delete(maxKey);
     
     const queryString = params.toString();
-    router.push(queryString ? `/?${queryString}` : "/");
+    router.push(queryString ? `/feed?${queryString}` : "/feed");
   };
 
   return (

@@ -43,7 +43,7 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-4">Navegação</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/" className="text-muted hover:text-primary transition-colors text-sm">
+                <Link href="/feed" className="text-muted hover:text-primary transition-colors text-sm">
                   Feed de Intenções
                 </Link>
               </li>

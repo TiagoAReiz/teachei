@@ -51,7 +51,7 @@ export default function PublicProfilePage() {
         <p className="text-muted text-center mb-6">
           O perfil que você está procurando não existe ou foi removido.
         </p>
-        <Button onClick={() => router.push("/")}>Voltar ao Feed</Button>
+        <Button onClick={() => router.push("/feed")}>Voltar ao Feed</Button>
       </div>
     );
   }

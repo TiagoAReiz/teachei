@@ -15,7 +15,7 @@ export default function UserNotFound() {
         <p className="text-muted mb-8">
           Este perfil pode ter sido removido ou o link está incorreto.
         </p>
-        <Link href="/">
+        <Link href="/feed">
           <Button>
             <ArrowLeft size={18} />
             Voltar ao feed

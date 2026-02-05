@@ -164,7 +164,7 @@ export default function CreateReviewPage() {
           reset();
           
           // Redirect to feed page
-          router.push("/");
+          router.push("/feed");
         },
         onError: (err) => {
           error(err.message || "Erro ao criar intenção");

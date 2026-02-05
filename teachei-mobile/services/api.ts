@@ -26,12 +26,12 @@ api.interceptors.request.use(
   }
 );
 
-// Response interceptor - handle 401 and 429 errors
+// Response interceptor - handle 401, 403, and 429 errors
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid - logout user
+    // Handle 401/403 - token expired, invalid, or forbidden
+    if (error.response?.status === 401 || error.response?.status === 403) {
       await removeToken();
       router.replace("/(auth)/login");
     }

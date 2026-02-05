@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils";
 
 // Navigation items for icon nav
 const navItems = [
-  { href: "/", icon: Home, label: "Feed" },
+  { href: "/feed", icon: Home, label: "Feed" },
   { href: "/favorites", icon: Bookmark, label: "Favoritos" },
   { href: "/my-intentions", icon: FileText, label: "Meus Anúncios" },
 ];
@@ -31,16 +31,16 @@ export function Header() {
         {/* Menu Button - Hidden on mobile (we have bottom nav), only show on tablet/desktop if needed */}
         {/* Note: Currently hidden entirely since bottom nav handles mobile and desktop has icon nav */}
 
-        {/* Logo */}
-        <Logo size="sm" className="hidden sm:flex" />
-        <Logo size="xs" className="sm:hidden" />
+        {/* Logo - goes to /feed if authenticated, / otherwise */}
+        <Logo size="sm" className="hidden sm:flex" href={isAuthenticated ? "/feed" : "/"} />
+        <Logo size="xs" className="sm:hidden" href={isAuthenticated ? "/feed" : "/"} />
 
         {/* Icon Navigation (Desktop) */}
         {isAuthenticated && (
           <nav className="hidden lg:flex items-center gap-1 ml-6">
             {navItems.map((item) => {
               const Icon = item.icon;
-              const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
+              const isActive = pathname === item.href || (item.href !== "/feed" && pathname.startsWith(item.href));
               return (
                 <Link
                   key={item.href}

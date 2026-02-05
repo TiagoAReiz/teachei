@@ -16,7 +16,7 @@ export default function IntentionNotFound() {
           Esta intenção pode ter sido removida ou o link está incorreto.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link href="/">
+          <Link href="/feed">
             <Button>
               <ArrowLeft size={18} />
               Voltar ao feed

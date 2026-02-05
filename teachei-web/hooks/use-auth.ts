@@ -55,8 +55,8 @@ export function useAuth(options: LoginOptions = {}) {
       if (!result.user.role) {
         router.push("/role-select");
       } else {
-        // Use redirect URL if available, otherwise go to home
-        router.push(redirectUrl || "/");
+        // Use redirect URL if available, otherwise go to feed
+        router.push(redirectUrl || "/feed");
       }
     },
   });
@@ -80,8 +80,8 @@ export function useAuth(options: LoginOptions = {}) {
       if (!result.user.role) {
         router.push("/role-select");
       } else {
-        // Use redirect URL if available, otherwise go to home
-        router.push(redirectUrl || "/");
+        // Use redirect URL if available, otherwise go to feed
+        router.push(redirectUrl || "/feed");
       }
     },
   });
