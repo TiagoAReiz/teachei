@@ -11,7 +11,7 @@ import java.util.UUID;
  */
 public interface AtualizarAnuncioUseCase {
 
-    /**
+    /** 
      * Updates an existing intention.
      * Only the owner can update.
      *
