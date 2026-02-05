@@ -35,6 +35,7 @@ public interface AtualizarAnuncioUseCase {
         List<String> opcionais,
         String observacoes,
         String cidade,
-        String estado
+        String estado,
+        String fotoReferenciaBase64
     ) {}
 }

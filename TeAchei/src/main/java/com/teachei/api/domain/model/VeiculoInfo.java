@@ -26,6 +26,7 @@ public class VeiculoInfo {
     private Integer quilometragemMaxima;
     private List<String> opcionais;
     private boolean dadosManuais;
+    private String fotoReferenciaUrl;
 
     public VeiculoInfo() {
         this.anos = new ArrayList<>();
@@ -237,6 +238,14 @@ public class VeiculoInfo {
 
     public void setTodasVersoes(boolean todasVersoes) {
         this.todasVersoes = todasVersoes;
+    }
+
+    public String getFotoReferenciaUrl() {
+        return fotoReferenciaUrl;
+    }
+
+    public void setFotoReferenciaUrl(String fotoReferenciaUrl) {
+        this.fotoReferenciaUrl = fotoReferenciaUrl;
     }
 }
 

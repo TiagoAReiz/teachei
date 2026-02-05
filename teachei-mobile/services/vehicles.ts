@@ -9,6 +9,8 @@ import {
   ModelosResponse,
   AnosResponse,
   PrecoFipeResponse,
+  FiltrosDisponiveis,
+  OpcionalOption,
 } from "@/types";
 
 export const vehiclesService = {
@@ -69,5 +71,17 @@ export const vehiclesService = {
       API_ENDPOINTS.VEHICLE_PRICE(tipo, marcaCodigo, modeloCodigo, anoCodigo)
     );
     return response.data;
+  },
+
+  /**
+   * Get available optionals for a vehicle type
+   * Returns empty array if no type is provided
+   */
+  async getOpcionais(tipoVeiculo: TipoVeiculo): Promise<OpcionalOption[]> {
+    const response = await api.get<FiltrosDisponiveis>(
+      API_ENDPOINTS.INTENTIONS_FILTERS,
+      { params: { tipo: tipoVeiculo } }
+    );
+    return response.data.opcionais || [];
   },
 };

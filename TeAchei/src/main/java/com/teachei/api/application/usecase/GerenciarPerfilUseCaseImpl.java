@@ -1,9 +1,12 @@
 package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.GerenciarPerfilUseCase;
+import com.teachei.api.application.ports.out.BlobStoragePort;
 import com.teachei.api.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.domain.exception.UsuarioNaoEncontradoException;
 import com.teachei.api.domain.model.Perfil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
@@ -12,10 +15,14 @@ import java.util.UUID;
  */
 public class GerenciarPerfilUseCaseImpl implements GerenciarPerfilUseCase {
 
-    private final PerfilRepositoryPort perfilRepository;
+    private static final Logger log = LoggerFactory.getLogger(GerenciarPerfilUseCaseImpl.class);
 
-    public GerenciarPerfilUseCaseImpl(PerfilRepositoryPort perfilRepository) {
+    private final PerfilRepositoryPort perfilRepository;
+    private final BlobStoragePort blobStorage;
+
+    public GerenciarPerfilUseCaseImpl(PerfilRepositoryPort perfilRepository, BlobStoragePort blobStorage) {
         this.perfilRepository = perfilRepository;
+        this.blobStorage = blobStorage;
     }
 
     @Override
@@ -44,9 +51,43 @@ public class GerenciarPerfilUseCaseImpl implements GerenciarPerfilUseCase {
             perfil.setRole(command.role());
         }
 
-        // Update photo if provided
-        if (command.fotoBase64() != null) {
-            perfil.setFotoBase64(command.fotoBase64());
+        // Handle photo removal
+        if (Boolean.TRUE.equals(command.removerFoto())) {
+            // Delete from Blob Storage if exists
+            if (perfil.getFotoUrl() != null) {
+                try {
+                    blobStorage.deleteProfilePhoto(usuarioId);
+                    log.info("Profile photo deleted from Blob Storage for user {}", usuarioId);
+                } catch (Exception e) {
+                    log.warn("Failed to delete profile photo from Blob for user {}: {}", usuarioId, e.getMessage());
+                }
+            }
+            perfil.setFotoUrl(null);
+            perfil.setFotoBase64(null);
+        }
+        // Update photo if provided - upload to Blob Storage
+        else if (command.fotoBase64() != null && !command.fotoBase64().isBlank()) {
+            try {
+                // Delete old photo if exists
+                if (perfil.getFotoUrl() != null) {
+                    blobStorage.deleteProfilePhoto(usuarioId);
+                }
+                String fotoUrl = blobStorage.uploadProfilePhoto(usuarioId, command.fotoBase64());
+                if (fotoUrl != null) {
+                    perfil.setFotoUrl(fotoUrl);
+                    // Clear Base64 since we now have URL
+                    perfil.setFotoBase64(null);
+                    log.info("Profile photo uploaded to Blob Storage for user {}", usuarioId);
+                } else {
+                    // Fallback to Base64 if upload fails
+                    log.warn("Blob upload failed, falling back to Base64 for user {}", usuarioId);
+                    perfil.setFotoBase64(command.fotoBase64());
+                }
+            } catch (Exception e) {
+                // Fallback to Base64 if upload fails
+                log.warn("Blob upload error, falling back to Base64 for user {}: {}", usuarioId, e.getMessage());
+                perfil.setFotoBase64(command.fotoBase64());
+            }
         }
 
         return perfilRepository.salvar(perfil);

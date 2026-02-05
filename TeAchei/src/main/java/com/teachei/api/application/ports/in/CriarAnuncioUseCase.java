@@ -42,7 +42,8 @@ public interface CriarAnuncioUseCase {
         String observacoes,
         boolean dadosManuais,
         String cidade,
-        String estado
+        String estado,
+        String fotoReferenciaBase64
     ) {
         public CriarAnuncioCommand {
             if (tipo == null) {

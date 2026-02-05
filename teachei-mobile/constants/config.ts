@@ -24,6 +24,7 @@ export const API_ENDPOINTS = {
   INTENTIONS: "/api/v1/anuncios",
   INTENTION_BY_ID: (id: string) => `/api/v1/anuncios/${id}`,
   MY_INTENTIONS: "/api/v1/anuncios/meus",
+  INTENTIONS_FILTERS: "/api/v1/anuncios/filtros",
 
   // Vehicles (FIPE)
   VEHICLE_BRANDS: (tipo: string) => `/api/v1/veiculos/${tipo}/marcas`,

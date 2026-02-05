@@ -38,7 +38,8 @@ public interface GerenciarPerfilUseCase {
         String cidade,
         String estado,
         String role,
-        String fotoBase64
+        String fotoBase64,
+        Boolean removerFoto  // If true, delete existing photo
     ) {}
 }
 

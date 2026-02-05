@@ -139,6 +139,7 @@ public class AnuncioDocument {
         private Integer quilometragemMaxima;
         private List<String> opcionais;
         private boolean dadosManuais;
+        private String fotoReferenciaUrl;
 
         // Getters and Setters
         public String getMarcaCodigo() {
@@ -259,6 +260,14 @@ public class AnuncioDocument {
 
         public void setTodasVersoes(boolean todasVersoes) {
             this.todasVersoes = todasVersoes;
+        }
+
+        public String getFotoReferenciaUrl() {
+            return fotoReferenciaUrl;
+        }
+
+        public void setFotoReferenciaUrl(String fotoReferenciaUrl) {
+            this.fotoReferenciaUrl = fotoReferenciaUrl;
         }
     }
 

@@ -74,7 +74,8 @@ public record AnuncioResponse(
         Integer quilometragemMinima,
         Integer quilometragemMaxima,
         List<String> opcionais,
-        boolean dadosManuais
+        boolean dadosManuais,
+        String fotoReferenciaUrl
     ) {
         public static VeiculoResponse from(com.teachei.api.domain.model.VeiculoInfo info) {
             if (info == null) return null;
@@ -96,7 +97,8 @@ public record AnuncioResponse(
                 info.getQuilometragemMinima(),
                 info.getQuilometragemMaxima(),
                 info.getOpcionais(),
-                info.isDadosManuais()
+                info.isDadosManuais(),
+                info.getFotoReferenciaUrl()
             );
         }
     }

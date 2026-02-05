@@ -38,7 +38,10 @@ public record AtualizarAnuncioRequest(
     
     @Pattern(regexp = "^$|^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$", 
              message = "Estado deve ser uma UF brasileira válida (ex: SP, RJ)")
-    String estado
+    String estado,
+
+    // Reference photo - optional (Base64 encoded)
+    String fotoReferenciaBase64
 ) {
     public record VersaoRequest(
         String codigo,

@@ -53,16 +53,18 @@ public class BeanConfiguration {
 
     @Bean
     public GerenciarPerfilUseCase gerenciarPerfilUseCase(
-            PerfilRepositoryPort perfilRepository) {
-        return new GerenciarPerfilUseCaseImpl(perfilRepository);
+            PerfilRepositoryPort perfilRepository,
+            BlobStoragePort blobStorage) {
+        return new GerenciarPerfilUseCaseImpl(perfilRepository, blobStorage);
     }
 
     @Bean
     public CriarAnuncioUseCase criarAnuncioUseCase(
             AnuncioRepositoryPort anuncioRepository,
             PerfilRepositoryPort perfilRepository,
-            AnuncioService anuncioService) {
-        return new CriarAnuncioUseCaseImpl(anuncioRepository, perfilRepository, anuncioService);
+            AnuncioService anuncioService,
+            BlobStoragePort blobStorage) {
+        return new CriarAnuncioUseCaseImpl(anuncioRepository, perfilRepository, anuncioService, blobStorage);
     }
 
     @Bean
@@ -79,14 +81,17 @@ public class BeanConfiguration {
 
     @Bean
     public AtualizarAnuncioUseCase atualizarAnuncioUseCase(
-            AnuncioRepositoryPort anuncioRepository) {
-        return new AtualizarAnuncioUseCaseImpl(anuncioRepository);
+            AnuncioRepositoryPort anuncioRepository,
+            AnuncioService anuncioService,
+            BlobStoragePort blobStorage) {
+        return new AtualizarAnuncioUseCaseImpl(anuncioRepository, anuncioService, blobStorage);
     }
 
     @Bean
     public ExcluirAnuncioUseCase excluirAnuncioUseCase(
-            AnuncioRepositoryPort anuncioRepository) {
-        return new ExcluirAnuncioUseCaseImpl(anuncioRepository);
+            AnuncioRepositoryPort anuncioRepository,
+            BlobStoragePort blobStorage) {
+        return new ExcluirAnuncioUseCaseImpl(anuncioRepository, blobStorage);
     }
 
     @Bean

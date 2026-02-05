@@ -78,6 +78,7 @@ export default function PublicProfilePage() {
             <div className="flex flex-col items-center text-center">
               <Avatar
                 src={profile.avatarUrl}
+                fotoUrl={profile.fotoUrl}
                 fotoBase64={profile.fotoBase64}
                 fallback={profile.nome}
                 size="xl"

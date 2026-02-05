@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView, TextInput } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, TouchableOpacity, ScrollView, TextInput, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,6 +8,8 @@ import { StepIndicator } from "@/components/create/step-indicator";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
+import { vehiclesService } from "@/services/vehicles";
+import { OpcionalOption } from "@/types";
 
 const COLORS = [
   "Branco", "Preto", "Prata", "Cinza", "Vermelho",
@@ -24,15 +26,30 @@ const FUELS = ["Flex", "Gasolina", "Diesel", "Elétrico", "Híbrido"];
 export default function SpecsScreen() {
   const insets = useSafeAreaInsets();
   const {
-    marca, modelo,
+    tipoVeiculo, marca, modelo,
     anoMinimo, anoMaximo, cores, precoMinimo, precoMaximo,
-    transmissao, combustivel, observacoes,
+    transmissao, combustivel, opcionais, observacoes,
     setAnoMinimo, setAnoMaximo, setCores, setPrecoMinimo, setPrecoMaximo,
-    setTransmissao, setCombustivel, setObservacoes,
+    setTransmissao, setCombustivel, toggleOpcional, setObservacoes,
   } = useCreateIntentionStore();
 
   const [precoMinimoText, setPrecoMinimoText] = useState("");
   const [precoMaximoText, setPrecoMaximoText] = useState("");
+  const [opcionaisDisponiveis, setOpcionaisDisponiveis] = useState<OpcionalOption[]>([]);
+  const [loadingOpcionais, setLoadingOpcionais] = useState(false);
+
+  // Load optionals when vehicle type is set
+  useEffect(() => {
+    if (tipoVeiculo) {
+      setLoadingOpcionais(true);
+      vehiclesService.getOpcionais(tipoVeiculo)
+        .then(setOpcionaisDisponiveis)
+        .catch(() => setOpcionaisDisponiveis([]))
+        .finally(() => setLoadingOpcionais(false));
+    } else {
+      setOpcionaisDisponiveis([]);
+    }
+  }, [tipoVeiculo]);
 
   const toggleColor = (color: string) => {
     if (cores.includes(color)) {
@@ -228,6 +245,46 @@ export default function SpecsScreen() {
             ))}
           </View>
         </View>
+
+        {/* Optionals - only shown when vehicle type is selected */}
+        {tipoVeiculo && (
+          <View className="mb-6">
+            <Text className="text-sm font-display-semibold text-slate-700 dark:text-slate-300 mb-3">
+              Opcionais desejados
+            </Text>
+            {loadingOpcionais ? (
+              <View className="py-4 items-center">
+                <ActivityIndicator size="small" color="#3b82f6" />
+                <Text className="text-sm text-slate-500 mt-2">Carregando opcionais...</Text>
+              </View>
+            ) : opcionaisDisponiveis.length > 0 ? (
+              <View className="flex-row flex-wrap gap-2">
+                {opcionaisDisponiveis.map((op) => (
+                  <Chip
+                    key={op.codigo}
+                    label={op.label}
+                    variant="filter"
+                    size="sm"
+                    selected={opcionais.includes(op.codigo)}
+                    onPress={() => toggleOpcional(op.codigo)}
+                  />
+                ))}
+              </View>
+            ) : (
+              <Text className="text-sm text-slate-500 dark:text-slate-400">
+                Nenhum opcional disponível para este tipo de veículo.
+              </Text>
+            )}
+          </View>
+        )}
+
+        {!tipoVeiculo && (
+          <View className="mb-6 p-4 bg-slate-100 dark:bg-slate-800 rounded-xl">
+            <Text className="text-sm text-slate-500 dark:text-slate-400 text-center">
+              Selecione o tipo de veículo para ver os opcionais disponíveis
+            </Text>
+          </View>
+        )}
 
         {/* Notes */}
         <View className="mb-6">

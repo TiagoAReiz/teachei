@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { User, Mail, Phone, Instagram, Facebook, Camera, Lock, Eye, EyeOff } from "lucide-react";
+import { User, Mail, Phone, Instagram, Facebook, Camera, Lock, Eye, EyeOff, Trash2 } from "lucide-react";
 import { Button, Input, Card, CardContent, Avatar, LocationPicker } from "@/components/ui";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/toast";
@@ -61,6 +61,30 @@ export default function SettingsPage() {
       setPhotoPreview(user.fotoBase64);
     }
   }, [user?.fotoBase64, photoPreview]);
+
+  // Check if user has any photo (URL or Base64)
+  const hasPhoto = !!(user?.fotoUrl || user?.fotoBase64 || photoPreview);
+
+  const handleRemovePhoto = async () => {
+    setIsUploadingPhoto(true);
+    try {
+      await new Promise<void>((resolve, reject) => {
+        updateProfile({ removerFoto: true }, {
+          onSuccess: () => {
+            success("Foto removida com sucesso!");
+            setPhotoPreview(null);
+            resolve();
+          },
+          onError: (err: Error) => {
+            error(err.message || "Erro ao remover foto");
+            reject(err);
+          },
+        });
+      });
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
 
   const handlePhotoClick = () => {
     fileInputRef.current?.click();
@@ -201,6 +225,7 @@ export default function SettingsPage() {
                 className="relative group"
               >
                 <Avatar
+                  fotoUrl={!photoPreview ? user?.fotoUrl : undefined}
                   fotoBase64={photoPreview || user?.fotoBase64}
                   fallback={user?.nome}
                   size="xl"
@@ -225,6 +250,16 @@ export default function SettingsPage() {
               </p>
               {isUploadingPhoto && (
                 <p className="text-sm text-primary">Enviando...</p>
+              )}
+              {hasPhoto && !isUploadingPhoto && (
+                <button
+                  type="button"
+                  onClick={handleRemovePhoto}
+                  className="flex items-center gap-1 text-sm text-error hover:underline mt-1"
+                >
+                  <Trash2 size={14} />
+                  Remover foto
+                </button>
               )}
             </div>
           </div>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { ArrowLeft, AlertCircle, Save, Car, Bike, Truck } from "lucide-react";
+import { useMemo, useState, useRef } from "react";
+import { ArrowLeft, AlertCircle, Save, Car, Bike, Truck, Camera, X } from "lucide-react";
 import { Button, Card, CardContent, CurrencyInput, Select, LocationPicker, MileageInput } from "@/components/ui";
 import { useIntention, useUpdateIntention } from "@/hooks/use-intentions";
 import { useToast } from "@/components/ui/toast";
@@ -57,6 +57,41 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
   const [versoes] = useState<VersaoRequest[]>(
     veiculo.versoes?.map(v => ({ codigo: v.codigo, nome: v.nome })) || []
   );
+
+  // Reference photo state
+  const [fotoReferenciaBase64, setFotoReferenciaBase64] = useState<string | null>(null);
+  const [currentPhotoUrl] = useState<string | null>(veiculo.fotoReferenciaUrl || null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      showError("A imagem deve ter no máximo 2MB");
+      return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+      showError("Selecione um arquivo de imagem");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      const base64Content = base64.split(",")[1];
+      setFotoReferenciaBase64(base64Content);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeNewPhoto = () => {
+    setFotoReferenciaBase64(null);
+    if (photoInputRef.current) {
+      photoInputRef.current.value = "";
+    }
+  };
 
   // Year options
   const allYearOptions = generateYearOptions(30);
@@ -142,6 +177,7 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
           observacoes,
           cidade: cidade || undefined,
           estado: estado || undefined,
+          fotoReferenciaBase64: fotoReferenciaBase64 || undefined,
         },
       },
       {
@@ -337,6 +373,61 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
           onEstadoChange={setEstado}
           onCidadeChange={setCidade}
         />
+
+        {/* Reference Photo */}
+        <div className="space-y-3">
+          <label className="block text-sm font-medium text-foreground">
+            Foto de referência (opcional)
+          </label>
+          <input
+            type="file"
+            ref={photoInputRef}
+            onChange={handlePhotoChange}
+            accept="image/*"
+            className="hidden"
+          />
+          {fotoReferenciaBase64 ? (
+            <div className="relative w-full max-w-xs">
+              <img
+                src={`data:image/jpeg;base64,${fotoReferenciaBase64}`}
+                alt="Nova foto de referência"
+                className="w-full h-48 object-cover rounded-xl border border-border"
+              />
+              <button
+                onClick={removeNewPhoto}
+                className="absolute top-2 right-2 p-1.5 bg-background/80 hover:bg-background rounded-full text-foreground transition-colors"
+              >
+                <X size={18} />
+              </button>
+              <p className="text-xs text-success mt-2">Nova foto (será enviada ao salvar)</p>
+            </div>
+          ) : currentPhotoUrl ? (
+            <div className="space-y-2">
+              <img
+                src={currentPhotoUrl}
+                alt="Foto de referência atual"
+                className="w-full max-w-xs h-48 object-cover rounded-xl border border-border"
+              />
+              <button
+                onClick={() => photoInputRef.current?.click()}
+                className="text-sm text-primary hover:underline"
+              >
+                Alterar foto
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => photoInputRef.current?.click()}
+              className="flex flex-col items-center justify-center w-full max-w-xs h-32 border-2 border-dashed border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-colors"
+            >
+              <Camera size={32} className="text-muted mb-2" />
+              <span className="text-sm text-muted">Adicionar foto</span>
+            </button>
+          )}
+          <p className="text-xs text-muted">
+            Adicione uma foto do modelo que você procura. Máximo 2MB.
+          </p>
+        </div>
 
         {/* Observations */}
         <div className="space-y-3">

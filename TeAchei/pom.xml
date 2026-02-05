@@ -19,6 +19,8 @@
 		<java.version>17</java.version>
 		<java-jwt.version>4.5.0</java-jwt.version>
 		<azure-cosmos.version>4.54.0</azure-cosmos.version>
+		<azure-storage-blob.version>12.25.1</azure-storage-blob.version>
+		<azure-identity.version>1.11.1</azure-identity.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<resilience4j.version>2.2.0</resilience4j.version>
 		<mercadopago.version>2.1.24</mercadopago.version>
@@ -68,6 +70,18 @@
 			<groupId>com.azure</groupId>
 			<artifactId>azure-spring-data-cosmos</artifactId>
 			<version>5.10.0</version>
+		</dependency>
+		
+		<!-- Azure Blob Storage -->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-storage-blob</artifactId>
+			<version>${azure-storage-blob.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-identity</artifactId>
+			<version>${azure-identity.version}</version>
 		</dependency>
 		
 		<!-- MapStruct -->

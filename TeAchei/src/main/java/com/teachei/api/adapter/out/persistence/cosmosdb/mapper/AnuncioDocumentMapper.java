@@ -94,6 +94,7 @@ public class AnuncioDocumentMapper {
         info.setQuilometragemMaxima(doc.getQuilometragemMaxima());
         info.setOpcionais(doc.getOpcionais() != null ? new ArrayList<>(doc.getOpcionais()) : new ArrayList<>());
         info.setDadosManuais(doc.isDadosManuais());
+        info.setFotoReferenciaUrl(doc.getFotoReferenciaUrl());
         return info;
     }
 
@@ -122,6 +123,7 @@ public class AnuncioDocumentMapper {
         doc.setQuilometragemMaxima(info.getQuilometragemMaxima());
         doc.setOpcionais(info.getOpcionais() != null ? new ArrayList<>(info.getOpcionais()) : new ArrayList<>());
         doc.setDadosManuais(info.isDadosManuais());
+        doc.setFotoReferenciaUrl(info.getFotoReferenciaUrl());
         return doc;
     }
 

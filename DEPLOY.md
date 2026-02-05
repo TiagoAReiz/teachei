@@ -340,3 +340,46 @@ az postgres flexible-server firewall-rule create \
 ### Cosmos DB timeout
 
 Verifique se a região do Cosmos DB é a mesma do Container Apps para menor latência.
+
+---
+
+## Parte 6: Infrastructure as Code (Terraform)
+
+A infraestrutura também está disponível como código Terraform no diretório `infrastructure/`.
+
+### Vantagens
+
+- Infraestrutura versionada e reproduzível
+- Facilidade para criar ambiente staging
+- Auditoria de mudanças via Git
+- Automação via CI/CD
+
+### Uso Rápido
+
+O state do Terraform está no container `tfstate` do Storage Account `stteacheiprod`.
+
+```bash
+cd infrastructure
+
+# Inicializar Terraform
+terraform init
+
+# Visualizar mudanças
+terraform plan -var-file=environments/prod.tfvars
+
+# Aplicar mudanças
+terraform apply -var-file=environments/prod.tfvars
+```
+
+### Importar Recursos Existentes
+
+Se os recursos já existem no Azure (criados via CLI/Portal), importe-os antes de usar Terraform:
+
+```powershell
+# PowerShell
+.\import-existing.ps1 -SubscriptionId "sua-subscription-id"
+```
+
+### Documentação Completa
+
+Veja `infrastructure/README.md` para instruções detalhadas.

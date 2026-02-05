@@ -17,6 +17,7 @@ interface CreateIntentionState {
   precoMaximo: number | null;
   transmissao: string | null;
   combustivel: string | null;
+  opcionais: string[];  // Array of optional codes
   observacoes: string;
   
   // Actions
@@ -30,6 +31,8 @@ interface CreateIntentionState {
   setPrecoMaximo: (preco: number | null) => void;
   setTransmissao: (transmissao: string | null) => void;
   setCombustivel: (combustivel: string | null) => void;
+  setOpcionais: (opcionais: string[]) => void;
+  toggleOpcional: (codigo: string) => void;
   setObservacoes: (observacoes: string) => void;
   reset: () => void;
 }
@@ -45,13 +48,14 @@ const initialState = {
   precoMaximo: null,
   transmissao: null,
   combustivel: null,
+  opcionais: [],
   observacoes: "",
 };
 
-export const useCreateIntentionStore = create<CreateIntentionState>((set) => ({
+export const useCreateIntentionStore = create<CreateIntentionState>((set, get) => ({
   ...initialState,
   
-  setTipoVeiculo: (tipoVeiculo) => set({ tipoVeiculo, marca: null, modelo: null }),
+  setTipoVeiculo: (tipoVeiculo) => set({ tipoVeiculo, marca: null, modelo: null, opcionais: [] }),
   setMarca: (marca) => set({ marca, modelo: null }),
   setModelo: (modelo) => set({ modelo }),
   setAnoMinimo: (anoMinimo) => set({ anoMinimo }),
@@ -61,6 +65,15 @@ export const useCreateIntentionStore = create<CreateIntentionState>((set) => ({
   setPrecoMaximo: (precoMaximo) => set({ precoMaximo }),
   setTransmissao: (transmissao) => set({ transmissao }),
   setCombustivel: (combustivel) => set({ combustivel }),
+  setOpcionais: (opcionais) => set({ opcionais }),
+  toggleOpcional: (codigo) => {
+    const current = get().opcionais;
+    if (current.includes(codigo)) {
+      set({ opcionais: current.filter((c) => c !== codigo) });
+    } else {
+      set({ opcionais: [...current, codigo] });
+    }
+  },
   setObservacoes: (observacoes) => set({ observacoes }),
   reset: () => set(initialState),
 }));

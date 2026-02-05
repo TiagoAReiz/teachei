@@ -4,7 +4,9 @@ import com.teachei.api.domain.exception.AnuncioInvalidoException;
 import com.teachei.api.domain.model.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Domain service for business rules related to purchase intentions.
@@ -110,6 +112,29 @@ public class AnuncioService {
     public void validarRangeQuilometragem(Integer kmMinima, Integer kmMaxima) {
         if (kmMinima != null && kmMaxima != null && kmMinima > kmMaxima) {
             throw new AnuncioInvalidoException("Quilometragem mínima não pode ser maior que máxima");
+        }
+    }
+
+    /**
+     * Validates that all optionals are compatible with the vehicle type.
+     * 
+     * @param opcionais the list of optionals selected
+     * @param tipo the vehicle type
+     * @throws AnuncioInvalidoException if any optional is incompatible
+     */
+    public void validarOpcionaisCompativeis(List<OpcionalVeiculo> opcionais, TipoVeiculo tipo) {
+        if (opcionais == null || opcionais.isEmpty() || tipo == null) {
+            return;
+        }
+        
+        List<OpcionalVeiculo> incompativeis = OpcionalVeiculo.getOpcionaisIncompativeis(opcionais, tipo);
+        
+        if (!incompativeis.isEmpty()) {
+            String nomesIncompativeis = incompativeis.stream()
+                .map(OpcionalVeiculo::getLabel)
+                .collect(Collectors.joining(", "));
+            throw new AnuncioInvalidoException(
+                "Os seguintes opcionais não são compatíveis com " + tipo.getDescricao() + ": " + nomesIncompativeis);
         }
     }
 }

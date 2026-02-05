@@ -24,9 +24,11 @@ public interface BuscarFiltrosDisponiveisUseCase {
     record FiltrosDisponiveis(
         List<TipoVeiculo> tipos,
         List<MarcaOption> marcas,
-        List<ModeloOption> modelos
+        List<ModeloOption> modelos,
+        List<OpcionalOption> opcionais
     ) {
         public record MarcaOption(String codigo, String nome) {}
         public record ModeloOption(String codigo, String nome, String baseNome) {}
+        public record OpcionalOption(String codigo, String label) {}
     }
 }

@@ -200,8 +200,24 @@ export interface PagamentoResponse {
 }
 
 // ============================================
+// Optional Features Types
+// ============================================
+
+export interface OpcionalOption {
+  codigo: string;
+  label: string;
+}
+
+// ============================================
 // Filter Types
 // ============================================
+
+export interface FiltrosDisponiveis {
+  tipos: TipoVeiculo[];
+  marcas: Marca[];
+  modelos: Modelo[];
+  opcionais: OpcionalOption[];
+}
 
 export interface IntentionFilters {
   tipoVeiculo?: TipoVeiculo;

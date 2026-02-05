@@ -4,6 +4,7 @@ import { User } from "lucide-react";
 
 interface AvatarProps {
   src?: string | null;
+  fotoUrl?: string | null;
   fotoBase64?: string | null;
   alt?: string;
   size?: "sm" | "md" | "lg" | "xl";
@@ -18,7 +19,7 @@ const sizeMap = {
   xl: 64,
 };
 
-function Avatar({ src, fotoBase64, alt, size = "md", className, fallback }: AvatarProps) {
+function Avatar({ src, fotoUrl, fotoBase64, alt, size = "md", className, fallback }: AvatarProps) {
   const sizes = {
     sm: "h-8 w-8 text-xs",
     md: "h-10 w-10 text-sm",
@@ -43,10 +44,12 @@ function Avatar({ src, fotoBase64, alt, size = "md", className, fallback }: Avat
       .slice(0, 2);
   };
 
-  // Prefer fotoBase64 over src URL
-  const imageSrc = fotoBase64 
-    ? (fotoBase64.startsWith("data:") ? fotoBase64 : `data:image/jpeg;base64,${fotoBase64}`)
-    : src;
+  // Priority: fotoUrl (Blob Storage) > fotoBase64 (legacy) > src (external URL)
+  const imageSrc = fotoUrl 
+    ? fotoUrl 
+    : fotoBase64 
+      ? (fotoBase64.startsWith("data:") ? fotoBase64 : `data:image/jpeg;base64,${fotoBase64}`)
+      : src;
 
   if (imageSrc) {
     return (

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
-import { CheckCircle, Edit2, Car, Calendar, Palette, DollarSign, Phone, Gauge, Send, Settings } from "lucide-react";
+import { CheckCircle, Edit2, Car, Calendar, Palette, DollarSign, Phone, Gauge, Send, Settings, ImageIcon } from "lucide-react";
 import { Button, Card, CardContent, Badge, Input, LocationPicker } from "@/components/ui";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
@@ -46,6 +46,7 @@ export default function CreateReviewPage() {
     observacoes,
     cidade,
     estado,
+    fotoReferenciaBase64,
     setLocalizacao,
     reset,
     getVersionsText,
@@ -144,6 +145,7 @@ export default function CreateReviewPage() {
         observacoes: finalObservacoes || undefined,
         cidade,
         estado,
+        fotoReferenciaBase64: fotoReferenciaBase64 || undefined,
       },
       {
         onSuccess: () => {
@@ -331,6 +333,22 @@ export default function CreateReviewPage() {
               </div>
             );
           })}
+
+          {fotoReferenciaBase64 && (
+            <div className="flex items-start gap-4">
+              <div className="p-2 bg-muted/10 rounded-lg">
+                <ImageIcon size={20} className="text-muted" />
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-muted mb-2">Foto de referência</p>
+                <img 
+                  src={`data:image/jpeg;base64,${fotoReferenciaBase64}`}
+                  alt="Foto de referência"
+                  className="w-32 h-24 object-cover rounded-lg border border-border"
+                />
+              </div>
+            </div>
+          )}
 
           {observacoes && (
             <div className="pt-4 border-t border-border">

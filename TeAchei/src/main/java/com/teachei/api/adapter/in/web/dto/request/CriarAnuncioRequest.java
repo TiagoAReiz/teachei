@@ -42,7 +42,9 @@ public record CriarAnuncioRequest(
     
     @Pattern(regexp = "^$|^(AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO)$", 
              message = "Estado deve ser uma UF brasileira válida (ex: SP, RJ)")
-    String estado
+    String estado,
+    
+    String fotoReferenciaBase64  // Optional reference photo for the vehicle
 ) {
     public record VersaoRequest(
         String codigo,

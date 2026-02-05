@@ -3,8 +3,10 @@ package com.teachei.api.application.usecase;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.MarcaOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.ModeloOption;
+import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.OpcionalOption;
 import com.teachei.api.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.domain.model.Anuncio;
+import com.teachei.api.domain.model.OpcionalVeiculo;
 import com.teachei.api.domain.model.TipoVeiculo;
 import com.teachei.api.domain.model.VeiculoInfo;
 
@@ -91,10 +93,19 @@ public class BuscarFiltrosDisponiveisUseCaseImpl implements BuscarFiltrosDisponi
             .sorted(Comparator.comparing(ModeloOption::nome))
             .toList();
 
+        // Get optionals filtered by vehicle type (empty if no type selected)
+        List<OpcionalOption> opcionais = tipo != null
+            ? OpcionalVeiculo.getOpcionaisPorTipo(tipo).stream()
+                .map(op -> new OpcionalOption(op.name(), op.getLabel()))
+                .sorted(Comparator.comparing(OpcionalOption::label))
+                .toList()
+            : List.of();
+
         return new FiltrosDisponiveis(
             new ArrayList<>(tiposSet),
             marcas,
-            modelos
+            modelos,
+            opcionais
         );
     }
 

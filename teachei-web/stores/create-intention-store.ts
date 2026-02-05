@@ -31,6 +31,9 @@ interface CreateIntentionState {
   cidade: string;
   estado: string;
   
+  // Optional reference photo
+  fotoReferenciaBase64: string | null;
+  
   // Actions
   setTipoVeiculo: (tipo: TipoVeiculo) => void;
   setMarca: (codigo: string, nome: string) => void;
@@ -47,6 +50,7 @@ interface CreateIntentionState {
   setOpcionais: (opcionais: string[]) => void;
   setObservacoes: (obs: string) => void;
   setLocalizacao: (cidade: string, estado: string) => void;
+  setFotoReferencia: (base64: string | null) => void;
   reset: () => void;
   
   // Helper to get the primary model for API submission
@@ -75,6 +79,7 @@ const initialState = {
   observacoes: "",
   cidade: "",
   estado: "",
+  fotoReferenciaBase64: null,
 };
 
 export const useCreateIntentionStore = create<CreateIntentionState>((set, get) => ({
@@ -88,7 +93,8 @@ export const useCreateIntentionStore = create<CreateIntentionState>((set, get) =
     versoesSelecionadas: [],
     todasVersoes: false,
     modeloCodigo: null, 
-    modeloNome: null 
+    modeloNome: null,
+    opcionais: [], // Clear optionals when changing vehicle type
   }),
   
   setMarca: (codigo, nome) => set({ 
@@ -174,6 +180,7 @@ export const useCreateIntentionStore = create<CreateIntentionState>((set, get) =
   setOpcionais: (opcionais) => set({ opcionais }),
   setObservacoes: (obs) => set({ observacoes: obs }),
   setLocalizacao: (cidade, estado) => set({ cidade, estado }),
+  setFotoReferencia: (base64) => set({ fotoReferenciaBase64: base64 }),
   reset: () => set(initialState),
   
   getPrimaryModel: () => {

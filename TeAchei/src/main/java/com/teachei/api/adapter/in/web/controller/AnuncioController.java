@@ -76,7 +76,8 @@ public class AnuncioController {
             request.observacoes(),
             request.dadosManuais(),
             request.cidade(),
-            request.estado()
+            request.estado(),
+            request.fotoReferenciaBase64()
         );
 
         var anuncio = criarAnuncioUseCase.executar(currentUser.getId(), command);
@@ -183,6 +184,9 @@ public class AnuncioController {
                 .toList(),
             filtros.modelos().stream()
                 .map(m -> new FiltrosDisponiveisResponse.ModeloOption(m.codigo(), m.nome(), m.baseNome()))
+                .toList(),
+            filtros.opcionais().stream()
+                .map(op -> new FiltrosDisponiveisResponse.OpcionalOption(op.codigo(), op.label()))
                 .toList()
         );
         
@@ -262,7 +266,8 @@ public class AnuncioController {
             request.opcionais(),
             request.observacoes(),
             request.cidade(),
-            request.estado()
+            request.estado(),
+            request.fotoReferenciaBase64()
         );
 
         var anuncio = atualizarAnuncioUseCase.executar(currentUser.getId(), id, command);

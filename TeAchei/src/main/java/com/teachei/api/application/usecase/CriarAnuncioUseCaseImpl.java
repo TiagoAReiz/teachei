@@ -2,10 +2,13 @@ package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.CriarAnuncioUseCase;
 import com.teachei.api.application.ports.out.AnuncioRepositoryPort;
+import com.teachei.api.application.ports.out.BlobStoragePort;
 import com.teachei.api.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.domain.exception.UsuarioNaoEncontradoException;
 import com.teachei.api.domain.model.*;
 import com.teachei.api.domain.service.AnuncioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,16 +19,21 @@ import java.util.stream.Collectors;
  */
 public class CriarAnuncioUseCaseImpl implements CriarAnuncioUseCase {
 
+    private static final Logger log = LoggerFactory.getLogger(CriarAnuncioUseCaseImpl.class);
+
     private final AnuncioRepositoryPort anuncioRepository;
     private final PerfilRepositoryPort perfilRepository;
     private final AnuncioService anuncioService;
+    private final BlobStoragePort blobStorage;
 
     public CriarAnuncioUseCaseImpl(AnuncioRepositoryPort anuncioRepository,
                                     PerfilRepositoryPort perfilRepository,
-                                    AnuncioService anuncioService) {
+                                    AnuncioService anuncioService,
+                                    BlobStoragePort blobStorage) {
         this.anuncioRepository = anuncioRepository;
         this.perfilRepository = perfilRepository;
         this.anuncioService = anuncioService;
+        this.blobStorage = blobStorage;
     }
 
     @Override
@@ -44,6 +52,14 @@ public class CriarAnuncioUseCaseImpl implements CriarAnuncioUseCase {
             command.quilometragemMinima(), 
             command.quilometragemMaxima()
         );
+
+        // Convert optionals from String to OpcionalVeiculo and validate
+        List<OpcionalVeiculo> opcionaisEnum = command.opcionais() != null
+            ? command.opcionais().stream()
+                .map(OpcionalVeiculo::valueOf)
+                .toList()
+            : List.of();
+        anuncioService.validarOpcionaisCompativeis(opcionaisEnum, command.tipo());
 
         // Get user profile for contact info
         Perfil perfil = perfilRepository.buscarPorUsuarioId(usuarioId)
@@ -116,7 +132,25 @@ public class CriarAnuncioUseCaseImpl implements CriarAnuncioUseCase {
             command.observacoes()
         );
 
-        return anuncioRepository.salvar(anuncio);
+        // Save first to get the ID
+        Anuncio savedAnuncio = anuncioRepository.salvar(anuncio);
+
+        // Upload reference photo if provided
+        if (command.fotoReferenciaBase64() != null && !command.fotoReferenciaBase64().isBlank()) {
+            try {
+                String fotoUrl = blobStorage.uploadIntentionPhoto(savedAnuncio.getId(), command.fotoReferenciaBase64());
+                if (fotoUrl != null) {
+                    savedAnuncio.getVeiculoInfo().setFotoReferenciaUrl(fotoUrl);
+                    savedAnuncio = anuncioRepository.salvar(savedAnuncio);
+                    log.info("Reference photo uploaded for intention {}", savedAnuncio.getId());
+                }
+            } catch (Exception e) {
+                log.warn("Failed to upload reference photo for intention {}: {}", savedAnuncio.getId(), e.getMessage());
+                // Continue without photo - it's optional
+            }
+        }
+
+        return savedAnuncio;
     }
 }
 

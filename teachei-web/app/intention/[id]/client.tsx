@@ -21,6 +21,7 @@ import {
   Truck,
   User,
   Gauge,
+  ImageIcon,
 } from "lucide-react";
 import type { TipoVeiculo } from "@/types";
 
@@ -265,6 +266,23 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
             </CardContent>
           </Card>
 
+          {/* Reference Photo Section */}
+          {intention.veiculo.fotoReferenciaUrl && (
+            <Card className="mb-6">
+              <CardContent className="p-6">
+                <h2 className="font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <ImageIcon size={18} className="text-muted" />
+                  Foto de referência
+                </h2>
+                <img 
+                  src={intention.veiculo.fotoReferenciaUrl}
+                  alt="Foto de referência do veículo"
+                  className="w-full max-w-md h-auto rounded-xl border border-border object-cover"
+                />
+              </CardContent>
+            </Card>
+          )}
+
           {/* Notes Section */}
           {intention.observacoes && (
             <Card className="mb-6">
@@ -289,7 +307,8 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                     className="flex items-center gap-3 p-3 bg-muted/5 rounded-xl hover:bg-muted/10 transition-colors mb-4"
                   >
                     <Avatar 
-                      src={sellerProfile.avatarUrl} 
+                      src={sellerProfile.avatarUrl}
+                      fotoUrl={sellerProfile.fotoUrl}
                       fotoBase64={sellerProfile.fotoBase64} 
                       fallback={sellerProfile.nome} 
                       size="lg" 

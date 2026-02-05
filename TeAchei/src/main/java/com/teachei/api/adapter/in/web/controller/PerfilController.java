@@ -57,7 +57,8 @@ public class PerfilController {
             request.cidade(),
             request.estado(),
             request.role(),
-            request.fotoBase64()
+            request.fotoBase64(),
+            request.removerFoto()
         );
 
         var perfil = gerenciarPerfilUseCase.atualizar(currentUser.getId(), command);

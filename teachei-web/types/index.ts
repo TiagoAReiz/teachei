@@ -34,6 +34,7 @@ export interface Perfil {
   usuarioId: string;
   nome: string;
   bio?: string;
+  fotoUrl?: string;
   fotoBase64?: string;
   whatsapp?: string;
   whatsappLink?: string;
@@ -57,6 +58,7 @@ export interface AtualizarPerfilRequest {
   cidade?: string;
   estado?: string;
   role?: UserRole;
+  removerFoto?: boolean;  // If true, delete existing photo
 }
 
 // Legacy User type for UI compatibility - maps from Perfil
@@ -69,6 +71,7 @@ export interface User {
   cidade?: string;
   estado?: string;
   avatarUrl?: string;
+  fotoUrl?: string;
   fotoBase64?: string;
   bio?: string;
   whatsapp?: string;
@@ -175,6 +178,7 @@ export interface VeiculoResponse {
   quilometragemMaxima?: number;
   opcionais?: string[];
   dadosManuais: boolean;
+  fotoReferenciaUrl?: string;       // Optional reference photo URL
 }
 
 // Nested contact info in AnuncioResponse
@@ -228,6 +232,7 @@ export interface CreateAnuncioRequest {
   dadosManuais?: boolean;
   cidade?: string;
   estado?: string;
+  fotoReferenciaBase64?: string;    // Optional reference photo (Base64)
 }
 
 // Request to update an intention (matches AtualizarAnuncioRequest)
@@ -243,6 +248,7 @@ export interface UpdateAnuncioRequest {
   observacoes?: string;
   cidade?: string;
   estado?: string;
+  fotoReferenciaBase64?: string;    // Optional reference photo update (Base64)
 }
 
 // ============================================
@@ -257,6 +263,7 @@ export interface AvailableFilters {
   tipos: TipoVeiculo[];
   marcas: AvailableMarca[];
   modelos: AvailableModelo[];
+  opcionais: AvailableOpcional[];
 }
 
 export interface AvailableMarca {
@@ -268,6 +275,11 @@ export interface AvailableModelo {
   codigo: string;
   nome: string;
   baseNome: string;
+}
+
+export interface AvailableOpcional {
+  codigo: string;
+  label: string;
 }
 
 // ============================================
@@ -346,6 +358,7 @@ export function perfilToUser(perfil: Perfil, email?: string): User {
     email: email || "",
     nome: perfil.nome,
     bio: perfil.bio,
+    fotoUrl: perfil.fotoUrl,
     fotoBase64: perfil.fotoBase64,
     whatsapp: perfil.whatsapp,
     whatsappLink: perfil.whatsappLink,
