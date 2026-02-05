@@ -5,14 +5,34 @@ import { useSearchParams } from "next/navigation";
 import { MainLayout } from "@/components/layout";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
-import type { TipoVeiculo, IntentionFilters as Filters } from "@/types";
+import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";
 
 function FeedContent() {
   const searchParams = useSearchParams();
   
+  // Parse all filter parameters from URL
+  const ordenar = searchParams.get("ordenar") as SortOption | null;
+  const marcaCodigo = searchParams.get("marca");
+  const modeloCodigo = searchParams.get("modeloCodigo");
+  const modelos = searchParams.get("modelos");
+  const precoMinStr = searchParams.get("precoMin");
+  const precoMaxStr = searchParams.get("precoMax");
+  const anoMinStr = searchParams.get("anoMin");
+  const anoMaxStr = searchParams.get("anoMax");
+  const opcionaisStr = searchParams.get("opcionais");
+
   const filters: Omit<Filters, "page"> = {
     tipoVeiculo: (searchParams.get("tipo") as TipoVeiculo) || undefined,
     search: searchParams.get("search") || undefined,
+    ordenar: ordenar || undefined,
+    marcaCodigo: marcaCodigo || undefined,
+    modeloCodigo: modeloCodigo || undefined,
+    modelos: modelos ? modelos.split(",").filter(Boolean) : undefined,
+    precoMin: precoMinStr ? parseInt(precoMinStr, 10) : undefined,
+    precoMax: precoMaxStr ? parseInt(precoMaxStr, 10) : undefined,
+    anoMin: anoMinStr ? parseInt(anoMinStr, 10) : undefined,
+    anoMax: anoMaxStr ? parseInt(anoMaxStr, 10) : undefined,
+    opcionais: opcionaisStr ? opcionaisStr.split(",").filter(Boolean) : undefined,
   };
 
   const {
