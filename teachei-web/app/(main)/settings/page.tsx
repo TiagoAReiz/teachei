@@ -9,7 +9,7 @@ import { Button, Input, Card, CardContent, Avatar, LocationPicker } from "@/comp
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/toast";
 import { isValidUF } from "@/lib/ibge";
-import { isValidBrazilianPhone } from "@/lib/utils";
+import { isValidBrazilianPhone, formatBrazilianPhoneInput } from "@/lib/utils";
 
 const profileSchema = z.object({
   nome: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
@@ -43,7 +43,7 @@ const passwordSchema = z.object({
 
 type PasswordFormData = z.infer<typeof passwordSchema>;
 
-const MAX_PHOTO_SIZE = 500 * 1024; // 500KB
+const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB - stored in Azure Blob Storage
 
 export default function SettingsPage() {
   const { user, updateProfile, isUpdatingProfile, changePassword, isChangingPassword } = useAuth();
@@ -102,7 +102,7 @@ export default function SettingsPage() {
 
     // Validate file size
     if (file.size > MAX_PHOTO_SIZE) {
-      error("Imagem deve ter no máximo 500KB");
+      error("Imagem deve ter no máximo 5MB");
       return;
     }
 
@@ -246,7 +246,7 @@ export default function SettingsPage() {
             <div>
               <p className="font-medium text-foreground">Foto do perfil</p>
               <p className="text-sm text-muted">
-                Clique para alterar. Max 500KB.
+                Clique para alterar. Max 5MB.
               </p>
               {isUploadingPhoto && (
                 <p className="text-sm text-primary">Enviando...</p>
@@ -275,7 +275,12 @@ export default function SettingsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                {...register("whatsapp")}
+                {...register("whatsapp", {
+                  onChange: (e) => {
+                    const formatted = formatBrazilianPhoneInput(e.target.value);
+                    setValue("whatsapp", formatted, { shouldValidate: true });
+                  }
+                })}
                 label="WhatsApp"
                 placeholder="+5511999998888"
                 icon={<Phone size={20} />}

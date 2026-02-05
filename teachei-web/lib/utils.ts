@@ -36,7 +36,7 @@ export function formatRelativeTime(date: string | Date): string {
   return formatDate(date);
 }
 
-// Format phone number
+// Format phone number for display
 export function formatPhone(phone: string): string {
   const cleaned = phone.replace(/\D/g, "");
   if (cleaned.length === 11) {
@@ -46,6 +46,45 @@ export function formatPhone(phone: string): string {
     return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
   }
   return phone;
+}
+
+/**
+ * Format phone number as user types (Brazilian format)
+ * Input: raw digits or partial input
+ * Output: formatted as +55 (XX) XXXXX-XXXX
+ */
+export function formatBrazilianPhoneInput(value: string): string {
+  // Remove all non-digits except the leading +
+  let cleaned = value.replace(/[^\d+]/g, "");
+  
+  // Ensure it starts with +55
+  if (!cleaned.startsWith("+")) {
+    // Remove any leading 55 that might be there without the +
+    if (cleaned.startsWith("55") && cleaned.length > 2) {
+      cleaned = cleaned.slice(2);
+    }
+    cleaned = "+55" + cleaned;
+  } else if (cleaned.startsWith("+") && !cleaned.startsWith("+55")) {
+    // If starts with + but not +55, add 55 after +
+    cleaned = "+55" + cleaned.slice(1).replace(/^55/, "");
+  }
+  
+  // Extract just the digits after +55
+  const digits = cleaned.slice(3).replace(/\D/g, "");
+  
+  // Limit to 11 digits (DDD + 9 digit number)
+  const limitedDigits = digits.slice(0, 11);
+  
+  // Build formatted string
+  if (limitedDigits.length === 0) {
+    return "+55";
+  } else if (limitedDigits.length <= 2) {
+    return `+55${limitedDigits}`;
+  } else if (limitedDigits.length <= 7) {
+    return `+55${limitedDigits.slice(0, 2)}${limitedDigits.slice(2)}`;
+  } else {
+    return `+55${limitedDigits.slice(0, 2)}${limitedDigits.slice(2, 7)}${limitedDigits.slice(7)}`;
+  }
 }
 
 // Generate WhatsApp link

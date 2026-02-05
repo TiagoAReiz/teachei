@@ -8,7 +8,7 @@ import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, Di
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { useCreateIntention } from "@/hooks/use-intentions";
 import { useAuth } from "@/hooks/use-auth";
-import { formatCurrency, vehicleTypeLabels, formatOpcional, getBrazilianPhoneError } from "@/lib/utils";
+import { formatCurrency, vehicleTypeLabels, formatOpcional, getBrazilianPhoneError, formatBrazilianPhoneInput } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 
 export default function CreateReviewPage() {
@@ -368,7 +368,7 @@ export default function CreateReviewPage() {
           </p>
           <Input
             value={telefoneContato}
-            onChange={(e) => setTelefoneContato(e.target.value)}
+            onChange={(e) => setTelefoneContato(formatBrazilianPhoneInput(e.target.value))}
             label="WhatsApp"
             placeholder="+5511999998888"
             icon={<Phone size={20} />}
