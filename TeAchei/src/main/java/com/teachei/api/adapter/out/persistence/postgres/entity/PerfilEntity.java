@@ -29,9 +29,6 @@ public class PerfilEntity {
     @Column(name = "foto_url")
     private String fotoUrl;
 
-    @Column(name = "foto_base64", columnDefinition = "TEXT")
-    private String fotoBase64;
-
     @Column
     private String role;
 
@@ -106,14 +103,6 @@ public class PerfilEntity {
 
     public void setFotoUrl(String fotoUrl) {
         this.fotoUrl = fotoUrl;
-    }
-
-    public String getFotoBase64() {
-        return fotoBase64;
-    }
-
-    public void setFotoBase64(String fotoBase64) {
-        this.fotoBase64 = fotoBase64;
     }
 
     public String getRole() {

@@ -79,7 +79,6 @@ export default function PublicProfilePage() {
               <Avatar
                 src={profile.avatarUrl}
                 fotoUrl={profile.fotoUrl}
-                fotoBase64={profile.fotoBase64}
                 fallback={profile.nome}
                 size="xl"
                 className="mb-4"

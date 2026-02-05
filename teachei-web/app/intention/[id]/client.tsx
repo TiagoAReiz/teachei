@@ -309,7 +309,6 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                     <Avatar 
                       src={sellerProfile.avatarUrl}
                       fotoUrl={sellerProfile.fotoUrl}
-                      fotoBase64={sellerProfile.fotoBase64} 
                       fallback={sellerProfile.nome} 
                       size="lg" 
                     />

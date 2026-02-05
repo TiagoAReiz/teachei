@@ -58,7 +58,7 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
   );
 
   // Fetch available optionals for this vehicle type from API
-  const { data: availableFilters, isLoading: isLoadingOpcionais } = useAvailableFilters(
+  const { data: availableFilters, isLoading: isLoadingOpcionais, error: opcionaisError } = useAvailableFilters(
     intention.tipo,
     null
   );
@@ -341,7 +341,12 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
           <label className="block text-sm font-medium text-foreground">
             Opcionais desejados
           </label>
-          {isLoadingOpcionais ? (
+          {opcionaisError ? (
+            <div className="flex items-center gap-2 py-4 text-error">
+              <AlertCircle className="w-4 h-4" />
+              <span className="text-sm">Erro ao carregar opcionais. Verifique sua conexão.</span>
+            </div>
+          ) : isLoadingOpcionais ? (
             <div className="flex items-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
               <span className="text-sm text-muted">Carregando opcionais...</span>

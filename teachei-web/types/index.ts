@@ -35,7 +35,6 @@ export interface Perfil {
   nome: string;
   bio?: string;
   fotoUrl?: string;
-  fotoBase64?: string;
   whatsapp?: string;
   whatsappLink?: string;
   instagram?: string;
@@ -51,7 +50,7 @@ export interface Perfil {
 export interface AtualizarPerfilRequest {
   nome?: string;
   bio?: string;
-  fotoBase64?: string;
+  foto?: string;  // Base64 encoded photo for upload to Blob Storage
   whatsapp?: string;
   instagram?: string;
   facebook?: string;
@@ -72,7 +71,6 @@ export interface User {
   estado?: string;
   avatarUrl?: string;
   fotoUrl?: string;
-  fotoBase64?: string;
   bio?: string;
   whatsapp?: string;
   whatsappLink?: string;
@@ -359,7 +357,6 @@ export function perfilToUser(perfil: Perfil, email?: string): User {
     nome: perfil.nome,
     bio: perfil.bio,
     fotoUrl: perfil.fotoUrl,
-    fotoBase64: perfil.fotoBase64,
     whatsapp: perfil.whatsapp,
     whatsappLink: perfil.whatsappLink,
     instagram: perfil.instagram,

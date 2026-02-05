@@ -38,7 +38,7 @@ public interface GerenciarPerfilUseCase {
         String cidade,
         String estado,
         String role,
-        String fotoBase64,
+        String foto,  // Base64 encoded photo for upload to Blob Storage
         Boolean removerFoto  // If true, delete existing photo
     ) {}
 }

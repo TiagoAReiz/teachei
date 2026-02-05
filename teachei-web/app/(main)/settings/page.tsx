@@ -49,41 +49,26 @@ export default function SettingsPage() {
   const { user, updateProfile, isUpdatingProfile, changePassword, isChangingPassword } = useAuth();
   const { success, error } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Set initial photo preview from user
-  useEffect(() => {
-    if (user?.fotoBase64 && !photoPreview) {
-      setPhotoPreview(user.fotoBase64);
-    }
-  }, [user?.fotoBase64, photoPreview]);
+  // Check if user has a photo in Blob Storage
+  const hasPhoto = !!user?.fotoUrl;
 
-  // Check if user has any photo (URL or Base64)
-  const hasPhoto = !!(user?.fotoUrl || user?.fotoBase64 || photoPreview);
-
-  const handleRemovePhoto = async () => {
+  const handleRemovePhoto = () => {
     setIsUploadingPhoto(true);
-    try {
-      await new Promise<void>((resolve, reject) => {
-        updateProfile({ removerFoto: true }, {
-          onSuccess: () => {
-            success("Foto removida com sucesso!");
-            setPhotoPreview(null);
-            resolve();
-          },
-          onError: (err: Error) => {
-            error(err.message || "Erro ao remover foto");
-            reject(err);
-          },
-        });
-      });
-    } finally {
-      setIsUploadingPhoto(false);
-    }
+    updateProfile({ removerFoto: true }, {
+      onSuccess: () => {
+        success("Foto removida com sucesso!");
+        setIsUploadingPhoto(false);
+      },
+      onError: (err: Error) => {
+        error(err.message || "Erro ao remover foto");
+        setIsUploadingPhoto(false);
+      },
+    });
   };
 
   const handlePhotoClick = () => {
@@ -106,30 +91,23 @@ export default function SettingsPage() {
       return;
     }
 
-    // Convert to base64
+    // Convert to base64 and upload to Blob Storage
     const reader = new FileReader();
-    reader.onload = async (event) => {
+    reader.onload = (event) => {
       const base64 = event.target?.result as string;
-      setPhotoPreview(base64);
       
-      // Upload immediately
+      // Upload to Blob Storage
       setIsUploadingPhoto(true);
-      try {
-        await new Promise<void>((resolve, reject) => {
-          updateProfile({ fotoBase64: base64 }, {
-            onSuccess: () => {
-              success("Foto atualizada com sucesso!");
-              resolve();
-            },
-            onError: (err: Error) => {
-              error(err.message || "Erro ao atualizar foto");
-              reject(err);
-            },
-          });
-        });
-      } finally {
-        setIsUploadingPhoto(false);
-      }
+      updateProfile({ foto: base64 }, {
+        onSuccess: () => {
+          success("Foto atualizada com sucesso!");
+          setIsUploadingPhoto(false);
+        },
+        onError: (err: Error) => {
+          error(err.message || "Erro ao atualizar foto");
+          setIsUploadingPhoto(false);
+        },
+      });
     };
     reader.readAsDataURL(file);
   };
@@ -230,8 +208,7 @@ export default function SettingsPage() {
                 className="relative group"
               >
                 <Avatar
-                  fotoUrl={!photoPreview ? user?.fotoUrl : undefined}
-                  fotoBase64={photoPreview || user?.fotoBase64}
+                  fotoUrl={user?.fotoUrl}
                   fallback={user?.nome}
                   size="xl"
                   className="ring-2 ring-border group-hover:ring-primary transition-all"

@@ -31,7 +31,7 @@ public record AtualizarPerfilRequest(
     String role,
 
     @Size(max = 700000, message = "Foto deve ter no máximo 500KB")
-    String fotoBase64,
+    String foto,  // Base64 encoded photo for upload to Blob Storage
 
     Boolean removerFoto  // If true, delete existing photo
 ) {}

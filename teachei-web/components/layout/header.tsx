@@ -107,7 +107,7 @@ export function Header() {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="flex items-center gap-2 p-1 rounded-full hover:bg-muted/10 transition-colors"
                 >
-                  <Avatar src={user?.avatarUrl} fotoUrl={user?.fotoUrl} fotoBase64={user?.fotoBase64} fallback={user?.nome} size="sm" />
+                  <Avatar src={user?.avatarUrl} fotoUrl={user?.fotoUrl} fallback={user?.nome} size="sm" />
                 </button>
 
                 {showUserMenu && (

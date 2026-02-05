@@ -57,7 +57,7 @@ public class PerfilController {
             request.cidade(),
             request.estado(),
             request.role(),
-            request.fotoBase64(),
+            request.foto(),
             request.removerFoto()
         );
 

@@ -63,30 +63,23 @@ public class GerenciarPerfilUseCaseImpl implements GerenciarPerfilUseCase {
                 }
             }
             perfil.setFotoUrl(null);
-            perfil.setFotoBase64(null);
         }
         // Update photo if provided - upload to Blob Storage
-        else if (command.fotoBase64() != null && !command.fotoBase64().isBlank()) {
-            try {
-                // Delete old photo if exists
-                if (perfil.getFotoUrl() != null) {
+        else if (command.foto() != null && !command.foto().isBlank()) {
+            // Delete old photo if exists
+            if (perfil.getFotoUrl() != null) {
+                try {
                     blobStorage.deleteProfilePhoto(usuarioId);
+                } catch (Exception e) {
+                    log.warn("Failed to delete old photo from Blob for user {}: {}", usuarioId, e.getMessage());
                 }
-                String fotoUrl = blobStorage.uploadProfilePhoto(usuarioId, command.fotoBase64());
-                if (fotoUrl != null) {
-                    perfil.setFotoUrl(fotoUrl);
-                    // Clear Base64 since we now have URL
-                    perfil.setFotoBase64(null);
-                    log.info("Profile photo uploaded to Blob Storage for user {}", usuarioId);
-                } else {
-                    // Fallback to Base64 if upload fails
-                    log.warn("Blob upload failed, falling back to Base64 for user {}", usuarioId);
-                    perfil.setFotoBase64(command.fotoBase64());
-                }
-            } catch (Exception e) {
-                // Fallback to Base64 if upload fails
-                log.warn("Blob upload error, falling back to Base64 for user {}: {}", usuarioId, e.getMessage());
-                perfil.setFotoBase64(command.fotoBase64());
+            }
+            String fotoUrl = blobStorage.uploadProfilePhoto(usuarioId, command.foto());
+            if (fotoUrl != null) {
+                perfil.setFotoUrl(fotoUrl);
+                log.info("Profile photo uploaded to Blob Storage for user {}", usuarioId);
+            } else {
+                throw new RuntimeException("Falha ao enviar foto para o armazenamento. Tente novamente.");
             }
         }
 

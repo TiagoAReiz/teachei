@@ -16,7 +16,6 @@ public record PerfilPublicoResponse(
     String cidade,
     String estado,
     String fotoUrl,
-    String fotoBase64,
     double avaliacaoMedia,
     int totalAvaliacoes,
     LocalDateTime criadoEm
@@ -30,7 +29,6 @@ public record PerfilPublicoResponse(
             perfil.getCidade(),
             perfil.getEstado(),
             perfil.getFotoUrl(),
-            perfil.getFotoBase64(),
             perfil.getAvaliacaoMedia(),
             perfil.getTotalAvaliacoes(),
             perfil.getCriadoEm()
