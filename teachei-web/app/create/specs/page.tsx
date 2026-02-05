@@ -1,14 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { ArrowRight, AlertCircle, Loader2, Camera, X } from "lucide-react";
 import { Button, CurrencyInput, Select, MileageInput } from "@/components/ui";
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
+import { useAvailableFilters } from "@/hooks/use-intentions";
 import { vehicleColors, generateYearOptions } from "@/lib/utils";
-import { getAvailableFilters } from "@/lib/intentions";
 import { cn } from "@/lib/utils";
-import type { AvailableOpcional } from "@/types";
 
 export default function CreateSpecsPage() {
   const router = useRouter();
@@ -37,9 +36,14 @@ export default function CreateSpecsPage() {
   // Reference photo upload
   const photoInputRef = useRef<HTMLInputElement>(null);
 
-  // State for dynamic optionals
-  const [opcionaisDisponiveis, setOpcionaisDisponiveis] = useState<AvailableOpcional[]>([]);
-  const [loadingOpcionais, setLoadingOpcionais] = useState(false);
+  // Fetch available optionals using React Query (consistent with filter-panel)
+  const { data: availableFilters, isLoading: loadingOpcionais } = useAvailableFilters(
+    tipoVeiculo || null,
+    null // Don't filter by marca for optionals
+  );
+  
+  // Get optionals from the API response
+  const opcionaisDisponiveis = availableFilters?.opcionais || [];
 
   // Static year options (no API call needed)
   const allYearOptions = generateYearOptions(30);
@@ -62,39 +66,6 @@ export default function CreateSpecsPage() {
     }
   }, [tipoVeiculo, marcaCodigo, modeloCodigo, router]);
 
-  // Load optionals when vehicle type changes
-  useEffect(() => {
-    if (!tipoVeiculo) {
-      setOpcionaisDisponiveis([]);
-      return;
-    }
-
-    let isMounted = true;
-    
-    const loadOpcionais = async () => {
-      try {
-        const filters = await getAvailableFilters(tipoVeiculo);
-        if (isMounted) {
-          setOpcionaisDisponiveis(filters.opcionais || []);
-        }
-      } catch {
-        if (isMounted) {
-          setOpcionaisDisponiveis([]);
-        }
-      } finally {
-        if (isMounted) {
-          setLoadingOpcionais(false);
-        }
-      }
-    };
-
-    setLoadingOpcionais(true);
-    loadOpcionais();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [tipoVeiculo]);
 
   // Validation errors
   const yearRequiredError = useMemo(() => {

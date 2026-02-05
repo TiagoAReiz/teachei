@@ -131,7 +131,7 @@ export function formatBrazilianPhoneInput(value: string): string {
   
   // Build formatted string with visual separators
   if (limitedDigits.length === 0) {
-    return "+55 ";
+    return ""; // Empty field - no automatic prefix
   } else if (limitedDigits.length <= 2) {
     // Just DDD: +55 (XX
     return `+55 (${limitedDigits}`;
