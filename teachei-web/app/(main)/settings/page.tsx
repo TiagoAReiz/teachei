@@ -9,7 +9,7 @@ import { Button, Input, Card, CardContent, Avatar, LocationPicker } from "@/comp
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/toast";
 import { isValidUF } from "@/lib/ibge";
-import { isValidBrazilianPhone, formatBrazilianPhoneInput } from "@/lib/utils";
+import { isValidBrazilianPhone, formatBrazilianPhoneInput, stripPhoneFormatting } from "@/lib/utils";
 
 const profileSchema = z.object({
   nome: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
@@ -159,7 +159,7 @@ export default function SettingsPage() {
     if (user) {
       reset({
         nome: user.nome || "",
-        whatsapp: user.whatsapp || "",
+        whatsapp: user.whatsapp ? formatBrazilianPhoneInput(user.whatsapp) : "",
         cidade: user.cidade || "",
         estado: user.estado || "",
         bio: user.bio || "",
@@ -170,7 +170,12 @@ export default function SettingsPage() {
   }, [user, reset]);
 
   const onSubmit = (data: ProfileFormData) => {
-    updateProfile(data, {
+    // Strip phone formatting before sending to backend
+    const cleanData = {
+      ...data,
+      whatsapp: data.whatsapp ? stripPhoneFormatting(data.whatsapp) : undefined,
+    };
+    updateProfile(cleanData, {
       onSuccess: () => success("Perfil atualizado com sucesso!"),
       onError: (err: Error) => error(err.message || "Erro ao atualizar perfil"),
     });

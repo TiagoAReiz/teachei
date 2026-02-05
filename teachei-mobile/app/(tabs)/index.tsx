@@ -5,6 +5,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 
 import { SearchBar } from "@/components/layout/search-bar";
 import { FilterChips } from "@/components/layout/filter-chips";
+import { FilterModal, FilterState } from "@/components/layout/filter-modal";
 import { IntentionCard } from "@/components/intentions/intention-card";
 import { useIntentions } from "@/hooks/use-intentions";
 import { useAuthStore } from "@/stores/auth-store";
@@ -100,6 +101,33 @@ export default function HomeScreen() {
   const [search, setSearch] = useState("");
   const [selectedType, setSelectedType] = useState<TipoVeiculo | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [filters, setFilters] = useState<FilterState>({
+    tipo: null,
+    opcionais: [],
+    precoMin: null,
+    precoMax: null,
+    anoMin: null,
+    anoMax: null,
+  });
+
+  // Sync selectedType with filters.tipo
+  const handleTypeChange = (type: TipoVeiculo | null) => {
+    setSelectedType(type);
+    setFilters((prev) => ({ ...prev, tipo: type, opcionais: [] }));
+  };
+
+  const handleApplyFilters = (newFilters: FilterState) => {
+    setFilters(newFilters);
+    setSelectedType(newFilters.tipo);
+  };
+
+  // Count active filters (excluding tipo which is shown in chips)
+  const activeFiltersCount = filters.opcionais.length +
+    (filters.precoMin !== null ? 1 : 0) +
+    (filters.precoMax !== null ? 1 : 0) +
+    (filters.anoMin !== null ? 1 : 0) +
+    (filters.anoMax !== null ? 1 : 0);
 
   // Use mock data for now - replace with actual API call when backend is ready
   // const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useIntentions({
@@ -159,12 +187,37 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Filter Chips */}
-        <FilterChips
-          selectedType={selectedType}
-          onSelectType={setSelectedType}
-        />
+        {/* Filter Chips with Filter Button */}
+        <View className="flex-row items-center">
+          <View className="flex-1">
+            <FilterChips
+              selectedType={selectedType}
+              onSelectType={handleTypeChange}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={() => setShowFilterModal(true)}
+            className="mr-4 p-2 rounded-full bg-slate-100 dark:bg-slate-800 relative"
+          >
+            <MaterialIcons name="tune" size={22} color="#64748b" />
+            {activeFiltersCount > 0 && (
+              <View className="absolute -top-1 -right-1 w-5 h-5 bg-primary-light rounded-full items-center justify-center">
+                <Text className="text-white text-xs font-display-bold">
+                  {activeFiltersCount}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        </View>
       </View>
+
+      {/* Filter Modal */}
+      <FilterModal
+        visible={showFilterModal}
+        onClose={() => setShowFilterModal(false)}
+        filters={filters}
+        onApply={handleApplyFilters}
+      />
 
       {/* Feed */}
       <FlatList

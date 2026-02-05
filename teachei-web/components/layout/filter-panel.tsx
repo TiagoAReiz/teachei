@@ -5,7 +5,6 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Car, Bike, Truck, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button, Select, CurrencyInput } from "@/components/ui";
 import { useAvailableFilters } from "@/hooks/use-intentions";
-import { vehicleOptions } from "@/lib/vehicle-options";
 import { cn, generateYearOptions } from "@/lib/utils";
 import type { TipoVeiculo } from "@/types";
 
@@ -193,7 +192,8 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
   };
 
   const handleTipoChange = (tipo: TipoVeiculo | "") => {
-    const newFilters = { ...filters, tipo, marca: "", modelo: "", versao: "" };
+    // Clear optionals when changing vehicle type (they are type-specific)
+    const newFilters = { ...filters, tipo, marca: "", modelo: "", versao: "", opcionais: [] };
     setFilters(newFilters);
     applyFilters(newFilters);
   };
@@ -351,40 +351,54 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
           </div>
         )}
 
-        {/* Optional Features */}
+        {/* Optional Features - Only show when a vehicle type is selected */}
         <div className="space-y-2">
           <label className="block text-xs font-medium text-muted uppercase tracking-wide">
             Opcionais
           </label>
-          <div className="grid grid-cols-1 gap-1.5">
-            {vehicleOptions.map((option) => {
-              const isSelected = filters.opcionais.includes(option.value);
-              return (
-                <button
-                  key={option.value}
-                  onClick={() => toggleOpcional(option.value)}
-                  className={cn(
-                    "flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-colors text-left text-xs",
-                    isSelected
-                      ? "border-primary bg-primary/5 text-primary"
-                      : "border-border hover:border-muted text-foreground"
-                  )}
-                >
-                  <div className={cn(
-                    "w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0",
-                    isSelected ? "bg-primary border-primary" : "border-muted"
-                  )}>
-                    {isSelected && (
-                      <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
+          {!filters.tipo ? (
+            <p className="text-xs text-muted py-2">
+              Selecione um tipo de veículo para ver os opcionais
+            </p>
+          ) : isLoadingFilters ? (
+            <p className="text-xs text-muted py-2">
+              Carregando opcionais...
+            </p>
+          ) : filteredOptions?.opcionais && filteredOptions.opcionais.length > 0 ? (
+            <div className="grid grid-cols-1 gap-1.5">
+              {filteredOptions.opcionais.map((option) => {
+                const isSelected = filters.opcionais.includes(option.codigo);
+                return (
+                  <button
+                    key={option.codigo}
+                    onClick={() => toggleOpcional(option.codigo)}
+                    className={cn(
+                      "flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-colors text-left text-xs",
+                      isSelected
+                        ? "border-primary bg-primary/5 text-primary"
+                        : "border-border hover:border-muted text-foreground"
                     )}
-                  </div>
-                  <span className="truncate">{option.label}</span>
-                </button>
-              );
-            })}
-          </div>
+                  >
+                    <div className={cn(
+                      "w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0",
+                      isSelected ? "bg-primary border-primary" : "border-muted"
+                    )}>
+                      {isSelected && (
+                        <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                    <span className="truncate">{option.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-xs text-muted py-2">
+              Nenhum opcional disponível para este tipo de veículo.
+            </p>
+          )}
         </div>
 
         {/* Price Range */}

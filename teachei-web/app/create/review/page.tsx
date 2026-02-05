@@ -8,7 +8,7 @@ import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, Di
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { useCreateIntention } from "@/hooks/use-intentions";
 import { useAuth } from "@/hooks/use-auth";
-import { formatCurrency, vehicleTypeLabels, formatOpcional, getBrazilianPhoneError, formatBrazilianPhoneInput } from "@/lib/utils";
+import { formatCurrency, vehicleTypeLabels, formatOpcional, getBrazilianPhoneError, formatBrazilianPhoneInput, stripPhoneFormatting } from "@/lib/utils";
 import { useToast } from "@/components/ui/toast";
 
 export default function CreateReviewPage() {
@@ -16,8 +16,10 @@ export default function CreateReviewPage() {
   const { success, error } = useToast();
   const { user, updateProfile, isUpdatingProfile } = useAuth();
   
-  // Contact phone state - initialized with user's whatsapp if available
-  const [telefoneContato, setTelefoneContato] = useState(() => user?.whatsapp || "");
+  // Contact phone state - initialized with user's whatsapp if available (formatted for display)
+  const [telefoneContato, setTelefoneContato] = useState(() => 
+    user?.whatsapp ? formatBrazilianPhoneInput(user.whatsapp) : ""
+  );
   const [showUpdateProfileDialog, setShowUpdateProfileDialog] = useState(false);
   const hasInitializedRef = useRef(!!user?.whatsapp);
   
@@ -173,7 +175,7 @@ export default function CreateReviewPage() {
 
   const handleUpdateProfileAndCreate = () => {
     updateProfile(
-      { whatsapp: telefoneContato },
+      { whatsapp: stripPhoneFormatting(telefoneContato) },
       {
         onSuccess: () => {
           setShowUpdateProfileDialog(false);
@@ -189,7 +191,7 @@ export default function CreateReviewPage() {
   const handleSkipProfileUpdate = () => {
     // Update profile silently (required for backend) but don't show confirmation
     updateProfile(
-      { whatsapp: telefoneContato },
+      { whatsapp: stripPhoneFormatting(telefoneContato) },
       {
         onSuccess: () => {
           setShowUpdateProfileDialog(false);

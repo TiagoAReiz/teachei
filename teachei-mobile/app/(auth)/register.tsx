@@ -17,6 +17,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRegister } from "@/hooks/use-auth";
+import { formatBrazilianPhoneInput, stripPhoneFormatting } from "@/utils/format";
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>\[\]\-_+=~`]).{8,}$/;
 
@@ -59,7 +60,7 @@ export default function RegisterScreen() {
       nome: data.nome,
       email: data.email,
       senha: data.senha,
-      telefone: data.telefone,
+      telefone: data.telefone ? stripPhoneFormatting(data.telefone) : undefined,
     });
   };
 
@@ -141,10 +142,10 @@ export default function RegisterScreen() {
               render={({ field: { onChange, onBlur, value } }) => (
                 <Input
                   icon="phone"
-                  placeholder="Telefone (opcional)"
+                  placeholder="+55 (11) 99999-8888"
                   keyboardType="phone-pad"
                   value={value}
-                  onChangeText={onChange}
+                  onChangeText={(text) => onChange(formatBrazilianPhoneInput(text))}
                   onBlur={onBlur}
                   error={errors.telefone?.message}
                 />
