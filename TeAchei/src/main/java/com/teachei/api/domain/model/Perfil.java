@@ -128,12 +128,18 @@ public class Perfil {
 
     /**
      * Fix any double-slash issues in blob storage URLs from older uploads.
+     * e.g. https://host.net//container -> https://host.net/container
      */
     private static String sanitizeBlobUrl(String url) {
         if (url == null || url.isEmpty()) return url;
-        // Fix double slashes after the protocol (https://) 
-        // e.g. https://host.net//container -> https://host.net/container
-        return url.replaceAll("(?<=https?://.{1,200})//", "/");
+        int protocolEnd = url.indexOf("://");
+        if (protocolEnd < 0) return url;
+        String protocol = url.substring(0, protocolEnd + 3); // e.g. "https://"
+        String path = url.substring(protocolEnd + 3);
+        while (path.contains("//")) {
+            path = path.replace("//", "/");
+        }
+        return protocol + path;
     }
 
     public void setFotoUrl(String fotoUrl) {

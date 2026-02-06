@@ -27,7 +27,7 @@ public record PerfilResponse(
             perfil.getUsuarioId().toString(),
             perfil.getNome(),
             perfil.getBio(),
-            perfil.getFotoUrl(),
+            sanitizeUrl(perfil.getFotoUrl()),
             perfil.getWhatsapp(),
             perfil.getWhatsappLink(),
             perfil.getInstagram(),
@@ -39,6 +39,18 @@ public record PerfilResponse(
             perfil.getTotalAvaliacoes(),
             perfil.getCriadoEm()
         );
+    }
+
+    private static String sanitizeUrl(String url) {
+        if (url == null || url.isEmpty()) return url;
+        int p = url.indexOf("://");
+        if (p < 0) return url;
+        String protocol = url.substring(0, p + 3);
+        String path = url.substring(p + 3);
+        while (path.contains("//")) {
+            path = path.replace("//", "/");
+        }
+        return protocol + path;
     }
 }
 
