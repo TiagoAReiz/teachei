@@ -94,12 +94,18 @@ export default function SettingsPage() {
   };
 
   const handlePhotoClick = () => {
+    console.log("[DEBUG] handlePhotoClick called, fileInputRef:", fileInputRef.current);
     fileInputRef.current?.click();
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("[DEBUG] handlePhotoChange called, files:", e.target.files);
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      console.log("[DEBUG] No file selected");
+      return;
+    }
+    console.log("[DEBUG] File selected:", file.name, file.type, file.size);
 
     // Validate file type
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
@@ -117,16 +123,20 @@ export default function SettingsPage() {
     const reader = new FileReader();
     reader.onload = async (event) => {
       const base64 = event.target?.result as string;
+      console.log("[DEBUG] Base64 ready, length:", base64?.length);
       
       // Reset removal state since we're uploading a new photo
       setIsPhotoRemoved(false);
       
       // Upload to Blob Storage
       setIsUploadingPhoto(true);
+      console.log("[DEBUG] Starting upload...");
       try {
         await updateProfileAsync({ foto: base64 });
+        console.log("[DEBUG] Upload success!");
         success("Foto atualizada com sucesso!");
       } catch (err) {
+        console.error("[DEBUG] Upload error:", err);
         error(err instanceof Error ? err.message : "Erro ao atualizar foto");
       } finally {
         setIsUploadingPhoto(false);
