@@ -123,7 +123,17 @@ public class Perfil {
     }
 
     public String getFotoUrl() {
-        return fotoUrl;
+        return sanitizeBlobUrl(fotoUrl);
+    }
+
+    /**
+     * Fix any double-slash issues in blob storage URLs from older uploads.
+     */
+    private static String sanitizeBlobUrl(String url) {
+        if (url == null || url.isEmpty()) return url;
+        // Fix double slashes after the protocol (https://) 
+        // e.g. https://host.net//container -> https://host.net/container
+        return url.replaceAll("(?<=https?://.{1,200})//", "/");
     }
 
     public void setFotoUrl(String fotoUrl) {
