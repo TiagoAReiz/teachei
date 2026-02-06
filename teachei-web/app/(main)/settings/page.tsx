@@ -49,11 +49,17 @@ export default function SettingsPage() {
   const { user, updateProfile, updateProfileAsync, isUpdatingProfile, changePassword, isChangingPassword } = useAuth();
   const { success, error } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [hasMounted, setHasMounted] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isPhotoRemoved, setIsPhotoRemoved] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Prevent hydration mismatch by waiting for client mount
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Reset isPhotoRemoved when user data confirms the photo is actually removed
   useEffect(() => {
@@ -225,9 +231,8 @@ export default function SettingsPage() {
                 className="relative group"
               >
                 <Avatar
-                  key={isPhotoRemoved ? "removed" : (user?.fotoUrl || "no-photo")}
-                  fotoUrl={!isPhotoRemoved ? user?.fotoUrl : undefined}
-                  fallback={user?.nome}
+                  fotoUrl={hasMounted && !isPhotoRemoved ? user?.fotoUrl : undefined}
+                  fallback={hasMounted ? user?.nome : undefined}
                   size="xl"
                   className="ring-2 ring-border group-hover:ring-primary transition-all"
                 />
