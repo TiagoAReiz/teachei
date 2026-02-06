@@ -34,9 +34,11 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   // Sync with localStorage after mount to avoid hydration mismatch
+  // This is a valid pattern for syncing client-only state after hydration
   useEffect(() => {
     const saved = localStorage.getItem("sidebar-collapsed");
     if (saved === "true") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsSidebarCollapsed(true);
     }
   }, []);
