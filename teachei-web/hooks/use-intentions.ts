@@ -140,23 +140,9 @@ export function useAvailableFilters(
   tipo?: TipoVeiculo | null,
   marcaCodigo?: string | null
 ) {
-  // Log when hook is called
-  console.log('[useAvailableFilters] Called with tipo:', tipo, 'marcaCodigo:', marcaCodigo);
-  
   return useQuery({
     queryKey: ["intentions", "filters", tipo, marcaCodigo],
-    queryFn: async () => {
-      console.log('[useAvailableFilters] Executing queryFn with tipo:', tipo);
-      const result = await getAvailableFilters(tipo || undefined, marcaCodigo || undefined);
-      console.log('[useAvailableFilters] Result:', {
-        tipos: result?.tipos?.length ?? 0,
-        marcas: result?.marcas?.length ?? 0,
-        modelos: result?.modelos?.length ?? 0,
-        opcionais: result?.opcionais?.length ?? 0,
-        opcionaisData: result?.opcionais,
-      });
-      return result;
-    },
+    queryFn: () => getAvailableFilters(tipo || undefined, marcaCodigo || undefined),
     staleTime: 60 * 1000, // 1 minute - filter options can change as intentions are created
     retry: 2, // Retry failed requests up to 2 times
   });

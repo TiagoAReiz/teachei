@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,6 +45,7 @@ public record CriarAnuncioRequest(
              message = "Estado deve ser uma UF brasileira válida (ex: SP, RJ)")
     String estado,
     
+    @Size(max = 3000000, message = "Foto de referência deve ter no máximo 2MB")
     String fotoReferenciaBase64  // Optional reference photo for the vehicle
 ) {
     public record VersaoRequest(

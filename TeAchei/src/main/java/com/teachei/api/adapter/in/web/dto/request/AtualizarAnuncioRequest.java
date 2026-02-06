@@ -3,6 +3,7 @@ package com.teachei.api.adapter.in.web.dto.request;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -41,6 +42,7 @@ public record AtualizarAnuncioRequest(
     String estado,
 
     // Reference photo - optional (Base64 encoded)
+    @Size(max = 3000000, message = "Foto de referência deve ter no máximo 2MB")
     String fotoReferenciaBase64
 ) {
     public record VersaoRequest(

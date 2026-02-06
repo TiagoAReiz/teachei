@@ -10,14 +10,20 @@ import com.teachei.api.domain.model.OpcionalVeiculo;
 import com.teachei.api.domain.model.TipoVeiculo;
 import com.teachei.api.domain.model.VeiculoInfo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Implementation of the available filters use case.
  * Aggregates distinct vehicle types, brands, and models from active intentions.
+ * Optionals come from the OpcionalVeiculo enum and are always available regardless of database state.
  */
 public class BuscarFiltrosDisponiveisUseCaseImpl implements BuscarFiltrosDisponiveisUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(BuscarFiltrosDisponiveisUseCaseImpl.class);
 
     private final AnuncioRepositoryPort anuncioRepository;
 
@@ -27,7 +33,36 @@ public class BuscarFiltrosDisponiveisUseCaseImpl implements BuscarFiltrosDisponi
 
     @Override
     public FiltrosDisponiveis buscar(TipoVeiculo tipo, String marcaCodigo) {
-        List<Anuncio> ativos = anuncioRepository.buscarAtivos();
+        // Get optionals from enum (does NOT depend on database)
+        List<OpcionalOption> opcionais;
+        if (tipo != null) {
+            opcionais = OpcionalVeiculo.getOpcionaisPorTipo(tipo).stream()
+                .map(op -> new OpcionalOption(op.name(), op.getLabel()))
+                .sorted(Comparator.comparing(OpcionalOption::label))
+                .toList();
+        } else {
+            // Return all unique optionals from all types when no type is specified
+            opcionais = Arrays.stream(OpcionalVeiculo.values())
+                .map(op -> new OpcionalOption(op.name(), op.getLabel()))
+                .sorted(Comparator.comparing(OpcionalOption::label))
+                .toList();
+        }
+        log.debug("Returning {} opcionais for tipo={}", opcionais.size(), tipo);
+
+        // Fetch active announcements from database for types, brands, and models
+        List<Anuncio> ativos;
+        try {
+            ativos = anuncioRepository.buscarAtivos();
+        } catch (Exception e) {
+            log.warn("Failed to fetch active announcements for filters: {}. Returning opcionais only.", e.getMessage());
+            // Return opcionais even if database query fails
+            return new FiltrosDisponiveis(
+                tipo != null ? List.of(tipo) : List.of(),
+                List.of(),
+                List.of(),
+                opcionais
+            );
+        }
 
         // Extract distinct vehicle types
         Set<TipoVeiculo> tiposSet = ativos.stream()
@@ -92,14 +127,6 @@ public class BuscarFiltrosDisponiveisUseCaseImpl implements BuscarFiltrosDisponi
         List<ModeloOption> modelos = modelosMap.values().stream()
             .sorted(Comparator.comparing(ModeloOption::nome))
             .toList();
-
-        // Get optionals filtered by vehicle type (empty if no type selected)
-        List<OpcionalOption> opcionais = tipo != null
-            ? OpcionalVeiculo.getOpcionaisPorTipo(tipo).stream()
-                .map(op -> new OpcionalOption(op.name(), op.getLabel()))
-                .sorted(Comparator.comparing(OpcionalOption::label))
-                .toList()
-            : List.of();
 
         return new FiltrosDisponiveis(
             new ArrayList<>(tiposSet),

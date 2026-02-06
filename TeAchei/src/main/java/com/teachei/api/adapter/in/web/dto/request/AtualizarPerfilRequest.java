@@ -30,7 +30,7 @@ public record AtualizarPerfilRequest(
     @Pattern(regexp = "^$|^(BUYER|SELLER)$", message = "Role deve ser BUYER ou SELLER")
     String role,
 
-    @Size(max = 700000, message = "Foto deve ter no máximo 500KB")
+    @Size(max = 3000000, message = "Foto deve ter no máximo 2MB")
     String foto,  // Base64 encoded photo for upload to Blob Storage
 
     Boolean removerFoto  // If true, delete existing photo

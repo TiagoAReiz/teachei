@@ -43,10 +43,10 @@ const passwordSchema = z.object({
 
 type PasswordFormData = z.infer<typeof passwordSchema>;
 
-const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB - stored in Azure Blob Storage
+const MAX_PHOTO_SIZE = 2 * 1024 * 1024; // 2MB - max size accepted by Azure Blob Storage
 
 export default function SettingsPage() {
-  const { user, updateProfile, updateProfileAsync, isUpdatingProfile, changePassword, isChangingPassword } = useAuth();
+  const { user, updateProfile, updateProfileAsync, isUpdatingProfile, changePassword, isChangingPassword, refetch } = useAuth();
   const { success, error } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hasMounted, setHasMounted] = useState(false);
@@ -83,6 +83,8 @@ export default function SettingsPage() {
     
     try {
       await updateProfileAsync({ removerFoto: true });
+      // Refetch user data to ensure UI is in sync with backend
+      await refetch();
       success("Foto removida com sucesso!");
     } catch (err) {
       // Revert removal state on error
@@ -94,18 +96,12 @@ export default function SettingsPage() {
   };
 
   const handlePhotoClick = () => {
-    console.log("[DEBUG] handlePhotoClick called, fileInputRef:", fileInputRef.current);
     fileInputRef.current?.click();
   };
 
   const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("[DEBUG] handlePhotoChange called, files:", e.target.files);
     const file = e.target.files?.[0];
-    if (!file) {
-      console.log("[DEBUG] No file selected");
-      return;
-    }
-    console.log("[DEBUG] File selected:", file.name, file.type, file.size);
+    if (!file) return;
 
     // Validate file type
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
@@ -115,7 +111,7 @@ export default function SettingsPage() {
 
     // Validate file size
     if (file.size > MAX_PHOTO_SIZE) {
-      error("Imagem deve ter no máximo 5MB");
+      error("Imagem deve ter no máximo 2MB");
       return;
     }
 
@@ -123,20 +119,18 @@ export default function SettingsPage() {
     const reader = new FileReader();
     reader.onload = async (event) => {
       const base64 = event.target?.result as string;
-      console.log("[DEBUG] Base64 ready, length:", base64?.length);
       
       // Reset removal state since we're uploading a new photo
       setIsPhotoRemoved(false);
       
       // Upload to Blob Storage
       setIsUploadingPhoto(true);
-      console.log("[DEBUG] Starting upload...");
       try {
         await updateProfileAsync({ foto: base64 });
-        console.log("[DEBUG] Upload success!");
+        // Refetch user data to ensure UI is in sync with backend
+        await refetch();
         success("Foto atualizada com sucesso!");
       } catch (err) {
-        console.error("[DEBUG] Upload error:", err);
         error(err instanceof Error ? err.message : "Erro ao atualizar foto");
       } finally {
         setIsUploadingPhoto(false);
@@ -261,7 +255,7 @@ export default function SettingsPage() {
             <div>
               <p className="font-medium text-foreground">Foto do perfil</p>
               <p className="text-sm text-muted">
-                Clique para alterar. Max 5MB.
+                Clique para alterar. Max 2MB.
               </p>
               {isUploadingPhoto && (
                 <p className="text-sm text-primary">Enviando...</p>

@@ -49,18 +49,14 @@ export function FilterModal({ visible, onClose, filters, onApply }: FilterModalP
     }
   }, [visible, filters]);
 
-  // Load optionals when vehicle type changes
+  // Load optionals when vehicle type changes (or all when no type selected)
   useEffect(() => {
-    if (localFilters.tipo) {
-      setLoadingOpcionais(true);
-      vehiclesService
-        .getOpcionais(localFilters.tipo)
-        .then(setOpcionais)
-        .catch(() => setOpcionais([]))
-        .finally(() => setLoadingOpcionais(false));
-    } else {
-      setOpcionais([]);
-    }
+    setLoadingOpcionais(true);
+    vehiclesService
+      .getOpcionais(localFilters.tipo)
+      .then(setOpcionais)
+      .catch(() => setOpcionais([]))
+      .finally(() => setLoadingOpcionais(false));
   }, [localFilters.tipo]);
 
   const handleTipoChange = (tipo: TipoVeiculo | null) => {

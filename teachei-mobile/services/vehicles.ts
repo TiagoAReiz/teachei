@@ -74,13 +74,17 @@ export const vehiclesService = {
   },
 
   /**
-   * Get available optionals for a vehicle type
-   * Returns empty array if no type is provided
+   * Get available optionals, optionally filtered by vehicle type.
+   * When no type is provided, returns all optionals from all types.
    */
-  async getOpcionais(tipoVeiculo: TipoVeiculo): Promise<OpcionalOption[]> {
+  async getOpcionais(tipoVeiculo?: TipoVeiculo | null): Promise<OpcionalOption[]> {
+    const params: Record<string, string> = {};
+    if (tipoVeiculo) {
+      params.tipo = tipoVeiculo;
+    }
     const response = await api.get<FiltrosDisponiveis>(
       API_ENDPOINTS.INTENTIONS_FILTERS,
-      { params: { tipo: tipoVeiculo } }
+      { params }
     );
     return response.data.opcionais || [];
   },
