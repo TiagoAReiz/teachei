@@ -21,13 +21,6 @@ const PUBLIC_ROUTES = [
 // Pages that should show the filter sidebar
 const FILTER_PAGES = ["/", "/feed"];
 
-// Helper to get initial collapsed state from localStorage
-function getInitialCollapsedState(): boolean {
-  if (typeof window === "undefined") return false;
-  const saved = localStorage.getItem("sidebar-collapsed");
-  return saved === "true";
-}
-
 interface MainLayoutProps {
   children: ReactNode;
   showSidebar?: boolean;
@@ -37,7 +30,16 @@ interface MainLayoutProps {
 export function MainLayout({ children, showSidebar = true, className }: MainLayoutProps) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(getInitialCollapsedState);
+  // Start with false to match server render, then sync with localStorage on mount
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  // Sync with localStorage after mount to avoid hydration mismatch
+  useEffect(() => {
+    const saved = localStorage.getItem("sidebar-collapsed");
+    if (saved === "true") {
+      setIsSidebarCollapsed(true);
+    }
+  }, []);
 
   // Handle sidebar collapse toggle
   const handleToggleSidebarCollapse = () => {
