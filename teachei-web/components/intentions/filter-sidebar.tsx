@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { X, Car, Bike, Truck, Loader2, AlertCircle, MapPin } from "lucide-react";
+import { X, Car, Bike, Truck, Loader2, AlertCircle, MapPin, ChevronDown } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
-import { useAvailableFilters } from "@/hooks/use-intentions";
+import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
 import type { TipoVeiculo, AvailableOpcional } from "@/types";
 
@@ -39,6 +39,7 @@ interface FilterSidebarProps {
 
 export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: FilterSidebarProps) {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
+  const [isOpcionaisOpen, setIsOpcionaisOpen] = useState(false);
 
   // Reset local state when initialFilters change
   useEffect(() => {
@@ -56,6 +57,9 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     filters.tipo || null,
     filters.marca || null
   );
+
+  // Fetch available locations from intentions (works independently of backend filters endpoint)
+  const { data: availableLocations } = useAvailableLocations();
 
   // Build year options (includes next year)
   const allYearOptions = generateYearOptions(30);
@@ -92,9 +96,11 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     return types;
   }, [availableFilters]);
 
-  // Build location options from all available filters
+  // Build location options - use dedicated locations hook (primary), fallback to filters endpoint
   const localizacaoOptions = useMemo(() => {
-    const locs = availableFilters?.localizacoes;
+    const locs = (availableLocations && availableLocations.length > 0)
+      ? availableLocations
+      : availableFilters?.localizacoes;
     if (!locs || locs.length === 0) return [];
     return [
       { value: "", label: "Todas as localizações" },
@@ -103,7 +109,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
         label: `${loc.cidade} - ${loc.estado}`,
       })),
     ];
-  }, [availableFilters]);
+  }, [availableLocations, availableFilters]);
 
   // Build brand options (filtered by selected type)
   const marcaOptions = useMemo(() => {
@@ -373,55 +379,78 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
             </div>
           )}
 
-          {/* Optional Features - always shown, filtered by tipo when selected */}
-          <div className="space-y-3">
-            <label className="block text-sm font-medium text-foreground">
-              Opcionais
-            </label>
-            {(filters.tipo ? filteredOptionsError : filtersError) ? (
-              <div className="flex items-center gap-2 py-2 text-error">
-                <AlertCircle className="w-4 h-4" />
-                <span className="text-sm">Erro ao carregar opcionais</span>
+          {/* Optional Features - collapsible dropdown */}
+          <div className="space-y-2">
+            <button
+              type="button"
+              onClick={() => setIsOpcionaisOpen(!isOpcionaisOpen)}
+              className="w-full flex items-center justify-between px-4 py-2.5 bg-background border border-border rounded-xl text-sm font-medium text-foreground hover:bg-muted/10 transition-colors"
+            >
+              <span className="flex items-center gap-2">
+                Opcionais
+                {filters.opcionais.length > 0 && (
+                  <span className="min-w-5 h-5 flex items-center justify-center bg-primary text-white text-xs font-bold rounded-full px-1">
+                    {filters.opcionais.length}
+                  </span>
+                )}
+              </span>
+              <ChevronDown
+                size={16}
+                className={cn(
+                  "text-muted transition-transform duration-200",
+                  isOpcionaisOpen && "rotate-180"
+                )}
+              />
+            </button>
+
+            {isOpcionaisOpen && (
+              <div className="rounded-xl border border-border bg-background p-3">
+                {(filters.tipo ? filteredOptionsError : filtersError) ? (
+                  <div className="flex items-center gap-2 py-2 text-error">
+                    <AlertCircle className="w-4 h-4" />
+                    <span className="text-sm">Erro ao carregar opcionais</span>
+                  </div>
+                ) : (filters.tipo ? isLoadingFilteredOptions : isLoadingFilters) ? (
+                  <div className="flex items-center gap-2 py-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
+                    <span className="text-sm text-muted">Carregando opcionais...</span>
+                  </div>
+                ) : opcionaisDisponiveis.length > 0 ? (
+                  <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
+                    {opcionaisDisponiveis.map((option) => {
+                      const isSelected = filters.opcionais.includes(option.codigo);
+                      return (
+                        <button
+                          key={option.codigo}
+                          onClick={() => toggleOpcional(option.codigo)}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-left text-sm",
+                            isSelected
+                              ? "border-primary bg-primary/5 text-primary"
+                              : "border-border hover:border-muted text-foreground"
+                          )}
+                        >
+                          <div className={cn(
+                            "w-4 h-4 rounded border flex items-center justify-center flex-shrink-0",
+                            isSelected ? "bg-primary border-primary" : "border-muted"
+                          )}>
+                            {isSelected && (
+                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
+                          <span className="truncate">{option.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted py-1">
+                    Nenhum opcional disponível.
+                  </p>
+                )}
               </div>
-            ) : (filters.tipo ? isLoadingFilteredOptions : isLoadingFilters) ? (
-              <div className="flex items-center gap-2 py-2">
-                <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                <span className="text-sm text-muted">Carregando opcionais...</span>
-              </div>
-            ) : opcionaisDisponiveis.length > 0 ? (
-              <div className="grid grid-cols-2 gap-2">
-                {opcionaisDisponiveis.map((option) => {
-                  const isSelected = filters.opcionais.includes(option.codigo);
-                  return (
-                    <button
-                      key={option.codigo}
-                      onClick={() => toggleOpcional(option.codigo)}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-left text-sm",
-                        isSelected
-                          ? "border-primary bg-primary/5 text-primary"
-                          : "border-border hover:border-muted text-foreground"
-                      )}
-                    >
-                      <div className={cn(
-                        "w-4 h-4 rounded border flex items-center justify-center flex-shrink-0",
-                        isSelected ? "bg-primary border-primary" : "border-muted"
-                      )}>
-                        {isSelected && (
-                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </div>
-                      <span className="truncate">{option.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            ) : (
-              <p className="text-sm text-muted">
-                Nenhum opcional disponível.
-              </p>
             )}
           </div>
 

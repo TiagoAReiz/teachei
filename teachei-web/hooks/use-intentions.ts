@@ -15,6 +15,7 @@ import {
   markAsCompleted,
   deleteIntention,
   getAvailableFilters,
+  getAvailableLocations,
 } from "@/lib/intentions";
 import type { CreateAnuncioRequest, UpdateAnuncioRequest, IntentionFilters, TipoVeiculo } from "@/types";
 
@@ -145,5 +146,18 @@ export function useAvailableFilters(
     queryFn: () => getAvailableFilters(tipo || undefined, marcaCodigo || undefined),
     staleTime: 60 * 1000, // 1 minute - filter options can change as intentions are created
     retry: 2, // Retry failed requests up to 2 times
+  });
+}
+
+/**
+ * Hook for fetching available location options from existing intentions.
+ * Extracts distinct city/state pairs from intention contact data.
+ */
+export function useAvailableLocations() {
+  return useQuery({
+    queryKey: ["intentions", "locations"],
+    queryFn: getAvailableLocations,
+    staleTime: 5 * 60 * 1000, // 5 minutes - locations change infrequently
+    retry: 2,
   });
 }

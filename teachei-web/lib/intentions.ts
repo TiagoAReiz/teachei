@@ -3,6 +3,7 @@ import { api } from "./api";
 import type {
   Anuncio,
   AvailableFilters,
+  AvailableLocalizacao,
   CreateAnuncioRequest,
   UpdateAnuncioRequest,
   PaginatedResponse,
@@ -126,7 +127,46 @@ export async function getAvailableFilters(
     ? `${API_ENDPOINTS.INTENTION_FILTERS}?${queryString}`
     : API_ENDPOINTS.INTENTION_FILTERS;
 
-  return api.get<AvailableFilters>(url, { requireAuth: false });
+  const data = await api.get<AvailableFilters>(url, { requireAuth: false });
+  
+  // Ensure localizacoes array exists (backend may not include it yet)
+  if (!data.localizacoes) {
+    data.localizacoes = [];
+  }
+  
+  return data;
+}
+
+/**
+ * Fetch available location options by extracting distinct city/state pairs
+ * from existing active intentions. This works independently of the backend
+ * filters endpoint - it reads from the regular listing API.
+ */
+export async function getAvailableLocations(): Promise<AvailableLocalizacao[]> {
+  // Fetch a large page of intentions to get a good sample of locations
+  const result = await getIntentions({ size: 200 });
+  
+  // Extract unique city/state pairs from intention contact data
+  const locationMap = new Map<string, AvailableLocalizacao>();
+  
+  for (const intention of result.content) {
+    const cidade = intention.contato?.cidade;
+    const estado = intention.contato?.estado;
+    
+    if (cidade && estado) {
+      const key = `${cidade}|${estado}`;
+      if (!locationMap.has(key)) {
+        locationMap.set(key, { cidade, estado });
+      }
+    }
+  }
+  
+  // Sort by estado then cidade
+  return Array.from(locationMap.values()).sort((a, b) => {
+    const stateCompare = a.estado.localeCompare(b.estado);
+    if (stateCompare !== 0) return stateCompare;
+    return a.cidade.localeCompare(b.cidade);
+  });
 }
 
 
