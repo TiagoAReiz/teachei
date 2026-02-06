@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans, Nunito } from "next/font/google";
-import Script from "next/script";
 import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
@@ -80,13 +79,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={`${plusJakarta.variable} ${nunito.variable} font-display antialiased`} suppressHydrationWarning>
-        <Providers>{children}</Providers>
-        <Script
+      <head>
+        {/* AdSense script - ESTÁ CORRETO AQUI NO HEAD, NÃO MOVER! */}
+        <script
+          async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7405468272628923"
-          strategy="afterInteractive"
           crossOrigin="anonymous"
         />
+      </head>
+      <body className={`${plusJakarta.variable} ${nunito.variable} font-display antialiased`} suppressHydrationWarning>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
