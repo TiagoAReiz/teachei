@@ -6,6 +6,19 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+/**
+ * Sanitize blob storage URLs that may contain double slashes after the domain.
+ * e.g. https://host.net//container/blob -> https://host.net/container/blob
+ */
+export function sanitizeUrl(url: string | null | undefined): string | undefined {
+  if (!url) return undefined;
+  const match = url.match(/^(https?:\/\/)(.*)/);
+  if (!match) return url;
+  const protocol = match[1];
+  const rest = match[2].replace(/\/\//g, "/");
+  return protocol + rest;
+}
+
 // Format currency to BRL
 export function formatCurrency(value: number): string {
   return new Intl.NumberFormat("pt-BR", {

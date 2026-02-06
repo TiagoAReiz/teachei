@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { Bookmark, Share2, Car, Bike, Truck, Gauge } from "lucide-react";
 import { Card, CardContent, Badge } from "@/components/ui";
-import { cn, formatCurrency, formatRelativeTime, vehicleTypeLabels, formatOpcional } from "@/lib/utils";
+import { cn, formatCurrency, formatRelativeTime, vehicleTypeLabels, formatOpcional, sanitizeUrl } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
 import type { Anuncio, TipoVeiculo } from "@/types";
 
@@ -76,7 +76,7 @@ export function IntentionCard({ intention }: IntentionCardProps) {
         <div className="relative h-48 overflow-hidden rounded-t-2xl">
           {intention.veiculo.fotoReferenciaUrl ? (
             <img
-              src={intention.veiculo.fotoReferenciaUrl}
+              src={sanitizeUrl(intention.veiculo.fotoReferenciaUrl)}
               alt={`${intention.veiculo.marcaNome} ${intention.veiculo.modeloNome}`}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
             />

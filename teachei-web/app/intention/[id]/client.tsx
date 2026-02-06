@@ -32,7 +32,7 @@ const vehicleTypeIcons: Record<TipoVeiculo, typeof Car> = {
   CAMINHAO: Truck,
 };
 import { Button, Card, CardContent, Badge, Avatar } from "@/components/ui";
-import { formatCurrency, formatRelativeTime, formatExpiration, vehicleTypeLabels, getWhatsAppLink, getInstagramLink, formatOpcional } from "@/lib/utils";
+import { formatCurrency, formatRelativeTime, formatExpiration, vehicleTypeLabels, getWhatsAppLink, getInstagramLink, formatOpcional, sanitizeUrl } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
 import { getUserProfile } from "@/lib/auth";
 import type { Anuncio } from "@/types";
@@ -275,7 +275,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                   Foto de referência
                 </h2>
                 <img 
-                  src={intention.veiculo.fotoReferenciaUrl}
+                  src={sanitizeUrl(intention.veiculo.fotoReferenciaUrl)}
                   alt="Foto de referência do veículo"
                   className="w-full max-w-md h-auto rounded-xl border border-border object-cover"
                 />

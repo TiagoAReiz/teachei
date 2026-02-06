@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn, sanitizeUrl } from "@/lib/utils";
 import { User } from "lucide-react";
 
 interface AvatarProps {
@@ -44,7 +44,7 @@ function Avatar({ src, fotoUrl, alt, size = "md", className, fallback }: AvatarP
   };
 
   // Priority: fotoUrl (Blob Storage) > src (external URL like Google avatar)
-  const imageSrc = fotoUrl || src;
+  const imageSrc = sanitizeUrl(fotoUrl) || sanitizeUrl(src);
 
   if (imageSrc) {
     return (

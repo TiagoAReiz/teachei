@@ -6,7 +6,7 @@ import { ArrowLeft, AlertCircle, Save, Car, Bike, Truck, Camera, X, Loader2 } fr
 import { Button, Card, CardContent, CurrencyInput, Select, LocationPicker, MileageInput } from "@/components/ui";
 import { useIntention, useUpdateIntention, useAvailableFilters } from "@/hooks/use-intentions";
 import { useToast } from "@/components/ui/toast";
-import { vehicleColors, generateYearOptions } from "@/lib/utils";
+import { vehicleColors, generateYearOptions, sanitizeUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import type { TipoVeiculo, VersaoRequest, Anuncio } from "@/types";
 
@@ -78,7 +78,7 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
 
   // Reference photo state
   const [fotoReferenciaBase64, setFotoReferenciaBase64] = useState<string | null>(null);
-  const [currentPhotoUrl] = useState<string | null>(veiculo.fotoReferenciaUrl || null);
+  const [currentPhotoUrl] = useState<string | null>(sanitizeUrl(veiculo.fotoReferenciaUrl) || null);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
