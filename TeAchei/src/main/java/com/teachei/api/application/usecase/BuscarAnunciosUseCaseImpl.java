@@ -32,6 +32,8 @@ public class BuscarAnunciosUseCaseImpl implements BuscarAnunciosUseCase {
             filtro.anoMax(),
             filtro.precoMin(),
             filtro.precoMax(),
+            filtro.kmMin(),
+            filtro.kmMax(),
             filtro.search(),
             filtro.opcionais(),
             filtro.cidade(),

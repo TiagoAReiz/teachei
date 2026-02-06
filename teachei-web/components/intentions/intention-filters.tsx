@@ -34,6 +34,8 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     precoMax: searchParams.get("precoMax") ? parseInt(searchParams.get("precoMax")!) : null,
     anoMin: searchParams.get("anoMin") ? parseInt(searchParams.get("anoMin")!) : null,
     anoMax: searchParams.get("anoMax") ? parseInt(searchParams.get("anoMax")!) : null,
+    kmMin: searchParams.get("kmMin") ? parseInt(searchParams.get("kmMin")!) : null,
+    kmMax: searchParams.get("kmMax") ? parseInt(searchParams.get("kmMax")!) : null,
   }), [searchParams]);
 
   const currentSearch = searchParams.get("search") || "";
@@ -49,6 +51,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     if (currentFilters.opcionais.length > 0) count++;
     if (currentFilters.precoMin !== null || currentFilters.precoMax !== null) count++;
     if (currentFilters.anoMin !== null || currentFilters.anoMax !== null) count++;
+    if (currentFilters.kmMin !== null || currentFilters.kmMax !== null) count++;
     return count;
   }, [currentFilters]);
 
@@ -103,6 +106,8 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     if (filters.precoMax !== null) params.set("precoMax", filters.precoMax.toString());
     if (filters.anoMin !== null) params.set("anoMin", filters.anoMin.toString());
     if (filters.anoMax !== null) params.set("anoMax", filters.anoMax.toString());
+    if (filters.kmMin !== null) params.set("kmMin", filters.kmMin.toString());
+    if (filters.kmMax !== null) params.set("kmMax", filters.kmMax.toString());
 
     const queryString = params.toString();
     router.push(queryString ? `/feed?${queryString}` : "/feed");
@@ -279,6 +284,18 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
               Faixa de ano
               <button
                 onClick={() => removeRangeFilter("anoMin", "anoMax")}
+                className="hover:bg-primary/20 rounded-full p-0.5"
+              >
+                <X size={14} />
+              </button>
+            </span>
+          )}
+
+          {(currentFilters.kmMin !== null || currentFilters.kmMax !== null) && (
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full">
+              Quilometragem
+              <button
+                onClick={() => removeRangeFilter("kmMin", "kmMax")}
                 className="hover:bg-primary/20 rounded-full p-0.5"
               >
                 <X size={14} />

@@ -109,6 +109,8 @@ export default function HomeScreen() {
     precoMax: null,
     anoMin: null,
     anoMax: null,
+    kmMin: null,
+    kmMax: null,
   });
 
   // Sync selectedType with filters.tipo
@@ -127,7 +129,9 @@ export default function HomeScreen() {
     (filters.precoMin !== null ? 1 : 0) +
     (filters.precoMax !== null ? 1 : 0) +
     (filters.anoMin !== null ? 1 : 0) +
-    (filters.anoMax !== null ? 1 : 0);
+    (filters.anoMax !== null ? 1 : 0) +
+    (filters.kmMin !== null ? 1 : 0) +
+    (filters.kmMax !== null ? 1 : 0);
 
   // Use mock data for now - replace with actual API call when backend is ready
   // const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useIntentions({

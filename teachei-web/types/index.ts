@@ -304,6 +304,8 @@ export interface IntentionFilters {
   anoMax?: number;
   precoMin?: number;
   precoMax?: number;
+  kmMin?: number;
+  kmMax?: number;
   opcionais?: string[];
   ordenar?: SortOption;
   page?: number;

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { X, Car, Bike, Truck, Loader2, AlertCircle } from "lucide-react";
-import { Button, Select, CurrencyInput } from "@/components/ui";
+import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
 import type { TipoVeiculo, AvailableOpcional } from "@/types";
@@ -24,6 +24,8 @@ export interface FilterState {
   precoMax: number | null;
   anoMin: number | null;
   anoMax: number | null;
+  kmMin: number | null;
+  kmMax: number | null;
 }
 
 interface FilterSidebarProps {
@@ -206,6 +208,8 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
       precoMax: null,
       anoMin: null,
       anoMax: null,
+      kmMin: null,
+      kmMax: null,
     };
     setFilters(cleared);
     onApply(cleared);
@@ -259,7 +263,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
             <label className="block text-sm font-medium text-foreground">
               Tipo de Veículo
             </label>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-col gap-2">
               {availableTypes.map((type) => {
                 const Icon = type.icon;
                 const isActive = filters.tipo === type.value;
@@ -269,7 +273,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
                     key={type.value}
                     onClick={() => handleTipoChange(type.value)}
                     className={cn(
-                      "flex items-center gap-2 px-4 py-2 rounded-full font-medium text-sm transition-colors",
+                      "flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors w-full",
                       isActive
                         ? "bg-primary text-white"
                         : "bg-background border border-border text-foreground hover:bg-muted/10"
@@ -401,6 +405,27 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
             {priceError && (
               <p className="text-xs text-error">{priceError}</p>
             )}
+          </div>
+
+          {/* Mileage Range */}
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-foreground">
+              Quilometragem
+            </label>
+            <div className="grid grid-cols-2 gap-4">
+              <MileageInput
+                label=""
+                placeholder="Mínima"
+                value={filters.kmMin}
+                onChange={(value) => setFilters((prev) => ({ ...prev, kmMin: value }))}
+              />
+              <MileageInput
+                label=""
+                placeholder="Máxima"
+                value={filters.kmMax}
+                onChange={(value) => setFilters((prev) => ({ ...prev, kmMax: value }))}
+              />
+            </div>
           </div>
 
           {/* Year Range */}

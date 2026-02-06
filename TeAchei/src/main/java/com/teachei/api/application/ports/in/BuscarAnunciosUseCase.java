@@ -51,6 +51,8 @@ public interface BuscarAnunciosUseCase {
         Integer anoMax,
         BigDecimal precoMin,
         BigDecimal precoMax,
+        Integer kmMin,
+        Integer kmMax,
         String search,
         List<String> opcionais,
         String cidade,
@@ -58,7 +60,7 @@ public interface BuscarAnunciosUseCase {
         OrdemAnuncio ordenar // Sort order (default: RECENTE)
     ) {
         public static FiltroAnuncio vazio() {
-            return new FiltroAnuncio(null, null, null, null, null, null, null, null, null, null, null, null, null);
+            return new FiltroAnuncio(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
         }
     }
 

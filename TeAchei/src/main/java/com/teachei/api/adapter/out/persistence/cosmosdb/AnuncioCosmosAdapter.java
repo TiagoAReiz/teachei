@@ -55,6 +55,7 @@ public class AnuncioCosmosAdapter implements AnuncioRepositoryPort {
                                   List<String> modelos,
                                   Integer anoMin, Integer anoMax,
                                   BigDecimal precoMin, BigDecimal precoMax,
+                                  Integer kmMin, Integer kmMax,
                                   String search, List<String> opcionais,
                                   String cidade, String estado,
                                   OrdemAnuncio ordenar,
@@ -96,6 +97,19 @@ public class AnuncioCosmosAdapter implements AnuncioRepositoryPort {
                 var preco = a.getVeiculoInfo().getPrecoMaximo();
                 if (precoMin != null && preco.compareTo(precoMin) < 0) return false;
                 if (precoMax != null && preco.compareTo(precoMax) > 0) return false;
+                return true;
+            })
+            // Mileage range filter: matches if the intention's km range overlaps with the filter range
+            .filter(a -> {
+                if (kmMin == null && kmMax == null) return true;
+                if (a.getVeiculoInfo() == null) return false;
+                Integer adKmMax = a.getVeiculoInfo().getQuilometragemMaxima();
+                Integer adKmMin = a.getVeiculoInfo().getQuilometragemMinima();
+                // If intention has no km data, include it (don't filter out)
+                if (adKmMax == null && adKmMin == null) return true;
+                // Filter by km range overlap
+                if (kmMin != null && adKmMax != null && adKmMax < kmMin) return false;
+                if (kmMax != null && adKmMin != null && adKmMin > kmMax) return false;
                 return true;
             })
             // Text search filter: case-insensitive search in marca, modelo, modeloBase, observacoes

@@ -23,6 +23,8 @@ function HomeContent() {
     anoMax: searchParams.get("anoMax") ? parseInt(searchParams.get("anoMax")!) : undefined,
     precoMin: searchParams.get("precoMin") ? parseInt(searchParams.get("precoMin")!) : undefined,
     precoMax: searchParams.get("precoMax") ? parseInt(searchParams.get("precoMax")!) : undefined,
+    kmMin: searchParams.get("kmMin") ? parseInt(searchParams.get("kmMin")!) : undefined,
+    kmMax: searchParams.get("kmMax") ? parseInt(searchParams.get("kmMax")!) : undefined,
     opcionais: searchParams.get("opcionais")?.split(",").filter(Boolean) || undefined,
     ordenar: (searchParams.get("ordenar") as SortOption) || undefined,
   };

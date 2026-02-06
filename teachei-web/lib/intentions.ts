@@ -30,6 +30,8 @@ export async function getIntentions(
   if (filters.anoMax !== undefined) params.append("anoMax", filters.anoMax.toString());
   if (filters.precoMin !== undefined) params.append("precoMin", filters.precoMin.toString());
   if (filters.precoMax !== undefined) params.append("precoMax", filters.precoMax.toString());
+  if (filters.kmMin !== undefined) params.append("kmMin", filters.kmMin.toString());
+  if (filters.kmMax !== undefined) params.append("kmMax", filters.kmMax.toString());
   if (filters.opcionais && filters.opcionais.length > 0) {
     // Send each opcional as a separate parameter for proper Spring List parsing
     filters.opcionais.forEach(opcional => params.append("opcionais", opcional));

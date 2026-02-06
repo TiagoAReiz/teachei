@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
+  TextInput,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -21,6 +22,8 @@ interface FilterState {
   precoMax: number | null;
   anoMin: number | null;
   anoMax: number | null;
+  kmMin: number | null;
+  kmMax: number | null;
 }
 
 interface FilterModalProps {
@@ -90,6 +93,8 @@ export function FilterModal({ visible, onClose, filters, onApply }: FilterModalP
       precoMax: null,
       anoMin: null,
       anoMax: null,
+      kmMin: null,
+      kmMax: null,
     };
     setLocalFilters(cleared);
   };
@@ -100,7 +105,9 @@ export function FilterModal({ visible, onClose, filters, onApply }: FilterModalP
     (localFilters.precoMin !== null ? 1 : 0) +
     (localFilters.precoMax !== null ? 1 : 0) +
     (localFilters.anoMin !== null ? 1 : 0) +
-    (localFilters.anoMax !== null ? 1 : 0);
+    (localFilters.anoMax !== null ? 1 : 0) +
+    (localFilters.kmMin !== null ? 1 : 0) +
+    (localFilters.kmMax !== null ? 1 : 0);
 
   return (
     <Modal
@@ -133,17 +140,22 @@ export function FilterModal({ visible, onClose, filters, onApply }: FilterModalP
             <Text className="text-sm font-display-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
               Tipo de Veículo
             </Text>
-            <View className="flex-row flex-wrap gap-2">
+            <View className="gap-2">
               <TouchableOpacity
                 onPress={() => handleTipoChange(null)}
-                className={`flex-row items-center px-4 py-2.5 rounded-full ${
+                className={`flex-row items-center px-4 py-3 rounded-xl ${
                   localFilters.tipo === null
                     ? "bg-primary-light"
                     : "bg-slate-100 dark:bg-slate-800"
                 }`}
               >
+                <MaterialIcons
+                  name="directions-car"
+                  size={18}
+                  color={localFilters.tipo === null ? "#fff" : "#64748b"}
+                />
                 <Text
-                  className={`font-display-medium ${
+                  className={`ml-2 font-display-medium ${
                     localFilters.tipo === null
                       ? "text-white"
                       : "text-slate-700 dark:text-slate-300"
@@ -156,7 +168,7 @@ export function FilterModal({ visible, onClose, filters, onApply }: FilterModalP
                 <TouchableOpacity
                   key={item.type}
                   onPress={() => handleTipoChange(item.type)}
-                  className={`flex-row items-center gap-2 px-4 py-2.5 rounded-full ${
+                  className={`flex-row items-center gap-2 px-4 py-3 rounded-xl ${
                     localFilters.tipo === item.type
                       ? "bg-primary-light"
                       : "bg-slate-100 dark:bg-slate-800"
@@ -240,6 +252,47 @@ export function FilterModal({ visible, onClose, filters, onApply }: FilterModalP
                 Nenhum opcional disponível para este tipo de veículo.
               </Text>
             )}
+          </View>
+
+          {/* Mileage Range */}
+          <View className="mb-6">
+            <Text className="text-sm font-display-bold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-3">
+              Quilometragem
+            </Text>
+            <View className="flex-row gap-3">
+              <View className="flex-1">
+                <Text className="text-xs text-slate-500 dark:text-slate-400 mb-1">
+                  Mínima
+                </Text>
+                <TextInput
+                  className="border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 font-display-medium text-slate-900 dark:text-white"
+                  placeholder="0 km"
+                  placeholderTextColor="#94a3b8"
+                  keyboardType="numeric"
+                  value={localFilters.kmMin !== null ? localFilters.kmMin.toString() : ""}
+                  onChangeText={(text) => {
+                    const num = text ? parseInt(text.replace(/\D/g, ""), 10) : null;
+                    setLocalFilters((prev) => ({ ...prev, kmMin: num && !isNaN(num) ? num : null }));
+                  }}
+                />
+              </View>
+              <View className="flex-1">
+                <Text className="text-xs text-slate-500 dark:text-slate-400 mb-1">
+                  Máxima
+                </Text>
+                <TextInput
+                  className="border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 font-display-medium text-slate-900 dark:text-white"
+                  placeholder="Sem limite"
+                  placeholderTextColor="#94a3b8"
+                  keyboardType="numeric"
+                  value={localFilters.kmMax !== null ? localFilters.kmMax.toString() : ""}
+                  onChangeText={(text) => {
+                    const num = text ? parseInt(text.replace(/\D/g, ""), 10) : null;
+                    setLocalFilters((prev) => ({ ...prev, kmMax: num && !isNaN(num) ? num : null }));
+                  }}
+                />
+              </View>
+            </View>
           </View>
 
           {/* Selected filters count */}

@@ -52,6 +52,8 @@ public interface AnuncioRepositoryPort {
      * @param anoMax the maximum year filter
      * @param precoMin the minimum price filter
      * @param precoMax the maximum price filter
+     * @param kmMin the minimum mileage filter
+     * @param kmMax the maximum mileage filter
      * @param search the text search filter
      * @param opcionais the optionals filter
      * @param cidade the city filter
@@ -71,6 +73,8 @@ public interface AnuncioRepositoryPort {
         Integer anoMax,
         BigDecimal precoMin,
         BigDecimal precoMax,
+        Integer kmMin,
+        Integer kmMax,
         String search,
         List<String> opcionais,
         String cidade,

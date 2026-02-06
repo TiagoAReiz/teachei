@@ -102,6 +102,9 @@ public class AnuncioController {
             @RequestParam(required = false) BigDecimal precoMinimo,
             @RequestParam(required = false) BigDecimal precoMin,
             @RequestParam(required = false) BigDecimal precoMax,
+            // Mileage range filters
+            @RequestParam(required = false) Integer kmMin,
+            @RequestParam(required = false) Integer kmMax,
             // Text search
             @RequestParam(required = false) String search,
             // Optionals filter (comma-separated)
@@ -137,6 +140,7 @@ public class AnuncioController {
             tipoFinal, marcaCodigo, modeloCodigo, modelosList,
             anoMinFinal, anoMaxFinal,
             precoMinFinal, precoMax,
+            kmMin, kmMax,
             search, opcionais,
             cidade, estado,
             ordenar);

@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Car, Bike, Truck, ChevronLeft, ChevronRight } from "lucide-react";
-import { Button, Select, CurrencyInput } from "@/components/ui";
+import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
 import type { TipoVeiculo } from "@/types";
@@ -24,6 +24,8 @@ interface FilterState {
   precoMax: number | null;
   anoMin: number | null;
   anoMax: number | null;
+  kmMin: number | null;
+  kmMax: number | null;
 }
 
 interface FilterPanelProps {
@@ -48,6 +50,8 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
     precoMax: searchParams.get("precoMax") ? parseInt(searchParams.get("precoMax")!) : null,
     anoMin: searchParams.get("anoMin") ? parseInt(searchParams.get("anoMin")!) : null,
     anoMax: searchParams.get("anoMax") ? parseInt(searchParams.get("anoMax")!) : null,
+    kmMin: searchParams.get("kmMin") ? parseInt(searchParams.get("kmMin")!) : null,
+    kmMax: searchParams.get("kmMax") ? parseInt(searchParams.get("kmMax")!) : null,
   });
 
   // Fetch available filter options based on existing intentions
@@ -182,6 +186,8 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
     if (newFilters.precoMax !== null) params.set("precoMax", newFilters.precoMax.toString());
     if (newFilters.anoMin !== null) params.set("anoMin", newFilters.anoMin.toString());
     if (newFilters.anoMax !== null) params.set("anoMax", newFilters.anoMax.toString());
+    if (newFilters.kmMin !== null) params.set("kmMin", newFilters.kmMin.toString());
+    if (newFilters.kmMax !== null) params.set("kmMax", newFilters.kmMax.toString());
     
     // Keep search param if exists
     const search = searchParams.get("search");
@@ -236,6 +242,8 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
       precoMax: null,
       anoMin: null,
       anoMax: null,
+      kmMin: null,
+      kmMax: null,
     };
     setFilters(cleared);
     applyFilters(cleared);
@@ -280,7 +288,7 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
           <label className="block text-xs font-medium text-muted uppercase tracking-wide">
             Tipo de Veículo
           </label>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-col gap-1.5">
             {availableTypes.map((type) => {
               const Icon = type.icon;
               const isActive = filters.tipo === type.value;
@@ -290,7 +298,7 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
                   key={type.value}
                   onClick={() => handleTipoChange(type.value)}
                   className={cn(
-                    "flex items-center gap-1.5 px-2.5 py-1.5 rounded-full font-medium text-xs transition-colors",
+                    "flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-xs transition-colors w-full",
                     isActive
                       ? "bg-primary text-white"
                       : "bg-background border border-border text-foreground hover:bg-muted/10"
@@ -439,6 +447,27 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
           {priceError && (
             <p className="text-xs text-error">{priceError}</p>
           )}
+        </div>
+
+        {/* Mileage Range */}
+        <div className="space-y-2">
+          <label className="block text-xs font-medium text-muted uppercase tracking-wide">
+            Quilometragem
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <MileageInput
+              label=""
+              placeholder="Mínima"
+              value={filters.kmMin}
+              onChange={(value) => setFilters((prev) => ({ ...prev, kmMin: value }))}
+            />
+            <MileageInput
+              label=""
+              placeholder="Máxima"
+              value={filters.kmMax}
+              onChange={(value) => setFilters((prev) => ({ ...prev, kmMax: value }))}
+            />
+          </div>
         </div>
 
         {/* Year Range */}

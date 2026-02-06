@@ -19,6 +19,8 @@ function FeedContent() {
   const precoMaxStr = searchParams.get("precoMax");
   const anoMinStr = searchParams.get("anoMin");
   const anoMaxStr = searchParams.get("anoMax");
+  const kmMinStr = searchParams.get("kmMin");
+  const kmMaxStr = searchParams.get("kmMax");
   const opcionaisStr = searchParams.get("opcionais");
 
   const filters: Omit<Filters, "page"> = {
@@ -32,6 +34,8 @@ function FeedContent() {
     precoMax: precoMaxStr ? parseInt(precoMaxStr, 10) : undefined,
     anoMin: anoMinStr ? parseInt(anoMinStr, 10) : undefined,
     anoMax: anoMaxStr ? parseInt(anoMaxStr, 10) : undefined,
+    kmMin: kmMinStr ? parseInt(kmMinStr, 10) : undefined,
+    kmMax: kmMaxStr ? parseInt(kmMaxStr, 10) : undefined,
     opcionais: opcionaisStr ? opcionaisStr.split(",").filter(Boolean) : undefined,
   };
 
