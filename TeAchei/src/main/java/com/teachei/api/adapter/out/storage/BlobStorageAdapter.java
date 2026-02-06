@@ -148,7 +148,9 @@ public class BlobStorageAdapter implements BlobStoragePort {
         blobClient.upload(new ByteArrayInputStream(imageBytes), imageBytes.length, true);
         blobClient.setHttpHeaders(headers);
 
-        return String.format("%s/%s/%s", blobEndpoint, containerName, blobName);
+        // Remove trailing slash from endpoint to avoid double slashes in URL
+        String endpoint = blobEndpoint.endsWith("/") ? blobEndpoint.substring(0, blobEndpoint.length() - 1) : blobEndpoint;
+        return String.format("%s/%s/%s", endpoint, containerName, blobName);
     }
 
     private void deleteBlob(String containerName, String blobName) {
