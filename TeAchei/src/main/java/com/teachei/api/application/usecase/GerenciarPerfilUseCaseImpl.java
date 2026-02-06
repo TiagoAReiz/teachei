@@ -33,6 +33,9 @@ public class GerenciarPerfilUseCaseImpl implements GerenciarPerfilUseCase {
 
     @Override
     public Perfil atualizar(UUID usuarioId, AtualizarPerfilCommand command) {
+        log.info("Updating profile for user {}, removerFoto={}, hasFoto={}", 
+            usuarioId, command.removerFoto(), command.foto() != null);
+        
         Perfil perfil = perfilRepository.buscarPorUsuarioId(usuarioId)
             .orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
 
@@ -53,6 +56,7 @@ public class GerenciarPerfilUseCaseImpl implements GerenciarPerfilUseCase {
 
         // Handle photo removal
         if (Boolean.TRUE.equals(command.removerFoto())) {
+            log.info("Processing photo removal for user {}, current fotoUrl={}", usuarioId, perfil.getFotoUrl());
             // Delete from Blob Storage if exists
             if (perfil.getFotoUrl() != null) {
                 try {
@@ -83,7 +87,9 @@ public class GerenciarPerfilUseCaseImpl implements GerenciarPerfilUseCase {
             }
         }
 
-        return perfilRepository.salvar(perfil);
+        Perfil saved = perfilRepository.salvar(perfil);
+        log.info("Profile saved for user {}, fotoUrl={}", usuarioId, saved.getFotoUrl());
+        return saved;
     }
 }
 

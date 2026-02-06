@@ -46,29 +46,45 @@ type PasswordFormData = z.infer<typeof passwordSchema>;
 const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5MB - stored in Azure Blob Storage
 
 export default function SettingsPage() {
-  const { user, updateProfile, isUpdatingProfile, changePassword, isChangingPassword } = useAuth();
+  const { user, updateProfile, updateProfileAsync, isUpdatingProfile, changePassword, isChangingPassword } = useAuth();
   const { success, error } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const [isPhotoRemoved, setIsPhotoRemoved] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Check if user has a photo in Blob Storage
-  const hasPhoto = !!user?.fotoUrl;
+  // Reset isPhotoRemoved when user data confirms the photo is actually removed
+  useEffect(() => {
+    if (isPhotoRemoved && !user?.fotoUrl) {
+      setIsPhotoRemoved(false);
+    }
+  }, [user?.fotoUrl, isPhotoRemoved]);
 
-  const handleRemovePhoto = () => {
+  // Check if user has a photo in Blob Storage - consider local removal state
+  const hasPhoto = !isPhotoRemoved && !!user?.fotoUrl;
+
+  const handleRemovePhoto = async () => {
+    if (!hasPhoto) {
+      error("Não há foto para remover");
+      return;
+    }
+    
+    // Set removal state immediately for instant UI feedback
+    setIsPhotoRemoved(true);
     setIsUploadingPhoto(true);
-    updateProfile({ removerFoto: true }, {
-      onSuccess: () => {
-        success("Foto removida com sucesso!");
-        setIsUploadingPhoto(false);
-      },
-      onError: (err: Error) => {
-        error(err.message || "Erro ao remover foto");
-        setIsUploadingPhoto(false);
-      },
-    });
+    
+    try {
+      await updateProfileAsync({ removerFoto: true });
+      success("Foto removida com sucesso!");
+    } catch (err) {
+      // Revert removal state on error
+      setIsPhotoRemoved(false);
+      error(err instanceof Error ? err.message : "Erro ao remover foto");
+    } finally {
+      setIsUploadingPhoto(false);
+    }
   };
 
   const handlePhotoClick = () => {
@@ -93,21 +109,22 @@ export default function SettingsPage() {
 
     // Convert to base64 and upload to Blob Storage
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       const base64 = event.target?.result as string;
+      
+      // Reset removal state since we're uploading a new photo
+      setIsPhotoRemoved(false);
       
       // Upload to Blob Storage
       setIsUploadingPhoto(true);
-      updateProfile({ foto: base64 }, {
-        onSuccess: () => {
-          success("Foto atualizada com sucesso!");
-          setIsUploadingPhoto(false);
-        },
-        onError: (err: Error) => {
-          error(err.message || "Erro ao atualizar foto");
-          setIsUploadingPhoto(false);
-        },
-      });
+      try {
+        await updateProfileAsync({ foto: base64 });
+        success("Foto atualizada com sucesso!");
+      } catch (err) {
+        error(err instanceof Error ? err.message : "Erro ao atualizar foto");
+      } finally {
+        setIsUploadingPhoto(false);
+      }
     };
     reader.readAsDataURL(file);
   };
@@ -208,7 +225,8 @@ export default function SettingsPage() {
                 className="relative group"
               >
                 <Avatar
-                  fotoUrl={user?.fotoUrl}
+                  key={isPhotoRemoved ? "removed" : (user?.fotoUrl || "no-photo")}
+                  fotoUrl={!isPhotoRemoved ? user?.fotoUrl : undefined}
                   fallback={user?.nome}
                   size="xl"
                   className="ring-2 ring-border group-hover:ring-primary transition-all"

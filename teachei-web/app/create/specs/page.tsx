@@ -42,6 +42,9 @@ export default function CreateSpecsPage() {
     null // Don't filter by marca for optionals
   );
   
+  // Debug logging
+  console.log('[CreateSpecsPage] tipoVeiculo:', tipoVeiculo, 'loading:', loadingOpcionais, 'error:', opcionaisError, 'opcionais:', availableFilters?.opcionais?.length ?? 'null');
+  
   // Get optionals from the API response
   const opcionaisDisponiveis = availableFilters?.opcionais || [];
 
@@ -319,9 +322,14 @@ export default function CreateSpecsPage() {
               })}
             </div>
           ) : (
-            <p className="text-sm text-muted py-2">
-              Nenhum opcional disponível para este tipo de veículo.
-            </p>
+            <div className="py-2 space-y-1">
+              <p className="text-sm text-muted">
+                Nenhum opcional disponível para este tipo de veículo.
+              </p>
+              <p className="text-xs text-muted/50">
+                Debug: tipo={tipoVeiculo}, filters={JSON.stringify(availableFilters?.opcionais?.length ?? 'null')}
+              </p>
+            </div>
           )}
           {opcionais.length > 0 && (
             <p className="text-xs text-success">

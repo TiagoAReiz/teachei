@@ -122,12 +122,22 @@ export async function getAvailableFilters(
     ? `${API_ENDPOINTS.INTENTION_FILTERS}?${queryString}`
     : API_ENDPOINTS.INTENTION_FILTERS;
 
-  // Log for debugging (remove in production)
-  if (process.env.NODE_ENV === 'development') {
-    console.log('[getAvailableFilters] Fetching:', url);
-  }
+  // Log for debugging
+  console.log('[getAvailableFilters] Fetching:', url, '| tipo:', tipo);
 
-  return api.get<AvailableFilters>(url, { requireAuth: false });
+  try {
+    const result = await api.get<AvailableFilters>(url, { requireAuth: false });
+    console.log('[getAvailableFilters] Response:', {
+      tipos: result?.tipos?.length ?? 0,
+      marcas: result?.marcas?.length ?? 0,
+      modelos: result?.modelos?.length ?? 0,
+      opcionais: result?.opcionais?.length ?? 0,
+    });
+    return result;
+  } catch (error) {
+    console.error('[getAvailableFilters] Error:', error);
+    throw error;
+  }
 }
 
 

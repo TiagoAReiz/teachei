@@ -36,6 +36,9 @@ export async function apiFetch<T>(
   
   const url = `${env.API_URL}${endpoint}`;
   
+  // Debug: log API URL configuration
+  console.log('[apiFetch] API_URL:', env.API_URL, '| Full URL:', url);
+  
   const headers: HeadersInit = {
     "Content-Type": "application/json",
     ...options.headers,
