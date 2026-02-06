@@ -69,7 +69,7 @@ public enum OpcionalVeiculo {
     private final Set<TipoVeiculo> tiposAplicaveis;
 
     OpcionalVeiculo(String label, TipoVeiculo... tipos) {
-        this.label = label;
+        this.label = label; 
         this.tiposAplicaveis = tipos.length > 0 
             ? EnumSet.copyOf(Arrays.asList(tipos))
             : EnumSet.noneOf(TipoVeiculo.class);

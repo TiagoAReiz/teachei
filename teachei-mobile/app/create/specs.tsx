@@ -38,17 +38,32 @@ export default function SpecsScreen() {
   const [opcionaisDisponiveis, setOpcionaisDisponiveis] = useState<OpcionalOption[]>([]);
   const [loadingOpcionais, setLoadingOpcionais] = useState(false);
 
-  // Load optionals when vehicle type is set
+  // Load optionals when vehicle type is set (with fallback to all optionals)
   useEffect(() => {
-    if (tipoVeiculo) {
-      setLoadingOpcionais(true);
-      vehiclesService.getOpcionais(tipoVeiculo)
-        .then(setOpcionaisDisponiveis)
-        .catch(() => setOpcionaisDisponiveis([]))
-        .finally(() => setLoadingOpcionais(false));
-    } else {
-      setOpcionaisDisponiveis([]);
-    }
+    setLoadingOpcionais(true);
+    
+    const fetchOpcionais = async () => {
+      try {
+        // Try fetching optionals for the specific type
+        const result = await vehiclesService.getOpcionais(tipoVeiculo);
+        if (result && result.length > 0) {
+          setOpcionaisDisponiveis(result);
+          return;
+        }
+      } catch {
+        // Type-specific query failed, try fallback
+      }
+      
+      // Fallback: fetch ALL optionals without type filter
+      try {
+        const allResult = await vehiclesService.getOpcionais(null);
+        setOpcionaisDisponiveis(allResult || []);
+      } catch {
+        setOpcionaisDisponiveis([]);
+      }
+    };
+
+    fetchOpcionais().finally(() => setLoadingOpcionais(false));
   }, [tipoVeiculo]);
 
   const toggleColor = (color: string) => {

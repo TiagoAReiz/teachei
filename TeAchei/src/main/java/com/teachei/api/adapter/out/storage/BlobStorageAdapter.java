@@ -57,8 +57,8 @@ public class BlobStorageAdapter implements BlobStoragePort {
     @Override
     public String uploadProfilePhoto(UUID userId, String base64Image) {
         if (blobServiceClient == null) {
-            log.error("Blob service client not initialized");
-            return null;
+            log.error("Blob service client not initialized. Check AZURE_STORAGE_CONNECTION_STRING environment variable.");
+            throw new RuntimeException("Serviço de armazenamento de fotos não está configurado. Contate o suporte.");
         }
 
         try {
@@ -66,17 +66,20 @@ public class BlobStorageAdapter implements BlobStoragePort {
             String url = uploadBlob(profilePhotosContainer, blobName, base64Image);
             log.info("Profile photo uploaded for user {}: {}", userId, url);
             return url;
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid image data for user {}: {}", userId, e.getMessage());
+            throw e; // Re-throw validation errors (e.g., image too large)
         } catch (Exception e) {
-            log.error("Failed to upload profile photo for user {}: {}", userId, e.getMessage());
-            return null;
+            log.error("Failed to upload profile photo for user {}: {}", userId, e.getMessage(), e);
+            throw new RuntimeException("Falha ao enviar foto para o armazenamento: " + e.getMessage(), e);
         }
     }
 
     @Override
     public String uploadIntentionPhoto(String intentionId, String base64Image) {
         if (blobServiceClient == null) {
-            log.error("Blob service client not initialized");
-            return null;
+            log.error("Blob service client not initialized. Check AZURE_STORAGE_CONNECTION_STRING environment variable.");
+            throw new RuntimeException("Serviço de armazenamento de fotos não está configurado. Contate o suporte.");
         }
 
         try {
@@ -84,9 +87,12 @@ public class BlobStorageAdapter implements BlobStoragePort {
             String url = uploadBlob(vehiclePhotosContainer, blobName, base64Image);
             log.info("Intention photo uploaded for intention {}: {}", intentionId, url);
             return url;
+        } catch (IllegalArgumentException e) {
+            log.error("Invalid image data for intention {}: {}", intentionId, e.getMessage());
+            throw e;
         } catch (Exception e) {
-            log.error("Failed to upload intention photo for {}: {}", intentionId, e.getMessage());
-            return null;
+            log.error("Failed to upload intention photo for {}: {}", intentionId, e.getMessage(), e);
+            throw new RuntimeException("Falha ao enviar foto para o armazenamento: " + e.getMessage(), e);
         }
     }
 

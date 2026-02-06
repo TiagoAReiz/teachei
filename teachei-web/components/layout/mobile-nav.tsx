@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/use-auth";
 
 const navItems = [
-  { href: "/", label: "Feed", icon: Home },
+  { href: "/feed", label: "Feed", icon: Home },
   { href: "/favorites", label: "Salvos", icon: Bookmark },
   { href: "/create", label: "Criar", icon: Plus, isMain: true },
   { href: "/my-intentions", label: "Intenções", icon: FileText },

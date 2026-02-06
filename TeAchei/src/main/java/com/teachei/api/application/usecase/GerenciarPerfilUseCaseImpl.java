@@ -3,6 +3,7 @@ package com.teachei.api.application.usecase;
 import com.teachei.api.application.ports.in.GerenciarPerfilUseCase;
 import com.teachei.api.application.ports.out.BlobStoragePort;
 import com.teachei.api.application.ports.out.PerfilRepositoryPort;
+import com.teachei.api.domain.exception.ServicoIndisponivelException;
 import com.teachei.api.domain.exception.UsuarioNaoEncontradoException;
 import com.teachei.api.domain.model.Perfil;
 import org.slf4j.Logger;
@@ -70,6 +71,8 @@ public class GerenciarPerfilUseCaseImpl implements GerenciarPerfilUseCase {
         }
         // Update photo if provided - upload to Blob Storage
         else if (command.foto() != null && !command.foto().isBlank()) {
+            log.info("Uploading new profile photo for user {} (base64 length: {})", 
+                usuarioId, command.foto().length());
             // Delete old photo if exists
             if (perfil.getFotoUrl() != null) {
                 try {
@@ -78,12 +81,15 @@ public class GerenciarPerfilUseCaseImpl implements GerenciarPerfilUseCase {
                     log.warn("Failed to delete old photo from Blob for user {}: {}", usuarioId, e.getMessage());
                 }
             }
-            String fotoUrl = blobStorage.uploadProfilePhoto(usuarioId, command.foto());
-            if (fotoUrl != null) {
+            try {
+                String fotoUrl = blobStorage.uploadProfilePhoto(usuarioId, command.foto());
                 perfil.setFotoUrl(fotoUrl);
-                log.info("Profile photo uploaded to Blob Storage for user {}", usuarioId);
-            } else {
-                throw new RuntimeException("Falha ao enviar foto para o armazenamento. Tente novamente.");
+                log.info("Profile photo uploaded to Blob Storage for user {}: {}", usuarioId, fotoUrl);
+            } catch (IllegalArgumentException e) {
+                throw e; // Re-throw validation errors (e.g., image too large)
+            } catch (Exception e) {
+                log.error("Failed to upload profile photo for user {}: {}", usuarioId, e.getMessage(), e);
+                throw new ServicoIndisponivelException("Armazenamento de fotos", e);
             }
         }
 

@@ -57,12 +57,24 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
     veiculo.versoes?.map(v => ({ codigo: v.codigo, nome: v.nome })) || []
   );
 
-  // Fetch available optionals for this vehicle type from API
-  const { data: availableFilters, isLoading: isLoadingOpcionais, error: opcionaisError } = useAvailableFilters(
+  // Fetch optionals filtered by vehicle type
+  const { data: filteredFilters, isLoading: loadingFiltered } = useAvailableFilters(
     intention.tipo,
     null
   );
-  const opcionaisDisponiveis = availableFilters?.opcionais || [];
+  // Also fetch ALL optionals as fallback
+  const { data: allFilters, isLoading: loadingAll } = useAvailableFilters(null, null);
+
+  const isLoadingOpcionais = loadingFiltered && loadingAll;
+  const opcionaisDisponiveis = useMemo(() => {
+    if (filteredFilters?.opcionais && filteredFilters.opcionais.length > 0) {
+      return filteredFilters.opcionais;
+    }
+    if (allFilters?.opcionais && allFilters.opcionais.length > 0) {
+      return allFilters.opcionais;
+    }
+    return [];
+  }, [filteredFilters, allFilters]);
 
   // Reference photo state
   const [fotoReferenciaBase64, setFotoReferenciaBase64] = useState<string | null>(null);
@@ -341,12 +353,7 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
           <label className="block text-sm font-medium text-foreground">
             Opcionais desejados
           </label>
-          {opcionaisError ? (
-            <div className="flex items-center gap-2 py-4 text-error">
-              <AlertCircle className="w-4 h-4" />
-              <span className="text-sm">Erro ao carregar opcionais. Verifique sua conexão.</span>
-            </div>
-          ) : isLoadingOpcionais ? (
+          {isLoadingOpcionais ? (
             <div className="flex items-center gap-2 py-4">
               <Loader2 className="w-4 h-4 animate-spin text-primary" />
               <span className="text-sm text-muted">Carregando opcionais...</span>

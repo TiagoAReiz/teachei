@@ -139,11 +139,9 @@ public class CriarAnuncioUseCaseImpl implements CriarAnuncioUseCase {
         if (command.fotoReferenciaBase64() != null && !command.fotoReferenciaBase64().isBlank()) {
             try {
                 String fotoUrl = blobStorage.uploadIntentionPhoto(savedAnuncio.getId(), command.fotoReferenciaBase64());
-                if (fotoUrl != null) {
-                    savedAnuncio.getVeiculoInfo().setFotoReferenciaUrl(fotoUrl);
-                    savedAnuncio = anuncioRepository.salvar(savedAnuncio);
-                    log.info("Reference photo uploaded for intention {}", savedAnuncio.getId());
-                }
+                savedAnuncio.getVeiculoInfo().setFotoReferenciaUrl(fotoUrl);
+                savedAnuncio = anuncioRepository.salvar(savedAnuncio);
+                log.info("Reference photo uploaded for intention {}", savedAnuncio.getId());
             } catch (Exception e) {
                 log.warn("Failed to upload reference photo for intention {}: {}", savedAnuncio.getId(), e.getMessage());
                 // Continue without photo - it's optional

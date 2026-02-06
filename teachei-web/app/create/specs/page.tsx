@@ -36,14 +36,29 @@ export default function CreateSpecsPage() {
   // Reference photo upload
   const photoInputRef = useRef<HTMLInputElement>(null);
 
-  // Fetch available optionals using React Query (consistent with filter-panel)
-  const { data: availableFilters, isLoading: loadingOpcionais, error: opcionaisError } = useAvailableFilters(
+  // Fetch optionals filtered by vehicle type
+  const { data: filteredFilters, isLoading: loadingFiltered, error: filteredError } = useAvailableFilters(
     tipoVeiculo || null,
-    null // Don't filter by marca for optionals
+    null
   );
-  
-  // Get optionals from the API response
-  const opcionaisDisponiveis = availableFilters?.opcionais || [];
+
+  // Also fetch ALL optionals as fallback (in case the tipo-specific query fails or returns empty)
+  const { data: allFilters, isLoading: loadingAll } = useAvailableFilters(null, null);
+
+  // Use tipo-specific optionals if available, otherwise fallback to all
+  const loadingOpcionais = loadingFiltered && loadingAll;
+  const opcionaisError = filteredError;
+  const opcionaisDisponiveis = useMemo(() => {
+    // Prefer tipo-specific optionals
+    if (filteredFilters?.opcionais && filteredFilters.opcionais.length > 0) {
+      return filteredFilters.opcionais;
+    }
+    // Fallback: all optionals
+    if (allFilters?.opcionais && allFilters.opcionais.length > 0) {
+      return allFilters.opcionais;
+    }
+    return [];
+  }, [filteredFilters, allFilters]);
 
   // Static year options (no API call needed)
   const allYearOptions = generateYearOptions(30);

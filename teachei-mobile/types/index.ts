@@ -35,12 +35,14 @@ export interface Perfil {
   usuarioId: string;
   nome: string;
   bio?: string;
+  fotoUrl?: string;
   whatsapp?: string;
   whatsappLink?: string;
   instagram?: string;
   facebook?: string;
   cidade?: string;
   estado?: string;
+  role?: UserRole;
   avaliacaoMedia: number;
   totalAvaliacoes: number;
   criadoEm: string;
@@ -49,11 +51,14 @@ export interface Perfil {
 export interface AtualizarPerfilRequest {
   nome?: string;
   bio?: string;
+  foto?: string;  // Base64 encoded photo for upload to Blob Storage
+  removerFoto?: boolean;  // If true, delete existing photo
   whatsapp?: string;
   instagram?: string;
   facebook?: string;
   cidade?: string;
   estado?: string;
+  role?: string;
 }
 
 // Legacy User type for UI compatibility - maps from Perfil
@@ -258,6 +263,8 @@ export function perfilToUser(perfil: Perfil, email?: string): User {
     email: email || "",
     nome: perfil.nome,
     bio: perfil.bio,
+    avatarUrl: perfil.fotoUrl,
+    role: perfil.role,
     whatsapp: perfil.whatsapp,
     whatsappLink: perfil.whatsappLink,
     instagram: perfil.instagram,

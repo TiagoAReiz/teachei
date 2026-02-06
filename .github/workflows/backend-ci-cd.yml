@@ -153,6 +153,8 @@ jobs:
               MERCADOPAGO_ACCESS_TOKEN="${{ secrets.MERCADOPAGO_ACCESS_TOKEN }}" \
               MERCADOPAGO_PUBLIC_KEY="${{ secrets.MERCADOPAGO_PUBLIC_KEY }}" \
               MERCADOPAGO_WEBHOOK_SECRET="${{ secrets.MERCADOPAGO_WEBHOOK_SECRET }}" \
+              AZURE_STORAGE_CONNECTION_STRING="${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
+              AZURE_STORAGE_BLOB_ENDPOINT="${{ secrets.AZURE_STORAGE_BLOB_ENDPOINT }}" \
               APP_BASE_URL=https://teachei-api.icybush-e691b538.eastus2.azurecontainerapps.io \
               FRONTEND_URL=https://teachei.shop
           
