@@ -81,10 +81,14 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7405468272628923"
-     crossOrigin="anonymous"></script>
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7405468272628923"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
       </head>
-      <body className={`${plusJakarta.variable} ${nunito.variable} font-display antialiased`}>
+      <body className={`${plusJakarta.variable} ${nunito.variable} font-display antialiased`} suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
