@@ -191,6 +191,9 @@ public class AnuncioController {
                 .toList(),
             filtros.opcionais().stream()
                 .map(op -> new FiltrosDisponiveisResponse.OpcionalOption(op.codigo(), op.label()))
+                .toList(),
+            filtros.localizacoes().stream()
+                .map(loc -> new FiltrosDisponiveisResponse.LocalizacaoOption(loc.cidade(), loc.estado()))
                 .toList()
         );
         

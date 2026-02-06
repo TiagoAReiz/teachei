@@ -11,7 +11,8 @@ public record FiltrosDisponiveisResponse(
     List<TipoVeiculo> tipos,
     List<MarcaOption> marcas,
     List<ModeloOption> modelos,
-    List<OpcionalOption> opcionais
+    List<OpcionalOption> opcionais,
+    List<LocalizacaoOption> localizacoes
 ) {
     /**
      * Optional feature option with code and label.
@@ -38,9 +39,17 @@ public record FiltrosDisponiveisResponse(
     ) {}
 
     /**
+     * Location option with city and state.
+     */
+    public record LocalizacaoOption(
+        String cidade,
+        String estado
+    ) {}
+
+    /**
      * Creates an empty response.
      */
     public static FiltrosDisponiveisResponse empty() {
-        return new FiltrosDisponiveisResponse(List.of(), List.of(), List.of(), List.of());
+        return new FiltrosDisponiveisResponse(List.of(), List.of(), List.of(), List.of(), List.of());
     }
 }

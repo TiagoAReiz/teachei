@@ -23,10 +23,16 @@ export const siteConfig = {
   ],
   creator: "TeAchei",
   
+  // Contact info
+  contact: {
+    phone: "11944434123",
+    email: "app.teachei.shop@gmail.com",
+  },
+
   // Social links
   links: {
     instagram: "https://www.instagram.com/teacheiapp",
-    whatsapp: "https://wa.me/5511999999999",
+    whatsapp: "https://wa.me/5511944434123",
   },
   
   // Brand colors for meta tags

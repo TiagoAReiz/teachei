@@ -1,6 +1,7 @@
 package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase;
+import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.LocalizacaoOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.MarcaOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.ModeloOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.OpcionalOption;
@@ -60,7 +61,8 @@ public class BuscarFiltrosDisponiveisUseCaseImpl implements BuscarFiltrosDisponi
                 tipo != null ? List.of(tipo) : List.of(),
                 List.of(),
                 List.of(),
-                opcionais
+                opcionais,
+                List.of()
             );
         }
 
@@ -128,11 +130,24 @@ public class BuscarFiltrosDisponiveisUseCaseImpl implements BuscarFiltrosDisponi
             .sorted(Comparator.comparing(ModeloOption::nome))
             .toList();
 
+        // Extract distinct city/state pairs from active intentions
+        List<LocalizacaoOption> localizacoes = ativos.stream()
+            .map(Anuncio::getContatoInfo)
+            .filter(Objects::nonNull)
+            .filter(c -> c.getCidade() != null && !c.getCidade().isBlank()
+                      && c.getEstado() != null && !c.getEstado().isBlank())
+            .map(c -> new LocalizacaoOption(c.getCidade(), c.getEstado()))
+            .distinct()
+            .sorted(Comparator.comparing(LocalizacaoOption::estado)
+                .thenComparing(LocalizacaoOption::cidade))
+            .toList();
+
         return new FiltrosDisponiveis(
             new ArrayList<>(tiposSet),
             marcas,
             modelos,
-            opcionais
+            opcionais,
+            localizacoes
         );
     }
 

@@ -29,10 +29,11 @@ export default function TermosPage() {
               2. Descrição do Serviço
             </h2>
             <p className="text-muted leading-relaxed">
-              O TeAchei é uma plataforma que conecta compradores e vendedores de
-              veículos. Compradores podem publicar intenções de compra e
-              vendedores podem entrar em contato para oferecer veículos que
-              atendam aos critérios especificados.
+              O TeAchei é uma plataforma gratuita que conecta compradores e
+              vendedores de veículos. Compradores podem publicar intenções de
+              compra sem nenhum custo e vendedores podem entrar em contato para
+              oferecer veículos que atendam aos critérios especificados. Todos os
+              recursos da plataforma são oferecidos de forma gratuita.
             </p>
           </section>
 
@@ -61,19 +62,7 @@ export default function TermosPage() {
 
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
-              5. Pagamentos
-            </h2>
-            <p className="text-muted leading-relaxed">
-              A publicação de intenções de compra requer o pagamento de uma
-              taxa. Os pagamentos são processados pelo Mercado Pago e são
-              regidos pelos termos deles. Taxas pagas não são reembolsáveis
-              após a publicação.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="text-xl font-semibold text-foreground mb-3">
-              6. Limitação de Responsabilidade
+              5. Limitação de Responsabilidade
             </h2>
             <p className="text-muted leading-relaxed">
               O TeAchei atua apenas como intermediário entre compradores e
@@ -85,7 +74,7 @@ export default function TermosPage() {
 
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
-              7. Modificações
+              6. Modificações
             </h2>
             <p className="text-muted leading-relaxed">
               Reservamos o direito de modificar estes termos a qualquer momento.
@@ -96,16 +85,18 @@ export default function TermosPage() {
 
           <section>
             <h2 className="text-xl font-semibold text-foreground mb-3">
-              8. Contato
+              7. Contato
             </h2>
             <p className="text-muted leading-relaxed">
-              Para dúvidas sobre estes termos, entre em contato pelo e-mail:
-              contato@teachei.com.br
+              Para dúvidas sobre estes termos, entre em contato pelo e-mail:{" "}
+              <a href="mailto:app.teachei.shop@gmail.com" className="text-primary hover:underline">
+                app.teachei.shop@gmail.com
+              </a>
             </p>
           </section>
 
           <p className="text-sm text-muted pt-4 border-t border-border">
-            Última atualização: Janeiro de 2026
+            Última atualização: Fevereiro de 2026
           </p>
         </CardContent>
       </Card>

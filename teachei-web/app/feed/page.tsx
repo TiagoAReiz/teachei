@@ -23,6 +23,9 @@ function FeedContent() {
   const kmMaxStr = searchParams.get("kmMax");
   const opcionaisStr = searchParams.get("opcionais");
 
+  const cidade = searchParams.get("cidade");
+  const estado = searchParams.get("estado");
+
   const filters: Omit<Filters, "page"> = {
     tipoVeiculo: (searchParams.get("tipo") as TipoVeiculo) || undefined,
     search: searchParams.get("search") || undefined,
@@ -30,6 +33,8 @@ function FeedContent() {
     marcaCodigo: marcaCodigo || undefined,
     modeloCodigo: modeloCodigo || undefined,
     modelos: modelos ? modelos.split(",").filter(Boolean) : undefined,
+    cidade: cidade || undefined,
+    estado: estado || undefined,
     precoMin: precoMinStr ? parseInt(precoMinStr, 10) : undefined,
     precoMax: precoMaxStr ? parseInt(precoMaxStr, 10) : undefined,
     anoMin: anoMinStr ? parseInt(anoMinStr, 10) : undefined,

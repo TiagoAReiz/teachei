@@ -78,12 +78,15 @@ export default function PrivacidadePage() {
             </h2>
             <p className="text-muted leading-relaxed">
               Para dúvidas sobre esta política de privacidade, entre em contato
-              pelo e-mail: contato@teachei.com.br
+              pelo e-mail:{" "}
+              <a href="mailto:app.teachei.shop@gmail.com" className="text-primary hover:underline">
+                app.teachei.shop@gmail.com
+              </a>
             </p>
           </section>
 
           <p className="text-sm text-muted pt-4 border-t border-border">
-            Última atualização: Janeiro de 2026
+            Última atualização: Fevereiro de 2026
           </p>
         </CardContent>
       </Card>

@@ -25,6 +25,8 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
 
   // Parse current filters from URL
   const currentFilters: FilterState = useMemo(() => ({
+    cidade: searchParams.get("cidade") || "",
+    estado: searchParams.get("estado") || "",
     tipo: (searchParams.get("tipo") as TipoVeiculo) || "",
     marca: searchParams.get("marca") || "",
     modelo: searchParams.get("modelo") || "",
@@ -44,6 +46,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
   // Count active filters (excluding search)
   const activeFilterCount = useMemo(() => {
     let count = 0;
+    if (currentFilters.cidade || currentFilters.estado) count++;
     if (currentFilters.tipo) count++;
     if (currentFilters.marca) count++;
     if (currentFilters.modelo) count++;
@@ -82,6 +85,8 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     }
     
     // Apply new filters
+    if (filters.cidade) params.set("cidade", filters.cidade);
+    if (filters.estado) params.set("estado", filters.estado);
     if (filters.tipo) params.set("tipo", filters.tipo);
     if (filters.marca) params.set("marca", filters.marca);
     
@@ -119,6 +124,14 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     } else {
       router.push("/feed");
     }
+  };
+
+  const removeLocationFilter = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("cidade");
+    params.delete("estado");
+    const queryString = params.toString();
+    router.push(queryString ? `/feed?${queryString}` : "/feed");
   };
 
   const removeFilter = (key: string) => {
@@ -207,6 +220,18 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
       {/* Active Filters Display */}
       {hasFilters && (
         <div className="flex flex-wrap items-center gap-2 text-sm">
+          {(currentFilters.cidade || currentFilters.estado) && (
+            <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full">
+              {currentFilters.cidade}{currentFilters.estado ? ` - ${currentFilters.estado}` : ""}
+              <button
+                onClick={removeLocationFilter}
+                className="hover:bg-primary/20 rounded-full p-0.5"
+              >
+                <X size={14} />
+              </button>
+            </span>
+          )}
+
           {currentFilters.tipo && (
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full">
               {vehicleTypeLabels[currentFilters.tipo] || currentFilters.tipo}

@@ -247,7 +247,7 @@ export function LandingPage() {
               <ul className="space-y-2">
                 <li><Link href="/termos" className="text-muted hover:text-primary text-sm">Termos de Uso</Link></li>
                 <li><Link href="/privacidade" className="text-muted hover:text-primary text-sm">Privacidade</Link></li>
-                <li><Link href="/suporte" className="text-muted hover:text-primary text-sm">Suporte</Link></li>
+                <li><Link href="/contato" className="text-muted hover:text-primary text-sm">Fale Conosco</Link></li>
               </ul>
             </div>
           </div>

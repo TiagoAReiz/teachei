@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Plus, Home, Bookmark, FileText } from "lucide-react";
+import { Plus, Home, Bookmark, FileText, Headphones } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
@@ -64,13 +64,24 @@ export function Header() {
           </nav>
         )}
 
-        {/* Search Bar (Desktop) */}
-        <Suspense fallback={<SearchInputFallback className="hidden md:flex flex-1 max-w-md mx-4" />}>
-          <SearchInput className="hidden md:flex flex-1 max-w-md mx-4" />
+        {/* Search Bar (Desktop) - Centered and prominent */}
+        <Suspense fallback={<SearchInputFallback className="hidden md:flex flex-1 max-w-xl mx-auto" />}>
+          <SearchInput className="hidden md:flex flex-1 max-w-xl mx-auto" />
         </Suspense>
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 ml-auto">
+          {/* Contact */}
+          <Link
+            href="/contato"
+            className="flex items-center justify-center w-9 h-9 rounded-full text-muted hover:text-primary hover:bg-primary/10 transition-colors relative group"
+            title="Fale Conosco"
+          >
+            <Headphones size={18} />
+            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+              Fale Conosco
+            </span>
+          </Link>
           {isAuthenticated ? (
             <>
               {/* Create Button */}

@@ -48,7 +48,7 @@ export function SearchInput({ className }: SearchInputProps) {
     }
     
     const queryString = params.toString();
-    router.push(queryString ? `/?${queryString}` : "/");
+    router.push(queryString ? `/feed?${queryString}` : "/feed");
   }, [debouncedSearch, router, searchParams]);
   
   // Sync input when URL changes externally (back button, filter clearing)

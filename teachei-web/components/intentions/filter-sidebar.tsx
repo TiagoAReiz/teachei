@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { X, Car, Bike, Truck, Loader2, AlertCircle } from "lucide-react";
+import { X, Car, Bike, Truck, Loader2, AlertCircle, MapPin } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
@@ -14,6 +14,8 @@ const vehicleTypeConfig: Record<TipoVeiculo, { label: string; icon: typeof Car }
 };
 
 export interface FilterState {
+  cidade: string;
+  estado: string;
   tipo: TipoVeiculo | "";
   marca: string;
   modelo: string; // Base model name (e.g., "Onix")
@@ -90,6 +92,19 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     return types;
   }, [availableFilters]);
 
+  // Build location options from all available filters
+  const localizacaoOptions = useMemo(() => {
+    const locs = availableFilters?.localizacoes;
+    if (!locs || locs.length === 0) return [];
+    return [
+      { value: "", label: "Todas as localizações" },
+      ...locs.map((loc) => ({
+        value: `${loc.cidade}|${loc.estado}`,
+        label: `${loc.cidade} - ${loc.estado}`,
+      })),
+    ];
+  }, [availableFilters]);
+
   // Build brand options (filtered by selected type)
   const marcaOptions = useMemo(() => {
     const marcas = filteredOptions?.marcas;
@@ -143,6 +158,15 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
       })),
     ];
   }, [currentVersions, filters.modelo]);
+
+  const handleLocalizacaoChange = (value: string) => {
+    if (value) {
+      const [cidade, estado] = value.split("|");
+      setFilters((prev) => ({ ...prev, cidade, estado }));
+    } else {
+      setFilters((prev) => ({ ...prev, cidade: "", estado: "" }));
+    }
+  };
 
   const handleTipoChange = (tipo: TipoVeiculo | "") => {
     setFilters((prev) => ({
@@ -199,6 +223,8 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
 
   const handleClear = () => {
     const cleared: FilterState = {
+      cidade: "",
+      estado: "",
       tipo: "",
       marca: "",
       modelo: "",
@@ -258,6 +284,22 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
+          {/* Location */}
+          {localizacaoOptions.length > 1 && (
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-foreground flex items-center gap-2">
+                <MapPin size={16} className="text-primary" />
+                Localização
+              </label>
+              <Select
+                options={localizacaoOptions}
+                value={filters.cidade && filters.estado ? `${filters.cidade}|${filters.estado}` : ""}
+                onChange={(e) => handleLocalizacaoChange(e.target.value)}
+                disabled={isLoadingFilters}
+              />
+            </div>
+          )}
+
           {/* Vehicle Type */}
           <div className="space-y-3">
             <label className="block text-sm font-medium text-foreground">

@@ -257,11 +257,17 @@ export interface UpdateAnuncioRequest {
 // Available Filters Types (from active intentions)
 // ============================================
 
+export interface AvailableLocalizacao {
+  cidade: string;
+  estado: string;
+}
+
 export interface AvailableFilters {
   tipos: TipoVeiculo[];
   marcas: AvailableMarca[];
   modelos: AvailableModelo[];
   opcionais: AvailableOpcional[];
+  localizacoes: AvailableLocalizacao[];
 }
 
 export interface AvailableMarca {
@@ -300,6 +306,8 @@ export interface IntentionFilters {
   marcaCodigo?: string;
   modeloCodigo?: string;
   modelos?: string[]; // Multiple model codes (comma-separated in URL)
+  cidade?: string;
+  estado?: string;
   anoMin?: number;
   anoMax?: number;
   precoMin?: number;
