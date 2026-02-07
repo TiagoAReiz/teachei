@@ -2,9 +2,9 @@
 
 import { useState, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Car, Bike, Truck, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
+import { Car, Bike, Truck, ChevronLeft, ChevronRight, ChevronDown, MapPin } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
-import { useAvailableFilters } from "@/hooks/use-intentions";
+import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
 import type { TipoVeiculo } from "@/types";
 
@@ -15,6 +15,8 @@ const vehicleTypeConfig: Record<TipoVeiculo, { label: string; icon: typeof Car }
 };
 
 interface FilterState {
+  cidade: string;
+  estado: string;
   tipo: TipoVeiculo | "";
   marca: string;
   modelo: string; // Base model name (e.g., "Onix")
@@ -42,6 +44,8 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
 
   // Parse current filters from URL
   const [filters, setFilters] = useState<FilterState>({
+    cidade: searchParams.get("cidade") || "",
+    estado: searchParams.get("estado") || "",
     tipo: (searchParams.get("tipo") as TipoVeiculo) || "",
     marca: searchParams.get("marca") || "",
     modelo: searchParams.get("modelo") || "",
@@ -68,6 +72,8 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
     filters.tipo || null,
     filters.marca || null
   );
+
+  const { data: availableLocations } = useAvailableLocations();
 
   // Build year options (includes next year)
   const allYearOptions = generateYearOptions(30);
@@ -158,9 +164,38 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
     ];
   }, [currentVersions, filters.modelo]);
 
+  const localizacaoOptions = useMemo(() => {
+    const locs = (availableLocations && availableLocations.length > 0)
+      ? availableLocations
+      : availableFilters?.localizacoes;
+    if (!locs || locs.length === 0) return [];
+    return [
+      { value: "", label: "Todas as localizações" },
+      ...locs.map((loc) => ({
+        value: `${loc.cidade}|${loc.estado}`,
+        label: `${loc.cidade} - ${loc.estado}`,
+      })),
+    ];
+  }, [availableLocations, availableFilters]);
+
+  const handleLocalizacaoChange = (value: string) => {
+    if (value) {
+      const [cidade, estado] = value.split("|");
+      const newFilters = { ...filters, cidade, estado };
+      setFilters(newFilters);
+      applyFilters(newFilters);
+    } else {
+      const newFilters = { ...filters, cidade: "", estado: "" };
+      setFilters(newFilters);
+      applyFilters(newFilters);
+    }
+  };
+
   const applyFilters = (newFilters: FilterState) => {
     const params = new URLSearchParams();
     
+    if (newFilters.cidade) params.set("cidade", newFilters.cidade);
+    if (newFilters.estado) params.set("estado", newFilters.estado);
     if (newFilters.tipo) params.set("tipo", newFilters.tipo);
     if (newFilters.marca) params.set("marca", newFilters.marca);
     
@@ -234,6 +269,8 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
 
   const handleClear = () => {
     const cleared: FilterState = {
+      cidade: "",
+      estado: "",
       tipo: "",
       marca: "",
       modelo: "",
@@ -284,6 +321,21 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-4 space-y-5">
+        {localizacaoOptions.length > 1 && (
+          <div className="space-y-2">
+            <label className="block text-xs font-medium text-muted uppercase tracking-wide flex items-center gap-1.5">
+              <MapPin size={12} className="text-primary" />
+              Localização
+            </label>
+            <Select
+              options={localizacaoOptions}
+              value={filters.cidade && filters.estado ? `${filters.cidade}|${filters.estado}` : ""}
+              onChange={(e) => handleLocalizacaoChange(e.target.value)}
+              disabled={isLoadingFilters}
+              className="text-sm"
+            />
+          </div>
+        )}
         {/* Vehicle Type */}
         <div className="space-y-2">
           <label className="block text-xs font-medium text-muted uppercase tracking-wide">
