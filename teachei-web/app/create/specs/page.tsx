@@ -42,23 +42,11 @@ export default function CreateSpecsPage() {
     null
   );
 
-  // Also fetch ALL optionals as fallback (in case the tipo-specific query fails or returns empty)
-  const { data: allFilters, isLoading: loadingAll } = useAvailableFilters(null, null);
-
-  // Use tipo-specific optionals if available, otherwise fallback to all
-  const loadingOpcionais = loadingFiltered && loadingAll;
+  const loadingOpcionais = loadingFiltered;
   const opcionaisError = filteredError;
   const opcionaisDisponiveis = useMemo(() => {
-    // Prefer tipo-specific optionals
-    if (filteredFilters?.opcionais && filteredFilters.opcionais.length > 0) {
-      return filteredFilters.opcionais;
-    }
-    // Fallback: all optionals
-    if (allFilters?.opcionais && allFilters.opcionais.length > 0) {
-      return allFilters.opcionais;
-    }
-    return [];
-  }, [filteredFilters, allFilters]);
+    return filteredFilters?.opcionais || [];
+  }, [filteredFilters]);
 
   // Static year options (no API call needed)
   const allYearOptions = generateYearOptions(30);

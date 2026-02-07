@@ -62,19 +62,10 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
     intention.tipo,
     null
   );
-  // Also fetch ALL optionals as fallback
-  const { data: allFilters, isLoading: loadingAll } = useAvailableFilters(null, null);
-
-  const isLoadingOpcionais = loadingFiltered && loadingAll;
+  const isLoadingOpcionais = loadingFiltered;
   const opcionaisDisponiveis = useMemo(() => {
-    if (filteredFilters?.opcionais && filteredFilters.opcionais.length > 0) {
-      return filteredFilters.opcionais;
-    }
-    if (allFilters?.opcionais && allFilters.opcionais.length > 0) {
-      return allFilters.opcionais;
-    }
-    return [];
-  }, [filteredFilters, allFilters]);
+    return filteredFilters?.opcionais || [];
+  }, [filteredFilters]);
 
   // Reference photo state
   const [fotoReferenciaBase64, setFotoReferenciaBase64] = useState<string | null>(null);
