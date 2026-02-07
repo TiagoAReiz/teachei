@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Car, Bike, Truck, ChevronLeft, ChevronRight } from "lucide-react";
+import { Car, Bike, Truck, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
@@ -38,6 +38,7 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isOpcionaisOpen, setIsOpcionaisOpen] = useState(false);
 
   // Parse current filters from URL
   const [filters, setFilters] = useState<FilterState>({
@@ -359,13 +360,23 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
           </div>
         )}
 
-        {/* Optional Features - Show from filtered query when tipo selected, or from main query for all */}
         <div className="space-y-2">
-          <label className="block text-xs font-medium text-muted uppercase tracking-wide">
-            Opcionais
-          </label>
-          {(() => {
-            // Use filtered opcionais when tipo is selected, otherwise use all opcionais
+          <button
+            type="button"
+            onClick={() => setIsOpcionaisOpen(!isOpcionaisOpen)}
+            className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-border bg-background text-xs font-medium text-foreground hover:bg-muted/10 transition-colors"
+          >
+            <span className="flex items-center gap-2">
+              Opcionais
+              {filters.opcionais.length > 0 && (
+                <span className="min-w-4 h-4 flex items-center justify-center bg-primary text-white text-[10px] font-bold rounded-full px-1">
+                  {filters.opcionais.length}
+                </span>
+              )}
+            </span>
+            <ChevronDown size={14} className={cn("transition-transform", isOpcionaisOpen && "rotate-180")} />
+          </button>
+          {isOpcionaisOpen && (() => {
             const opcionaisData = filters.tipo ? filteredOptions?.opcionais : availableFilters?.opcionais;
             const isLoading = filters.tipo ? isLoadingFilteredOptions : isLoadingFilters;
             const hasError = filters.tipo ? filteredOptionsError : filtersError;

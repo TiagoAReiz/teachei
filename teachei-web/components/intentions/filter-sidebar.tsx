@@ -289,7 +289,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 pb-28 space-y-6">
           {/* Location */}
           {localizacaoOptions.length > 1 && (
             <div className="space-y-3">
@@ -530,7 +530,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border flex gap-3">
+        <div className="sticky bottom-0 p-4 border-t border-border bg-surface flex gap-3">
           <Button variant="outline" onClick={handleClear} className="flex-1">
             Limpar
           </Button>
