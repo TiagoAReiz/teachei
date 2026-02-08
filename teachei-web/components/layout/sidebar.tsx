@@ -40,16 +40,16 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       {/* Sidebar - Desktop */}
       <aside
         className={cn(
-          "fixed top-16 left-0 h-[calc(100vh-4rem)] z-50 transition-all duration-300 lg:z-30",
+          "fixed top-24 left-0 h-[calc(100vh-6rem)] z-50 transition-all duration-300 lg:z-30",
           "hidden lg:block",
-          isCollapsed ? "w-12" : "w-72"
+          isCollapsed ? "w-20" : "w-80"
         )}
       >
-        <Suspense fallback={<div className="w-72 h-full bg-surface animate-pulse" />}>
+        <Suspense fallback={<div className="w-full h-full bg-surface/50 animate-pulse rounded-[2rem] mx-4" />}>
           <FilterPanel 
             isCollapsed={isCollapsed} 
             onToggleCollapse={onToggleCollapse}
-            className="h-full"
+            className="h-full shadow-2xl shadow-primary/10"
           />
         </Suspense>
       </aside>

@@ -34,10 +34,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             type={inputType}
             ref={ref}
             className={cn(
-              "w-full bg-surface border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-full h-[52px] px-4 focus:ring-2 focus:ring-primary focus:bg-surface transition-all text-base",
-              icon && iconPosition === "left" && "pl-12",
-              (icon && iconPosition === "right") || isPassword ? "pr-12" : "",
-              error && "ring-error focus:ring-error",
+              "w-full bg-background/50 border-2 border-transparent focus:border-primary/20 ring-0 text-foreground placeholder:text-muted rounded-full h-[56px] px-6 focus:bg-white focus:shadow-lg focus:shadow-primary/5 transition-all duration-300 text-base font-medium",
+              icon && iconPosition === "left" && "pl-14",
+              (icon && iconPosition === "right") || isPassword ? "pr-14" : "",
+              error && "border-error/50 focus:border-error bg-error/5",
               className
             )}
             {...props}

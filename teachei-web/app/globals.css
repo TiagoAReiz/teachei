@@ -1,20 +1,20 @@
-/* Plus Jakarta Sans via CSS import */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-/* Material Symbols for icons */
-@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
-
 @import "tailwindcss";
 
 :root {
-  /* TeAchei Brand Colors */
-  --primary: #137fec;
-  --primary-dark: #0c62b8;
-  --primary-light: #4a9fef;
+  /* TeAchei Radical Brand Colors */
+  --primary: #6763ff;
+  --primary-dark: #4f46e5;
+  --primary-light: #a5a6ff;
   
-  /* Light Mode - Creme igual ao fundo do logo */
-  --background: #f8f6f0;
+  --accent: #00d4ff; /* Cyan vibrant accent */
+  --accent-dark: #00a3cc;
+  
+  /* Modern/Clean Palette */
+  --background: #f0f2f5; /* Light cool gray */
   --surface: #ffffff;
-  --foreground: #0f172a;
+  --surface-glass: rgba(255, 255, 255, 0.8);
+  
+  --foreground: #1e1b4b; /* Deep Indigo */
   --muted: #64748b;
   --muted-foreground: #94a3b8;
   --border: #e2e8f0;
@@ -26,21 +26,29 @@
   --info: #3b82f6;
   --whatsapp: #25D366;
   
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  /* Radical Shadows */
+  --shadow-sm: 0 2px 8px -2px rgba(103, 99, 255, 0.05);
+  --shadow-md: 0 8px 16px -4px rgba(103, 99, 255, 0.08);
+  --shadow-lg: 0 12px 24px -6px rgba(103, 99, 255, 0.12);
+  --shadow-xl: 0 20px 40px -8px rgba(103, 99, 255, 0.15);
+  --shadow-glow: 0 0 20px rgba(103, 99, 255, 0.3);
 }
 
 .dark {
-  /* Dark Mode */
-  --background: #101922;
-  --surface: #1e2936;
-  --foreground: #f8fafc;
-  --muted: #94a3b8;
-  --muted-foreground: #64748b;
-  --border: #334155;
+  /* Dark Mode - Cyber/Deep Space */
+  --background: #0b0a1a;
+  --surface: #15132b;
+  --surface-glass: rgba(21, 19, 43, 0.8);
+  
+  --foreground: #e0e7ff;
+  --muted: #6366f1;
+  --muted-foreground: #818cf8;
+  --border: #2e2a5b;
+  
+  --shadow-sm: 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 16px -4px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 12px 24px -6px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 40px -8px rgba(0, 0, 0, 0.6);
 }
 
 @theme inline {
@@ -48,12 +56,18 @@
   --color-primary: var(--primary);
   --color-primary-dark: var(--primary-dark);
   --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  
   --color-background: var(--background);
   --color-surface: var(--surface);
+  --color-surface-glass: var(--surface-glass);
+  
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-error: var(--error);
@@ -61,14 +75,22 @@
   --color-whatsapp: var(--whatsapp);
   
   /* Typography */
-  --font-display: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-display: 'Poppins', system-ui, sans-serif;
   
-  /* Border Radius */
-  --radius-sm: 0.5rem;
-  --radius-default: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 2rem;
+  /* Border Radius - Radical Roundness */
+  --radius-sm: 0.75rem;
+  --radius-default: 1.5rem;
+  --radius-lg: 2rem;
+  --radius-xl: 3rem;
   --radius-full: 9999px;
+  
+  /* Animations */
+  --animate-float: float 6s ease-in-out infinite;
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
 }
 
 /* Base Styles */
@@ -79,9 +101,13 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  font-family: 'Poppins', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(103, 99, 255, 0.03) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(0, 212, 255, 0.03) 0px, transparent 50%);
+  background-attachment: fixed;
 }
 
 /* Custom Scrollbar */

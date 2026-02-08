@@ -3,7 +3,7 @@
 import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Plus, Home, Bookmark, FileText, Headphones } from "lucide-react";
+import { Plus, Home, Bookmark, FileText, Headphones, Gauge } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
@@ -26,61 +26,53 @@ export function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-sm border-b border-border">
-      <div className="flex items-center gap-4 h-16 px-4 lg:px-6">
-        {/* Menu Button - Hidden on mobile (we have bottom nav), only show on tablet/desktop if needed */}
-        {/* Note: Currently hidden entirely since bottom nav handles mobile and desktop has icon nav */}
+    <header className="fixed top-4 left-4 right-4 z-40">
+      <div className="max-w-7xl mx-auto bg-surface-glass backdrop-blur-md border border-white/20 shadow-lg shadow-primary/5 rounded-[2rem] px-6 h-20 flex items-center justify-between transition-all duration-300">
+        <div className="flex items-center gap-6">
+          {/* Logo - goes to /feed if authenticated, / otherwise */}
+          <Logo size="sm" className="hidden sm:flex" href={isAuthenticated ? "/feed" : "/"} />
+          <Logo size="xs" className="sm:hidden" href={isAuthenticated ? "/feed" : "/"} />
 
-        {/* Logo - goes to /feed if authenticated, / otherwise */}
-        <Logo size="sm" className="hidden sm:flex" href={isAuthenticated ? "/feed" : "/"} />
-        <Logo size="xs" className="sm:hidden" href={isAuthenticated ? "/feed" : "/"} />
-
-        {/* Icon Navigation (Desktop) */}
-        {isAuthenticated && (
-          <nav className="hidden lg:flex items-center gap-1 ml-6">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href || (item.href !== "/feed" && pathname.startsWith(item.href));
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "flex items-center justify-center w-10 h-10 rounded-full transition-colors relative group",
-                    isActive
-                      ? "bg-primary/10 text-primary"
-                      : "text-muted hover:text-foreground hover:bg-muted/10"
-                  )}
-                  title={item.label}
-                >
-                  <Icon size={20} />
-                  {/* Tooltip */}
-                  <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                    {item.label}
-                  </span>
-                </Link>
-              );
-            })}
-          </nav>
-        )}
+          {/* Icon Navigation (Desktop) */}
+          {isAuthenticated && (
+            <nav className="hidden lg:flex items-center gap-2 bg-background/50 p-1.5 rounded-full border border-white/20">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = pathname === item.href || (item.href !== "/feed" && pathname.startsWith(item.href));
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 relative group",
+                      isActive
+                        ? "bg-primary text-white shadow-lg shadow-primary/30 scale-105"
+                        : "text-muted hover:text-foreground hover:bg-white"
+                    )}
+                    title={item.label}
+                  >
+                    <Icon size={20} />
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
+        </div>
 
         {/* Search Bar (Desktop) - Centered and prominent */}
-        <Suspense fallback={<SearchInputFallback className="hidden md:flex flex-1 max-w-xl mx-auto" />}>
-          <SearchInput className="hidden md:flex flex-1 max-w-xl mx-auto" />
+        <Suspense fallback={<SearchInputFallback className="hidden md:flex flex-1 max-w-lg mx-auto" />}>
+          <SearchInput className="hidden md:flex flex-1 max-w-lg mx-auto" />
         </Suspense>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-3">
           {/* Contact */}
           <Link
             href="/contato"
-            className="flex items-center justify-center w-9 h-9 rounded-full text-muted hover:text-primary hover:bg-primary/10 transition-colors relative group"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-white text-muted hover:text-primary hover:shadow-lg transition-all"
             title="Fale Conosco"
           >
-            <Headphones size={18} />
-            <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-foreground text-background text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
-              Fale Conosco
-            </span>
+            <Headphones size={20} />
           </Link>
           {isAuthenticated ? (
             <>
@@ -88,18 +80,18 @@ export function Header() {
               <Button
                 size="sm"
                 onClick={() => router.push("/create")}
-                className="hidden sm:flex"
+                className="hidden sm:flex shadow-xl shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5"
               >
                 <Plus size={18} />
-                <span>Nova Intenção</span>
+                <span>Anunciar</span>
               </Button>
               <Button
                 size="icon"
                 variant="primary"
                 onClick={() => router.push("/create")}
-                className="sm:hidden h-9 w-9"
+                className="sm:hidden h-10 w-10 shadow-lg"
               >
-                <Plus size={18} />
+                <Plus size={20} />
               </Button>
 
               {/* Notifications */}
@@ -116,7 +108,7 @@ export function Header() {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 p-1 rounded-full hover:bg-muted/10 transition-colors"
+                  className="flex items-center gap-2 p-1 rounded-full hover:bg-white hover:shadow-md transition-all border-2 border-transparent hover:border-primary/10"
                 >
                   <Avatar src={user?.avatarUrl} fotoUrl={user?.fotoUrl} fallback={user?.nome} size="sm" />
                 </button>
@@ -127,42 +119,53 @@ export function Header() {
                       className="fixed inset-0 z-40"
                       onClick={() => setShowUserMenu(false)}
                     />
-                    <div className="absolute right-0 top-full mt-2 w-48 bg-surface rounded-xl shadow-lg border border-border z-50 py-2 animate-scale-in origin-top-right">
-                      <div className="px-4 py-2 border-b border-border">
-                        <p className="font-semibold text-foreground truncate">{user?.nome}</p>
-                        <p className="text-sm text-muted truncate">{user?.email}</p>
+                    <div className="absolute right-0 top-full mt-4 w-64 bg-surface rounded-3xl shadow-2xl shadow-primary/10 border border-white/20 z-50 py-3 animate-scale-in origin-top-right overflow-hidden">
+                      <div className="px-6 py-4 bg-gradient-to-br from-primary/5 to-transparent border-b border-border/50">
+                        <p className="font-bold text-foreground truncate text-lg">{user?.nome}</p>
+                        <p className="text-xs text-muted truncate font-medium">{user?.email}</p>
                       </div>
-                      <Link
-                        href="/profile"
-                        className="block px-4 py-2 text-sm hover:bg-muted/10 transition-colors"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        Meu Perfil
-                      </Link>
-                      <Link
-                        href="/my-intentions"
-                        className="block px-4 py-2 text-sm hover:bg-muted/10 transition-colors"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        Minhas Intenções
-                      </Link>
-                      <Link
-                        href="/settings"
-                        className="block px-4 py-2 text-sm hover:bg-muted/10 transition-colors"
-                        onClick={() => setShowUserMenu(false)}
-                      >
-                        Configurações
-                      </Link>
-                      <hr className="my-2 border-border" />
-                      <button
-                        onClick={() => {
-                          setShowUserMenu(false);
-                          logout();
-                        }}
-                        className="w-full text-left px-4 py-2 text-sm text-error hover:bg-error/10 transition-colors"
-                      >
-                        Sair
-                      </button>
+                      <div className="p-2">
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-2xl hover:bg-primary/5 hover:text-primary transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                             <Home size={14} />
+                          </div>
+                          Meu Perfil
+                        </Link>
+                        <Link
+                          href="/my-intentions"
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-2xl hover:bg-primary/5 hover:text-primary transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                             <FileText size={14} />
+                          </div>
+                          Minhas Intenções
+                        </Link>
+                        <Link
+                          href="/settings"
+                          className="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-2xl hover:bg-primary/5 hover:text-primary transition-colors"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                           <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                             <Gauge size={14} />
+                          </div>
+                          Configurações
+                        </Link>
+                        <hr className="my-2 border-border/50" />
+                        <button
+                          onClick={() => {
+                            setShowUserMenu(false);
+                            logout();
+                          }}
+                          className="w-full flex items-center gap-3 px-4 py-3 text-sm font-bold text-error hover:bg-error/5 rounded-2xl transition-colors"
+                        >
+                          Sair
+                        </button>
+                      </div>
                     </div>
                   </>
                 )}
@@ -181,9 +184,11 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Search */}
-      <Suspense fallback={<SearchInputFallback className="md:hidden px-4 pb-3" />}>
-        <SearchInput className="md:hidden px-4 pb-3" />
+      {/* Mobile Search - Floating below header */}
+      <Suspense fallback={<SearchInputFallback className="md:hidden mt-4 px-4" />}>
+        <div className="md:hidden mt-4 px-4">
+          <SearchInput className="shadow-lg rounded-full" />
+        </div>
       </Suspense>
     </header>
   );

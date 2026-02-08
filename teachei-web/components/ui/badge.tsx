@@ -8,17 +8,17 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 
 function Badge({ className, variant = "default", size = "md", ...props }: BadgeProps) {
   const variants = {
-    default: "bg-primary/10 text-primary",
-    success: "bg-success/10 text-success",
-    warning: "bg-warning/10 text-warning",
-    error: "bg-error/10 text-error",
-    info: "bg-info/10 text-info",
-    outline: "bg-transparent border border-border text-foreground",
+    default: "bg-primary text-white shadow-lg shadow-primary/20 border-0",
+    success: "bg-success text-white shadow-lg shadow-success/20 border-0",
+    warning: "bg-warning text-white shadow-lg shadow-warning/20 border-0",
+    error: "bg-error text-white shadow-lg shadow-error/20 border-0",
+    info: "bg-info text-white shadow-lg shadow-info/20 border-0",
+    outline: "bg-transparent border-2 border-foreground/10 text-foreground font-semibold",
   };
 
   const sizes = {
-    sm: "px-2 py-0.5 text-xs",
-    md: "px-3 py-1 text-sm",
+    sm: "px-2.5 py-0.5 text-[10px] uppercase tracking-wider font-bold",
+    md: "px-4 py-1.5 text-xs uppercase tracking-wider font-bold",
   };
 
   return (

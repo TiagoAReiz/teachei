@@ -9,31 +9,39 @@ import {
   ArrowRight,
   Target,
   Instagram,
+  CheckCircle2,
+  Zap,
+  TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { Logo } from "@/components/ui/logo";
 import { siteConfig } from "@/config/site";
+import { Footer } from "@/components/layout/footer";
 
 const features = [
   {
     icon: Target,
     title: "Compradores Qualificados",
     description: "Receba contatos de pessoas que realmente querem comprar o veículo que você tem.",
+    color: "bg-blue-500",
   },
   {
     icon: Search,
     title: "Busca Inteligente",
     description: "Filtre por marca, modelo, ano, cor e muito mais para encontrar o comprador ideal.",
+    color: "bg-purple-500",
   },
   {
     icon: MessageCircle,
     title: "Contato Direto",
     description: "Comunique-se diretamente via WhatsApp com compradores interessados.",
+    color: "bg-green-500",
   },
   {
     icon: Shield,
     title: "Compradores Verificados",
     description: "Usuários verificados garantem negociações mais seguras e confiáveis.",
+    color: "bg-orange-500",
   },
 ];
 
@@ -42,16 +50,19 @@ const howItWorks = [
     step: 1,
     title: "Comprador cria intenção",
     description: "O comprador descreve exatamente o veículo que procura.",
+    icon: Zap,
   },
   {
     step: 2,
     title: "Vendedor encontra",
     description: "Você encontra compradores buscando veículos como o seu.",
+    icon: Search,
   },
   {
     step: 3,
     title: "Negociação direta",
     description: "Envie sua proposta diretamente pelo WhatsApp.",
+    icon: MessageCircle,
   },
 ];
 
@@ -59,26 +70,26 @@ export function LandingPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden selection:bg-primary selection:text-white">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-surface/95 backdrop-blur-sm border-b border-border">
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 lg:px-8">
+      <header className="fixed top-6 left-0 right-0 z-50 px-4">
+        <div className="max-w-7xl mx-auto bg-surface-glass backdrop-blur-xl border border-white/20 shadow-2xl shadow-primary/10 rounded-full h-20 px-6 lg:px-8 flex items-center justify-between transition-all duration-300">
           <Logo size="md" />
 
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#como-funciona" className="text-foreground hover:text-primary transition-colors font-medium">
+          <nav className="hidden md:flex items-center gap-8">
+            <a href="#como-funciona" className="text-foreground/80 hover:text-primary transition-colors font-bold text-sm uppercase tracking-wide">
               Como funciona
             </a>
-            <a href="#recursos" className="text-foreground hover:text-primary transition-colors font-medium">
+            <a href="#recursos" className="text-foreground/80 hover:text-primary transition-colors font-bold text-sm uppercase tracking-wide">
               Recursos
             </a>
           </nav>
 
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => router.push("/login")}>
+            <Button variant="ghost" size="sm" onClick={() => router.push("/login")} className="hidden sm:flex hover:bg-primary/5">
               Entrar
             </Button>
-            <Button size="sm" onClick={() => router.push("/register")}>
+            <Button size="sm" onClick={() => router.push("/register")} className="shadow-lg shadow-primary/20">
               Criar Conta
             </Button>
           </div>
@@ -86,76 +97,101 @@ export function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent" />
-        <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
+      <section className="relative pt-40 pb-20 lg:pt-52 lg:pb-32 overflow-hidden">
+        {/* Abstract Shapes */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-primary/5 rounded-full blur-[100px] -z-10 animate-float" />
+        <div className="absolute top-1/4 right-0 w-96 h-96 bg-accent/10 rounded-full blur-[80px] -z-10" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500/10 rounded-full blur-[60px] -z-10" />
         
-        <div className="max-w-7xl mx-auto px-4 lg:px-8 py-16 lg:py-24 relative">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl lg:text-6xl font-extrabold text-foreground leading-tight mb-6">
-              Conecte-se com quem
-              <span className="text-primary"> realmente quer comprar</span>
-            </h1>
-            <p className="text-xl text-muted mb-8 max-w-xl">
-              O TeAchei conecta vendedores de veículos com compradores qualificados que já sabem exatamente o que querem.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Button size="lg" onClick={() => router.push("/register")} className="text-lg px-8">
-                Começar agora
-                <ArrowRight size={20} />
-              </Button>
-              <Button variant="outline" size="lg" onClick={() => router.push("/feed")} className="text-lg px-8">
-                <Search size={20} />
-                Ver intenções
-              </Button>
-            </div>
-
+        <div className="max-w-7xl mx-auto px-4 lg:px-8 relative text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 border border-white/50 backdrop-blur-sm shadow-sm mb-8 animate-fade-in">
+            <span className="flex h-2 w-2 rounded-full bg-success"></span>
+            <span className="text-sm font-bold text-muted-foreground">Nova plataforma de vendas</span>
           </div>
-        </div>
-      </section>
+          
+          <h1 className="text-5xl lg:text-7xl font-black text-foreground leading-[1.1] mb-8 tracking-tight">
+            Venda seu carro para quem <br className="hidden lg:block" />
+            <span className="bg-gradient-to-r from-primary via-purple-500 to-accent bg-clip-text text-transparent">
+              já quer comprar.
+            </span>
+          </h1>
+          
+          <p className="text-xl lg:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
+            O TeAchei inverte o jogo: conectamos vendedores diretamente com compradores qualificados que buscam exatamente o seu veículo.
+          </p>
 
-      {/* How it works */}
-      <section id="como-funciona" className="py-16 lg:py-24 bg-surface">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              Como funciona
-            </h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">
-              Em apenas 3 passos, você conecta seu estoque com compradores qualificados
-            </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+            <Button size="lg" onClick={() => router.push("/register")} className="h-16 px-10 text-lg shadow-xl shadow-primary/30 hover:scale-105">
+              Começar agora
+              <ArrowRight size={20} />
+            </Button>
+            <Button variant="secondary" size="lg" onClick={() => router.push("/feed")} className="h-16 px-10 text-lg bg-white shadow-lg hover:shadow-xl hover:-translate-y-1">
+              <Search size={20} />
+              Ver intenções
+            </Button>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {howItWorks.map((item) => (
-              <div key={item.step} className="relative">
-                <div className="flex items-center justify-center w-16 h-16 bg-primary text-white rounded-2xl font-bold text-2xl mb-6">
-                  {item.step}
-                </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted">{item.description}</p>
-                
-                {item.step < 3 && (
-                  <div className="hidden md:block absolute top-8 left-[calc(100%-1rem)] w-[calc(100%-3rem)]">
-                    <div className="border-t-2 border-dashed border-border" />
-                  </div>
-                )}
+          {/* Stats/Social Proof */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto border-t border-border/50 pt-12">
+            {[
+              { label: "Compradores", value: "2k+" },
+              { label: "Intenções", value: "5k+" },
+              { label: "Vendas", value: "1k+" },
+              { label: "Cidades", value: "100+" },
+            ].map((stat, i) => (
+              <div key={i} className="text-center">
+                <div className="text-3xl font-black text-foreground mb-1">{stat.value}</div>
+                <div className="text-sm font-bold text-muted-foreground uppercase tracking-wide">{stat.label}</div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section id="recursos" className="py-16 lg:py-24">
+      {/* How it works */}
+      <section id="como-funciona" className="py-24 lg:py-32 bg-surface/50 relative">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl lg:text-5xl font-black text-foreground mb-6">
+              Como funciona
+            </h2>
+            <p className="text-muted-foreground text-xl max-w-2xl mx-auto">
+              Simplificamos o processo para você fechar negócio mais rápido.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+            {howItWorks.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <div key={item.step} className="relative group">
+                  <div className="absolute inset-0 bg-white/40 rounded-[2.5rem] transform transition-transform group-hover:scale-105 group-hover:-rotate-1" />
+                  <div className="relative bg-white/80 backdrop-blur-sm border border-white/50 p-8 rounded-[2rem] shadow-xl shadow-primary/5 h-full transition-transform group-hover:-translate-y-2">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-dark text-white rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-primary/20 transform group-hover:scale-110 transition-transform duration-300">
+                      <Icon size={32} />
+                    </div>
+                    <div className="absolute top-8 right-8 text-6xl font-black text-slate-100 -z-10">
+                      0{item.step}
+                    </div>
+                    <h3 className="text-2xl font-bold text-foreground mb-4">{item.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section id="recursos" className="py-24 lg:py-32">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <div className="text-center mb-20">
+            <h2 className="text-3xl lg:text-5xl font-black text-foreground mb-6">
               Por que usar o TeAchei?
             </h2>
-            <p className="text-muted text-lg max-w-2xl mx-auto">
-              Recursos pensados para facilitar a conexão entre vendedores e compradores
+            <p className="text-muted-foreground text-xl max-w-2xl mx-auto">
+              Ferramentas poderosas para conectar quem quer vender com quem quer comprar.
             </p>
           </div>
 
@@ -165,13 +201,13 @@ export function LandingPage() {
               return (
                 <div
                   key={index}
-                  className="bg-surface rounded-2xl p-6 border border-border hover:border-primary/50 transition-colors"
+                  className="bg-surface hover:bg-white p-8 rounded-[2rem] border-0 shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 group hover:-translate-y-2"
                 >
-                  <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mb-4">
-                    <Icon className="text-primary" size={24} />
+                  <div className={`w-14 h-14 ${feature.color} bg-opacity-10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                    <Icon className={feature.color.replace('bg-', 'text-')} size={28} />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">{feature.title}</h3>
-                  <p className="text-muted text-sm">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
                 </div>
               );
             })}
@@ -180,85 +216,46 @@ export function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 lg:py-24 bg-primary">
-        <div className="max-w-4xl mx-auto px-4 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-            Pronto para encontrar seu próximo comprador?
-          </h2>
-          <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
-            Junte-se a milhares de vendedores que já estão conectando com compradores qualificados.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              variant="secondary"
-              size="lg"
-              onClick={() => router.push("/register")}
-              className="bg-white text-primary hover:bg-white/90 text-lg px-8"
-            >
-              Criar conta grátis
-              <ArrowRight size={20} />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => router.push("/login")}
-              className="border-white text-white hover:bg-white/10 text-lg px-8"
-            >
-              Já tenho conta
-            </Button>
+      <section className="py-24 lg:py-32">
+        <div className="max-w-6xl mx-auto px-4 lg:px-8">
+          <div className="bg-gradient-to-br from-primary via-primary-dark to-purple-900 rounded-[3rem] p-12 lg:p-24 text-center relative overflow-hidden shadow-2xl shadow-primary/20">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+            <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+            
+            <div className="relative z-10">
+              <h2 className="text-4xl lg:text-6xl font-black text-white mb-8 tracking-tight">
+                Pronto para encontrar seu <br/> próximo comprador?
+              </h2>
+              <p className="text-white/80 text-xl mb-12 max-w-2xl mx-auto font-medium">
+                Junte-se a milhares de vendedores que já estão conectando com compradores qualificados todos os dias.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-6 justify-center">
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => router.push("/register")}
+                  className="bg-white text-primary hover:bg-white/90 h-16 px-10 text-lg shadow-xl"
+                >
+                  Criar conta grátis
+                  <ArrowRight size={20} />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => router.push("/login")}
+                  className="border-2 border-white/30 text-white hover:bg-white/10 h-16 px-10 text-lg backdrop-blur-sm"
+                >
+                  Já tenho conta
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-surface border-t border-border py-12">
-        <div className="max-w-7xl mx-auto px-4 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div className="md:col-span-2">
-              <div className="mb-4">
-                <Logo size="md" />
-              </div>
-              <p className="text-muted text-sm max-w-sm mb-4">
-                A maneira mais fácil de encontrar seu próximo veículo. Conecte-se com vendedores e encontre o carro, moto ou caminhão dos seus sonhos.
-              </p>
-              <div className="flex items-center gap-4">
-                <a
-                  href={siteConfig.links.instagram}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-2 rounded-full text-muted hover:text-primary hover:bg-primary/10 transition-colors"
-                >
-                  <Instagram size={20} />
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Navegação</h3>
-              <ul className="space-y-2">
-                <li><Link href="/feed" className="text-muted hover:text-primary text-sm">Feed de Intenções</Link></li>
-                <li><a href="#como-funciona" className="text-muted hover:text-primary text-sm">Como Funciona</a></li>
-                <li><a href="#recursos" className="text-muted hover:text-primary text-sm">Recursos</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Legal</h3>
-              <ul className="space-y-2">
-                <li><Link href="/termos" className="text-muted hover:text-primary text-sm">Termos de Uso</Link></li>
-                <li><Link href="/privacidade" className="text-muted hover:text-primary text-sm">Privacidade</Link></li>
-                <li><Link href="/contato" className="text-muted hover:text-primary text-sm">Fale Conosco</Link></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="pt-8 border-t border-border text-center">
-            <p className="text-muted text-sm">
-              © {new Date().getFullYear()} TeAchei. Todos os direitos reservados.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

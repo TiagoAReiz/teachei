@@ -11,22 +11,22 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = "primary", size = "md", isLoading, children, disabled, ...props }, ref) => {
-    const baseStyles = "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 focus-ring btn-press disabled:opacity-50 disabled:cursor-not-allowed";
+    const baseStyles = "inline-flex items-center justify-center gap-2 font-bold transition-all duration-300 focus-ring disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 hover:-translate-y-0.5";
     
     const variants = {
-      primary: "bg-primary hover:bg-primary-dark text-white shadow-lg shadow-primary/30 hover:shadow-primary/40",
-      secondary: "bg-surface hover:bg-muted/10 text-foreground border border-border",
-      outline: "border-2 border-primary text-primary hover:bg-primary hover:text-white",
-      ghost: "text-foreground hover:bg-muted/10",
-      danger: "bg-error hover:bg-error/90 text-white",
-      whatsapp: "bg-whatsapp hover:bg-whatsapp/90 text-white shadow-lg shadow-whatsapp/30",
+      primary: "bg-gradient-to-r from-primary to-primary-dark text-white shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:shadow-xl",
+      secondary: "bg-white text-primary border-2 border-primary/10 hover:border-primary/30 shadow-sm hover:shadow-md",
+      outline: "bg-transparent border-2 border-primary text-primary hover:bg-primary/5",
+      ghost: "text-muted-foreground hover:text-primary hover:bg-primary/5",
+      danger: "bg-gradient-to-r from-error to-red-600 text-white shadow-lg shadow-error/30 hover:shadow-error/50",
+      whatsapp: "bg-gradient-to-r from-whatsapp to-green-600 text-white shadow-lg shadow-whatsapp/30 hover:shadow-whatsapp/50",
     };
     
     const sizes = {
-      sm: "h-9 px-4 text-sm rounded-full",
-      md: "h-11 px-6 text-base rounded-full",
-      lg: "h-14 px-8 text-lg rounded-full",
-      icon: "h-11 w-11 rounded-full",
+      sm: "h-10 px-4 text-xs uppercase tracking-wide rounded-full",
+      md: "h-12 px-6 text-sm uppercase tracking-wide rounded-full",
+      lg: "h-14 px-8 text-base uppercase tracking-wide rounded-full",
+      icon: "h-12 w-12 rounded-full",
     };
 
     return (

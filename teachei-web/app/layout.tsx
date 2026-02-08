@@ -1,20 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, Nunito } from "next/font/google";
+import { Poppins } from "next/font/google";
 import { Providers } from "./providers";
 import { siteConfig } from "@/config/site";
 import "./globals.css";
 
-const plusJakarta = Plus_Jakarta_Sans({
+const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
   variable: "--font-display",
-  display: "swap",
-});
-
-const nunito = Nunito({
-  subsets: ["latin"],
-  weight: ["700", "800", "900"],
-  variable: "--font-logo",
   display: "swap",
 });
 
@@ -87,7 +80,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         ></script>
       </head>
-      <body className={`${plusJakarta.variable} ${nunito.variable} font-display antialiased`} suppressHydrationWarning>
+      <body className={`${poppins.variable} font-display antialiased`} suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>

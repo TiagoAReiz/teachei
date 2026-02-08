@@ -36,18 +36,15 @@ function LogoContent({ size, className }: { size: "xs" | "sm" | "md" | "lg" | "x
           textSizes[size]
         )}
         style={{ 
-          fontFamily: "var(--font-logo), 'Nunito', sans-serif",
+          fontFamily: "var(--font-display), 'Poppins', sans-serif",
           letterSpacing: "-0.02em",
         }}
       >
-        {/* "te" em azul claro com gradiente sutil */}
+        {/* "te" em roxo/azul */}
         <span 
           className="relative"
           style={{ 
-            background: "linear-gradient(135deg, #60b3ff 0%, #3b9eff 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
+            color: "#6763ff",
           }}
         >
           te
@@ -56,10 +53,7 @@ function LogoContent({ size, className }: { size: "xs" | "sm" | "md" | "lg" | "x
         <span 
           className="relative"
           style={{ 
-            background: "linear-gradient(135deg, #1e4a7a 0%, #1a365d 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
+            color: "#292179",
           }}
         >
           achei

@@ -293,10 +293,10 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
 
   if (isCollapsed) {
     return (
-      <div className={cn("w-12 bg-surface border-r border-border flex flex-col items-center py-4", className)}>
+      <div className={cn("w-16 mx-2 my-4 h-[calc(100%-2rem)] bg-surface border-0 shadow-lg shadow-primary/5 rounded-full flex flex-col items-center py-4 transition-all duration-300", className)}>
         <button
           onClick={onToggleCollapse}
-          className="p-2 rounded-full text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
+          className="p-3 rounded-full bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all shadow-sm hover:shadow-md"
           title="Expandir filtros"
         >
           <ChevronRight size={20} />
@@ -306,25 +306,28 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
   }
 
   return (
-    <div className={cn("w-72 bg-surface border-r border-border flex flex-col", className)}>
+    <div className={cn("w-72 mx-4 my-4 h-[calc(100%-2rem)] bg-surface border-0 shadow-xl shadow-primary/5 rounded-[2rem] flex flex-col overflow-hidden transition-all duration-300", className)}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-border">
-        <h2 className="text-sm font-bold text-foreground">Filtros</h2>
+      <div className="flex items-center justify-between p-6 pb-4 bg-gradient-to-b from-primary/5 to-transparent">
+        <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+          <span className="w-1 h-6 bg-primary rounded-full"></span>
+          Filtros
+        </h2>
         <button
           onClick={onToggleCollapse}
-          className="p-1.5 rounded-full text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
+          className="p-2 rounded-full text-muted hover:text-primary hover:bg-white hover:shadow-md transition-all"
           title="Colapsar filtros"
         >
-          <ChevronLeft size={18} />
+          <ChevronLeft size={20} />
         </button>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-5">
+      <div className="flex-1 overflow-y-auto px-6 py-2 space-y-6 custom-scrollbar">
         {localizacaoOptions.length > 1 && (
-          <div className="space-y-2">
-            <label className="block text-xs font-medium text-muted uppercase tracking-wide flex items-center gap-1.5">
-              <MapPin size={12} className="text-primary" />
+          <div className="space-y-3">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+              <MapPin size={14} className="text-primary" />
               Localização
             </label>
             <Select
@@ -332,16 +335,16 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
               value={filters.cidade && filters.estado ? `${filters.cidade}|${filters.estado}` : ""}
               onChange={(e) => handleLocalizacaoChange(e.target.value)}
               disabled={isLoadingFilters}
-              className="text-sm"
+              className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
           </div>
         )}
         {/* Vehicle Type */}
-        <div className="space-y-2">
-          <label className="block text-xs font-medium text-muted uppercase tracking-wide">
+        <div className="space-y-3">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Tipo de Veículo
           </label>
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             {availableTypes.map((type) => {
               const Icon = type.icon;
               const isActive = filters.tipo === type.value;
@@ -351,13 +354,18 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
                   key={type.value}
                   onClick={() => handleTipoChange(type.value)}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-lg font-medium text-xs transition-colors w-full",
+                    "flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 w-full group",
                     isActive
-                      ? "bg-primary text-white"
-                      : "bg-background border border-border text-foreground hover:bg-muted/10"
+                      ? "bg-primary text-white shadow-lg shadow-primary/30 transform scale-[1.02]"
+                      : "bg-background/50 text-muted-foreground hover:bg-white hover:text-primary hover:shadow-md"
                   )}
                 >
-                  <Icon size={14} />
+                  <div className={cn(
+                    "p-2 rounded-xl transition-colors",
+                    isActive ? "bg-white/20" : "bg-white group-hover:bg-primary/10"
+                  )}>
+                    <Icon size={16} />
+                  </div>
                   <span>{type.label}</span>
                 </button>
               );
@@ -367,8 +375,8 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
 
         {/* Brand */}
         {marcaOptions.length > 1 && (
-          <div className="space-y-2">
-            <label className="block text-xs font-medium text-muted uppercase tracking-wide">
+          <div className="space-y-3">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Marca
             </label>
             <Select
@@ -376,15 +384,15 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
               value={filters.marca}
               onChange={(e) => handleMarcaChange(e.target.value)}
               disabled={isLoadingFilters}
-              className="text-sm"
+              className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
           </div>
         )}
 
         {/* Model */}
         {modeloOptions.length > 1 && (
-          <div className="space-y-2">
-            <label className="block text-xs font-medium text-muted uppercase tracking-wide">
+          <div className="space-y-3">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Modelo
             </label>
             <Select
@@ -392,22 +400,22 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
               value={filters.modelo}
               onChange={(e) => handleModeloChange(e.target.value)}
               disabled={isLoadingFilters}
-              className="text-sm"
+              className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
           </div>
         )}
 
         {/* Version (shown when base model is selected and has versions) */}
         {filters.modelo && versaoOptions.length > 1 && (
-          <div className="space-y-2">
-            <label className="block text-xs font-medium text-muted uppercase tracking-wide">
+          <div className="space-y-3">
+            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               Versão
             </label>
             <Select
               options={versaoOptions}
               value={filters.versao}
               onChange={(e) => handleVersaoChange(e.target.value)}
-              className="text-sm"
+              className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
           </div>
         )}
@@ -416,17 +424,17 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
           <button
             type="button"
             onClick={() => setIsOpcionaisOpen(!isOpcionaisOpen)}
-            className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-border bg-background text-xs font-medium text-foreground hover:bg-muted/10 transition-colors"
+            className="w-full flex items-center justify-between px-4 py-3 rounded-2xl bg-white border border-transparent hover:border-primary/20 hover:shadow-lg transition-all shadow-sm text-sm font-bold text-foreground group"
           >
             <span className="flex items-center gap-2">
               Opcionais
               {filters.opcionais.length > 0 && (
-                <span className="min-w-4 h-4 flex items-center justify-center bg-primary text-white text-[10px] font-bold rounded-full px-1">
+                <span className="min-w-5 h-5 flex items-center justify-center bg-primary text-white text-[10px] font-bold rounded-full px-1.5 shadow-md shadow-primary/30">
                   {filters.opcionais.length}
                 </span>
               )}
             </span>
-            <ChevronDown size={14} className={cn("transition-transform", isOpcionaisOpen && "rotate-180")} />
+            <ChevronDown size={16} className={cn("transition-transform text-muted-foreground group-hover:text-primary", isOpcionaisOpen && "rotate-180")} />
           </button>
           {isOpcionaisOpen && (() => {
             const opcionaisData = filters.tipo ? filteredOptions?.opcionais : availableFilters?.opcionais;
@@ -435,21 +443,21 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
 
             if (hasError) {
               return (
-                <p className="text-xs text-error py-2">
-                  Erro ao carregar opcionais. Verifique sua conexão.
+                <p className="text-xs text-error py-2 font-medium">
+                  Erro ao carregar opcionais.
                 </p>
               );
             }
             if (isLoading) {
               return (
-                <p className="text-xs text-muted py-2">
-                  Carregando opcionais...
-                </p>
+                <div className="py-4 flex justify-center">
+                  <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                </div>
               );
             }
             if (opcionaisData && opcionaisData.length > 0) {
               return (
-                <div className="grid grid-cols-1 gap-1.5">
+                <div className="grid grid-cols-1 gap-2 p-2 bg-background/30 rounded-2xl">
                   {opcionaisData.map((option) => {
                     const isSelected = filters.opcionais.includes(option.codigo);
                     return (
@@ -457,19 +465,19 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
                         key={option.codigo}
                         onClick={() => toggleOpcional(option.codigo)}
                         className={cn(
-                          "flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-colors text-left text-xs",
+                          "flex items-center gap-3 px-3 py-2 rounded-xl transition-all text-left text-xs font-medium",
                           isSelected
-                            ? "border-primary bg-primary/5 text-primary"
-                            : "border-border hover:border-muted text-foreground"
+                            ? "bg-primary/10 text-primary shadow-sm"
+                            : "hover:bg-white hover:text-foreground hover:shadow-sm text-muted-foreground"
                         )}
                       >
                         <div className={cn(
-                          "w-3.5 h-3.5 rounded border flex items-center justify-center flex-shrink-0",
-                          isSelected ? "bg-primary border-primary" : "border-muted"
+                          "w-4 h-4 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all",
+                          isSelected ? "bg-primary border-primary" : "border-muted-foreground/30 bg-white"
                         )}>
                           {isSelected && (
-                            <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                             </svg>
                           )}
                         </div>
@@ -489,56 +497,60 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
         </div>
 
         {/* Price Range */}
-        <div className="space-y-2">
-          <label className="block text-xs font-medium text-muted uppercase tracking-wide">
+        <div className="space-y-3">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Faixa de Preço
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             <CurrencyInput
               label=""
               placeholder="Mínimo"
               value={filters.precoMin}
               onChange={(value) => setFilters((prev) => ({ ...prev, precoMin: value }))}
+              className="bg-white shadow-sm border-0 rounded-xl h-10 text-sm"
             />
             <CurrencyInput
               label=""
               placeholder="Máximo"
               value={filters.precoMax}
               onChange={(value) => setFilters((prev) => ({ ...prev, precoMax: value }))}
+              className="bg-white shadow-sm border-0 rounded-xl h-10 text-sm"
             />
           </div>
           {priceError && (
-            <p className="text-xs text-error">{priceError}</p>
+            <p className="text-xs text-error font-bold bg-error/10 p-2 rounded-lg">{priceError}</p>
           )}
         </div>
 
         {/* Mileage Range */}
-        <div className="space-y-2">
-          <label className="block text-xs font-medium text-muted uppercase tracking-wide">
+        <div className="space-y-3">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Quilometragem
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             <MileageInput
               label=""
               placeholder="Mínima"
               value={filters.kmMin}
               onChange={(value) => setFilters((prev) => ({ ...prev, kmMin: value }))}
+              className="bg-white shadow-sm border-0 rounded-xl h-10 text-sm"
             />
             <MileageInput
               label=""
               placeholder="Máxima"
               value={filters.kmMax}
               onChange={(value) => setFilters((prev) => ({ ...prev, kmMax: value }))}
+              className="bg-white shadow-sm border-0 rounded-xl h-10 text-sm"
             />
           </div>
         </div>
 
         {/* Year Range */}
-        <div className="space-y-2">
-          <label className="block text-xs font-medium text-muted uppercase tracking-wide">
+        <div className="space-y-3">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Faixa de Ano
           </label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             <Select
               options={[{ value: "", label: "De" }, ...yearOptionsMin]}
               value={filters.anoMin?.toString() || ""}
@@ -550,7 +562,7 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
                   return { ...prev, anoMin: newMin, anoMax: newMax };
                 });
               }}
-              className="text-sm"
+              className="text-sm bg-white shadow-sm border-0 rounded-xl h-10"
             />
             <Select
               options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
@@ -559,18 +571,18 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
                 ...prev, 
                 anoMax: e.target.value ? parseInt(e.target.value) : null 
               }))}
-              className="text-sm"
+              className="text-sm bg-white shadow-sm border-0 rounded-xl h-10"
             />
           </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t border-border flex gap-2">
-        <Button variant="outline" onClick={handleClear} className="flex-1 text-sm" size="sm">
+      <div className="p-4 bg-surface border-t border-border/50 flex gap-3">
+        <Button variant="ghost" onClick={handleClear} className="flex-1 text-xs font-bold text-muted-foreground hover:text-foreground" size="sm">
           Limpar
         </Button>
-        <Button onClick={handleApply} className="flex-1 text-sm" size="sm" disabled={!!priceError}>
+        <Button onClick={handleApply} className="flex-1 text-xs font-bold shadow-lg shadow-primary/20" size="sm" disabled={!!priceError}>
           Aplicar
         </Button>
       </div>
