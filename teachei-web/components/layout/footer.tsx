@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Car, Instagram, MessageCircle } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import { Logo } from "@/components/ui/logo";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -16,10 +17,9 @@ export function Footer() {
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-12">
             {/* Brand */}
             <div className="col-span-1 md:col-span-2 space-y-6">
-              <Link href="/" className="flex items-center gap-2 text-primary font-black text-2xl tracking-tight">
-                <Car size={32} className="text-accent" />
-                <span className="bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">TeAchei</span>
-              </Link>
+              <div className="-ml-3">
+                <Logo size="lg" variant="horizontal" href="/" />
+              </div>
               <p className="text-muted-foreground font-medium max-w-md leading-relaxed">
                 A maneira mais fácil de encontrar seu próximo veículo. Conecte-se com vendedores e encontre o carro, moto ou caminhão dos seus sonhos.
               </p>

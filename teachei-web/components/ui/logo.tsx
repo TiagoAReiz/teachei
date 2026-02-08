@@ -1,81 +1,77 @@
+import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 interface LogoProps {
   size?: "xs" | "sm" | "md" | "lg" | "xl";
+  variant?: "horizontal" | "vertical" | "icon";
   className?: string;
   href?: string;
 }
 
-const textSizes = {
-  xs: "text-xl",
-  sm: "text-2xl",
-  md: "text-3xl",
-  lg: "text-4xl",
-  xl: "text-5xl",
+const heightClasses = {
+  xs: "h-8",
+  sm: "h-10",
+  md: "h-12",
+  lg: "h-16",
+  xl: "h-24",
 };
 
-const containerPadding = {
-  xs: "px-1 py-0.5",
-  sm: "px-1.5 py-0.5",
-  md: "px-2 py-1",
-  lg: "px-2.5 py-1.5",
-  xl: "px-3 py-2",
-};
+function LogoContent({ 
+  size = "md", 
+  variant, 
+  className 
+}: { 
+  size: LogoProps["size"], 
+  variant?: LogoProps["variant"], 
+  className?: string 
+}) {
+  // Determine variant based on size if not provided
+  // xs -> icon (mobile header usually)
+  // others -> horizontal by default
+  const effectiveVariant = variant || (size === "xs" ? "icon" : "horizontal");
+  
+  const src = {
+    horizontal: "/logo-full.png",
+    vertical: "/logo-vertical.png",
+    icon: "/logo-icon.png",
+  }[effectiveVariant];
 
-function LogoContent({ size, className }: { size: "xs" | "sm" | "md" | "lg" | "xl"; className?: string }) {
   return (
     <div className={cn(
-      "flex items-center select-none",
-      containerPadding[size],
+      "relative select-none",
+      heightClasses[size || "md"],
       className
     )}>
-      <span 
-        className={cn(
-          "font-black tracking-tight lowercase",
-          textSizes[size]
-        )}
-        style={{ 
-          fontFamily: "var(--font-display), 'Poppins', sans-serif",
-          letterSpacing: "-0.02em",
-        }}
-      >
-        {/* "te" em roxo/azul */}
-        <span 
-          className="relative"
-          style={{ 
-            color: "#6763ff",
-          }}
-        >
-          te
-        </span>
-        {/* "achei" em azul escuro */}
-        <span 
-          className="relative"
-          style={{ 
-            color: "#292179",
-          }}
-        >
-          achei
-        </span>
-      </span>
+      <Image
+        src={src}
+        alt="TeAchei Logo"
+        width={0}
+        height={0}
+        sizes="100vw"
+        className="h-full w-auto object-contain"
+        priority
+      />
     </div>
   );
 }
 
-function Logo({ size = "md", className, href = "/" }: LogoProps) {
+function Logo({ size = "md", variant, className, href = "/" }: LogoProps) {
   if (href) {
     return (
       <Link 
         href={href} 
-        className="hover:opacity-85 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg"
+        className={cn(
+          "hover:opacity-90 transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-lg block",
+          // Add some padding/hover effect container if needed, but keeping it simple for image logos
+        )}
       >
-        <LogoContent size={size} className={className} />
+        <LogoContent size={size} variant={variant} className={className} />
       </Link>
     );
   }
 
-  return <LogoContent size={size} className={className} />;
+  return <LogoContent size={size} variant={variant} className={className} />;
 }
 
 export { Logo };

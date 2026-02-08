@@ -88,7 +88,7 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
         
         <main
           className={cn(
-            "min-h-[calc(100vh-4rem)] pb-20 lg:pb-0 transition-all duration-300",
+            "min-h-screen pt-32 pb-20 lg:pb-0 transition-all duration-300",
             sidebarWidth,
             className
           )}

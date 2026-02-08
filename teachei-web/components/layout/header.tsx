@@ -26,7 +26,7 @@ export function Header() {
   const [showUserMenu, setShowUserMenu] = useState(false);
 
   return (
-    <header className="fixed top-4 left-4 right-4 z-40">
+    <header className="fixed top-4 left-4 right-4 z-[100]">
       <div className="max-w-7xl mx-auto bg-surface-glass backdrop-blur-md border border-white/20 shadow-lg shadow-primary/5 rounded-[2rem] px-6 h-20 flex items-center justify-between transition-all duration-300">
         <div className="flex items-center gap-6">
           {/* Logo - goes to /feed if authenticated, / otherwise */}
@@ -116,10 +116,10 @@ export function Header() {
                 {showUserMenu && (
                   <>
                     <div
-                      className="fixed inset-0 z-40"
+                      className="fixed inset-0 z-[101]"
                       onClick={() => setShowUserMenu(false)}
                     />
-                    <div className="absolute right-0 top-full mt-4 w-64 bg-surface rounded-3xl shadow-2xl shadow-primary/10 border border-white/20 z-50 py-3 animate-scale-in origin-top-right overflow-hidden">
+                    <div className="absolute right-0 top-full mt-4 w-64 bg-surface rounded-3xl shadow-2xl shadow-primary/10 border border-white/20 z-[102] py-3 animate-scale-in origin-top-right overflow-hidden">
                       <div className="px-6 py-4 bg-gradient-to-br from-primary/5 to-transparent border-b border-border/50">
                         <p className="font-bold text-foreground truncate text-lg">{user?.nome}</p>
                         <p className="text-xs text-muted truncate font-medium">{user?.email}</p>

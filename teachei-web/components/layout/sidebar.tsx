@@ -40,7 +40,7 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
       {/* Sidebar - Desktop */}
       <aside
         className={cn(
-          "fixed top-24 left-0 h-[calc(100vh-6rem)] z-50 transition-all duration-300 lg:z-30",
+          "fixed top-32 left-0 h-[calc(100vh-8rem)] z-40 transition-all duration-300",
           "hidden lg:block",
           isCollapsed ? "w-20" : "w-80"
         )}

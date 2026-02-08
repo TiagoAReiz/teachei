@@ -30,11 +30,11 @@ export function NotificationsDropdown({
       {/* Bell Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="p-2 rounded-full text-muted hover:text-foreground hover:bg-muted/10 transition-colors relative"
+        className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white hover:shadow-md transition-all border-2 border-transparent hover:border-primary/10 relative text-muted hover:text-primary"
       >
-        <Bell size={22} />
+        <Bell size={20} />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 h-2 w-2 bg-error rounded-full" />
+          <span className="absolute top-2 right-2 h-2.5 w-2.5 bg-error rounded-full border-2 border-surface" />
         )}
       </button>
 
@@ -43,12 +43,12 @@ export function NotificationsDropdown({
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-[101]"
             onClick={() => setIsOpen(false)}
           />
 
           {/* Dropdown Content */}
-          <div className="absolute right-0 top-full mt-2 w-80 sm:w-96 bg-surface rounded-xl shadow-lg border border-border z-50 animate-scale-in origin-top-right overflow-hidden">
+          <div className="absolute right-0 top-full mt-4 w-80 sm:w-96 bg-surface rounded-3xl shadow-2xl shadow-primary/10 border border-white/20 z-[102] animate-scale-in origin-top-right overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-border">
               <h3 className="font-semibold text-foreground">Notificações</h3>
