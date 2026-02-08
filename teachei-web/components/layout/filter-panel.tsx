@@ -329,7 +329,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
             <Select
               options={localizacaoOptions}
               value={filters.cidade && filters.estado ? `${filters.cidade}|${filters.estado}` : ""}
-              onChange={(e) => handleLocalizacaoChange(e.target.value)}
+              onChange={(value) => handleLocalizacaoChange(value)}
               disabled={isLoadingFilters}
               className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
@@ -378,7 +378,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
             <Select
               options={marcaOptions}
               value={filters.marca}
-              onChange={(e) => handleMarcaChange(e.target.value)}
+              onChange={(value) => handleMarcaChange(value)}
               disabled={isLoadingFilters}
               className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
@@ -394,7 +394,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
             <Select
               options={modeloOptions}
               value={filters.modelo}
-              onChange={(e) => handleModeloChange(e.target.value)}
+              onChange={(value) => handleModeloChange(value)}
               disabled={isLoadingFilters}
               className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
@@ -410,7 +410,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
             <Select
               options={versaoOptions}
               value={filters.versao}
-              onChange={(e) => handleVersaoChange(e.target.value)}
+              onChange={(value) => handleVersaoChange(value)}
               className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
           </div>
@@ -550,8 +550,8 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
             <Select
               options={[{ value: "", label: "De" }, ...yearOptionsMin]}
               value={filters.anoMin?.toString() || ""}
-              onChange={(e) => {
-                const newMin = e.target.value ? parseInt(e.target.value) : null;
+              onChange={(value) => {
+                const newMin = value ? parseInt(value) : null;
                 setFilters((prev) => {
                   // Reset max if it would become invalid
                   const newMax = prev.anoMax && newMin && prev.anoMax < newMin ? null : prev.anoMax;
@@ -563,9 +563,9 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
             <Select
               options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
               value={filters.anoMax?.toString() || ""}
-              onChange={(e) => setFilters((prev) => ({ 
+              onChange={(value) => setFilters((prev) => ({ 
                 ...prev, 
-                anoMax: e.target.value ? parseInt(e.target.value) : null 
+                anoMax: value ? parseInt(value) : null 
               }))}
               className="text-sm bg-white shadow-sm border-0 rounded-xl h-10"
             />

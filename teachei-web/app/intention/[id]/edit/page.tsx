@@ -249,13 +249,13 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
             <Select
               options={[{ value: "", label: "A partir de" }, ...yearOptionsMin]}
               value={anoMinimo?.toString() || ""}
-              onChange={(e) => setAnoMinimo(e.target.value ? parseInt(e.target.value) : null)}
+              onChange={(value) => setAnoMinimo(value ? parseInt(value) : null)}
               placeholder="A partir de"
             />
             <Select
               options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
               value={anoMaximo?.toString() || ""}
-              onChange={(e) => setAnoMaximo(e.target.value ? parseInt(e.target.value) : null)}
+              onChange={(value) => setAnoMaximo(value ? parseInt(value) : null)}
               placeholder="Até"
             />
           </div>

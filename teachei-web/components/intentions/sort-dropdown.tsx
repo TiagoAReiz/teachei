@@ -50,17 +50,18 @@ export function SortDropdown({ value, onChange, className }: SortDropdownProps) 
   };
 
   return (
-    <>
+    <div className="relative">
       {/* Trigger Button */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex items-center justify-center gap-2 px-4 py-2.5 bg-surface border border-border rounded-xl",
-          "text-sm font-medium text-foreground hover:bg-muted/10 transition-colors",
+          "flex items-center justify-center gap-2 px-6 py-3 bg-surface border-0 rounded-full",
+          "text-sm font-bold text-foreground hover:bg-white hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 shadow-sm",
+          isOpen && "ring-2 ring-primary/20",
           className
         )}
       >
-        <ArrowUpDown size={16} />
+        <ArrowUpDown size={18} className="text-primary" />
         <span className="hidden sm:inline">{selectedOption.label}</span>
         <span className="sm:hidden">Ordenar</span>
       </button>
@@ -116,35 +117,35 @@ export function SortDropdown({ value, onChange, className }: SortDropdownProps) 
       {/* Desktop Dropdown */}
       {isOpen && !isMobile && (
         <div
-          className="fixed inset-0 z-50"
+          className="fixed inset-0 z-40"
           onClick={() => setIsOpen(false)}
+        />
+      )}
+      
+      {isOpen && !isMobile && (
+        <div
+          className="absolute top-full right-0 mt-2 w-64 bg-surface rounded-[1.5rem] shadow-2xl shadow-primary/20 border border-white/20 overflow-hidden z-50 animate-scale-in origin-top-right p-2"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className="absolute top-[200px] right-8 w-56 bg-surface border border-border rounded-xl shadow-xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="py-2">
-              {SORT_OPTIONS.map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => handleSelect(option.value)}
-                  className={cn(
-                    "w-full flex items-center justify-between px-4 py-3",
-                    "text-left text-sm transition-colors",
-                    option.value === value
-                      ? "bg-primary/5 text-primary"
-                      : "text-foreground hover:bg-muted/5"
-                  )}
-                >
-                  <span className="font-medium">{option.label}</span>
-                  {option.value === value && <Check size={16} className="text-primary" />}
-                </button>
-              ))}
-            </div>
-          </div>
+          {SORT_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              onClick={() => handleSelect(option.value)}
+              className={cn(
+                "w-full flex items-center justify-between px-4 py-3 rounded-xl",
+                "text-left text-sm font-bold transition-all duration-200",
+                option.value === value
+                  ? "bg-primary/10 text-primary"
+                  : "text-foreground hover:bg-white hover:text-primary hover:shadow-md hover:shadow-primary/5"
+              )}
+            >
+              <span className="truncate">{option.label}</span>
+              {option.value === value && <Check size={16} className="text-primary" />}
+            </button>
+          ))}
         </div>
       )}
-    </>
+    </div>
   );
 }
 

@@ -171,13 +171,13 @@ export default function CreateSpecsPage() {
           <Select
             options={[{ value: "", label: "A partir de" }, ...yearOptionsMin]}
             value={anoMinimo?.toString() || ""}
-            onChange={(e) => setAnos(e.target.value ? parseInt(e.target.value) : null, anoMaximo)}
+            onChange={(value) => setAnos(value ? parseInt(value) : null, anoMaximo)}
             placeholder="A partir de"
           />
           <Select
             options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
             value={anoMaximo?.toString() || ""}
-            onChange={(e) => setAnos(anoMinimo, e.target.value ? parseInt(e.target.value) : null)}
+            onChange={(value) => setAnos(anoMinimo, value ? parseInt(value) : null)}
             placeholder="Até"
           />
         </div>

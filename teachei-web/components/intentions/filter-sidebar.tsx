@@ -300,7 +300,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               <Select
                 options={localizacaoOptions}
                 value={filters.cidade && filters.estado ? `${filters.cidade}|${filters.estado}` : ""}
-                onChange={(e) => handleLocalizacaoChange(e.target.value)}
+                onChange={(value) => handleLocalizacaoChange(value)}
                 disabled={isLoadingFilters}
               />
             </div>
@@ -344,7 +344,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               <Select
                 options={marcaOptions}
                 value={filters.marca}
-                onChange={(e) => handleMarcaChange(e.target.value)}
+                onChange={(value) => handleMarcaChange(value)}
                 disabled={isLoadingFilters}
               />
             </div>
@@ -359,7 +359,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               <Select
                 options={modeloOptions}
                 value={filters.modelo}
-                onChange={(e) => handleModeloChange(e.target.value)}
+                onChange={(value) => handleModeloChange(value)}
                 disabled={isLoadingFilters}
               />
             </div>
@@ -374,7 +374,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               <Select
                 options={versaoOptions}
                 value={filters.versao}
-                onChange={(e) => handleVersaoChange(e.target.value)}
+                onChange={(value) => handleVersaoChange(value)}
               />
             </div>
           )}
@@ -508,8 +508,8 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               <Select
                 options={[{ value: "", label: "A partir de" }, ...yearOptionsMin]}
                 value={filters.anoMin?.toString() || ""}
-                onChange={(e) => {
-                  const newMin = e.target.value ? parseInt(e.target.value) : null;
+                onChange={(value) => {
+                  const newMin = value ? parseInt(value) : null;
                   setFilters((prev) => {
                     // Reset max if it would become invalid
                     const newMax = prev.anoMax && newMin && prev.anoMax < newMin ? null : prev.anoMax;
@@ -520,9 +520,9 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               <Select
                 options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
                 value={filters.anoMax?.toString() || ""}
-                onChange={(e) => setFilters((prev) => ({ 
+                onChange={(value) => setFilters((prev) => ({ 
                   ...prev, 
-                  anoMax: e.target.value ? parseInt(e.target.value) : null 
+                  anoMax: value ? parseInt(value) : null 
                 }))}
               />
             </div>
