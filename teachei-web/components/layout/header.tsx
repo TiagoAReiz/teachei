@@ -9,7 +9,6 @@ import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
 import { NotificationsDropdown } from "@/components/notifications";
 import { useAuth } from "@/hooks/use-auth";
-import { SearchInput, SearchInputFallback } from "./search-input";
 import { cn } from "@/lib/utils";
 
 // Navigation items for icon nav
@@ -58,11 +57,6 @@ export function Header() {
             </nav>
           )}
         </div>
-
-        {/* Search Bar (Desktop) - Centered and prominent */}
-        <Suspense fallback={<SearchInputFallback className="hidden md:flex flex-1 max-w-lg mx-auto" />}>
-          <SearchInput className="hidden md:flex flex-1 max-w-lg mx-auto" />
-        </Suspense>
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
@@ -183,13 +177,6 @@ export function Header() {
           )}
         </div>
       </div>
-
-      {/* Mobile Search - Floating below header */}
-      <Suspense fallback={<SearchInputFallback className="md:hidden mt-4 px-4" />}>
-        <div className="md:hidden mt-4 px-4">
-          <SearchInput className="shadow-lg rounded-full" />
-        </div>
-      </Suspense>
     </header>
   );
 }
