@@ -293,7 +293,14 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
   };
 
   return (
-    <div className={cn("w-72 mx-4 my-4 h-[calc(100%-2rem)] bg-surface border-0 shadow-xl shadow-primary/5 rounded-[2rem] flex flex-col overflow-hidden transition-all duration-300", className)}>
+    <div className={cn(
+      "flex flex-col overflow-hidden transition-all duration-300 bg-surface",
+      // Mobile styles (default)
+      "w-full h-full",
+      // Desktop styles
+      "lg:w-72 lg:mx-4 lg:my-4 lg:h-[calc(100%-2rem)] lg:rounded-[2rem] lg:shadow-xl lg:shadow-primary/5",
+      className
+    )}>
       {/* Header */}
       <div className="flex items-center justify-between p-6 pb-4 bg-gradient-to-b from-primary/5 to-transparent">
         <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
