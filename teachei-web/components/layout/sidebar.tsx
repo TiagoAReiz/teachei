@@ -6,30 +6,26 @@ import { cn } from "@/lib/utils";
 import { FilterPanel } from "./filter-panel";
 
 interface SidebarProps {
-  isOpen?: boolean;
-  onClose?: () => void;
-  isCollapsed: boolean;
-  onToggleCollapse: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
 // Pages that should show the filter sidebar
 const FILTER_PAGES = ["/", "/feed"];
 
-export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: SidebarProps) {
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-
-  // Only show filter sidebar on filter-enabled pages
+  
+  // Only show on feed pages
   const showFilters = FILTER_PAGES.some(
     (page) => pathname === page || (page !== "/" && pathname.startsWith(page))
   );
 
-  if (!showFilters) {
-    return null;
-  }
+  if (!showFilters) return null;
 
   return (
     <>
-      {/* Backdrop for mobile */}
+      {/* Mobile Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 lg:hidden"
@@ -37,35 +33,32 @@ export function Sidebar({ isOpen, onClose, isCollapsed, onToggleCollapse }: Side
         />
       )}
 
+      {/* Sidebar - Mobile */}
+      <aside
+        className={cn(
+          "fixed inset-y-0 left-0 z-50 w-72 bg-surface shadow-xl transform transition-transform duration-300 ease-in-out lg:hidden",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        <Suspense fallback={<div className="w-full h-full bg-surface/50 animate-pulse" />}>
+          <FilterPanel 
+            className="h-full"
+            onCloseMobile={onClose}
+          />
+        </Suspense>
+      </aside>
+
       {/* Sidebar - Desktop */}
       <aside
         className={cn(
           "fixed top-32 left-0 h-[calc(100vh-8rem)] z-40 transition-all duration-300",
           "hidden lg:block",
-          isCollapsed ? "w-20" : "w-80"
+          "w-80"
         )}
       >
         <Suspense fallback={<div className="w-full h-full bg-surface/50 animate-pulse rounded-[2rem] mx-4" />}>
           <FilterPanel 
-            isCollapsed={isCollapsed} 
-            onToggleCollapse={onToggleCollapse}
             className="h-full shadow-2xl shadow-primary/10"
-          />
-        </Suspense>
-      </aside>
-
-      {/* Sidebar - Mobile (Drawer) */}
-      <aside
-        className={cn(
-          "fixed top-16 left-0 h-[calc(100vh-4rem)] z-50 transition-transform duration-300 lg:hidden",
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        )}
-      >
-        <Suspense fallback={<div className="w-72 h-full bg-surface animate-pulse" />}>
-          <FilterPanel 
-            isCollapsed={false} 
-            onToggleCollapse={() => onClose?.()}
-            className="h-full"
           />
         </Suspense>
       </aside>

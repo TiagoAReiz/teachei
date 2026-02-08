@@ -31,12 +31,11 @@ interface FilterState {
 }
 
 interface FilterPanelProps {
-  isCollapsed: boolean;
-  onToggleCollapse: () => void;
   className?: string;
+  onCloseMobile?: () => void;
 }
 
-export function FilterPanel({ isCollapsed, onToggleCollapse, className }: FilterPanelProps) {
+export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -285,25 +284,13 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
     };
     setFilters(cleared);
     applyFilters(cleared);
+    onCloseMobile?.();
   };
 
   const handleApply = () => {
     applyFilters(filters);
+    onCloseMobile?.();
   };
-
-  if (isCollapsed) {
-    return (
-      <div className={cn("w-16 mx-2 my-4 h-[calc(100%-2rem)] bg-surface border-0 shadow-lg shadow-primary/5 rounded-full flex flex-col items-center py-4 transition-all duration-300", className)}>
-        <button
-          onClick={onToggleCollapse}
-          className="p-3 rounded-full bg-primary/5 text-primary hover:bg-primary hover:text-white transition-all shadow-sm hover:shadow-md"
-          title="Expandir filtros"
-        >
-          <ChevronRight size={20} />
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className={cn("w-72 mx-4 my-4 h-[calc(100%-2rem)] bg-surface border-0 shadow-xl shadow-primary/5 rounded-[2rem] flex flex-col overflow-hidden transition-all duration-300", className)}>
@@ -313,13 +300,15 @@ export function FilterPanel({ isCollapsed, onToggleCollapse, className }: Filter
           <span className="w-1 h-6 bg-primary rounded-full"></span>
           Filtros
         </h2>
-        <button
-          onClick={onToggleCollapse}
-          className="p-2 rounded-full text-muted hover:text-primary hover:bg-white hover:shadow-md transition-all"
-          title="Colapsar filtros"
-        >
-          <ChevronLeft size={20} />
-        </button>
+        {onCloseMobile && (
+          <button
+            onClick={onCloseMobile}
+            className="p-2 rounded-full text-muted hover:text-primary hover:bg-white hover:shadow-md transition-all lg:hidden"
+            title="Fechar filtros"
+          >
+            <ChevronLeft size={20} />
+          </button>
+        )}
       </div>
 
       {/* Content */}

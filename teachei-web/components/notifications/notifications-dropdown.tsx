@@ -43,12 +43,12 @@ export function NotificationsDropdown({
         <>
           {/* Backdrop */}
           <div
-            className="fixed inset-0 z-[101]"
+            className="fixed inset-0 z-[1001]"
             onClick={() => setIsOpen(false)}
           />
 
           {/* Dropdown Content */}
-          <div className="absolute right-0 top-full mt-4 w-80 sm:w-96 bg-surface rounded-3xl shadow-2xl shadow-primary/10 border border-white/20 z-[102] animate-scale-in origin-top-right overflow-hidden">
+          <div className="absolute right-0 top-full mt-4 w-80 sm:w-96 bg-surface rounded-3xl shadow-2xl shadow-primary/10 border border-white/20 z-[1002] animate-scale-in origin-top-right overflow-hidden">
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 border-b border-border">
               <h3 className="font-semibold text-foreground">Notificações</h3>

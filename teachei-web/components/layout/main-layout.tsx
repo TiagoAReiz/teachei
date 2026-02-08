@@ -30,47 +30,14 @@ interface MainLayoutProps {
 export function MainLayout({ children, showSidebar = true, className }: MainLayoutProps) {
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // Start with false to match server render, then sync with localStorage on mount
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-
-  // Sync with localStorage after mount to avoid hydration mismatch
-  // This is a valid pattern for syncing client-only state after hydration
-  useEffect(() => {
-    const saved = localStorage.getItem("sidebar-collapsed");
-    if (saved === "true") {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setIsSidebarCollapsed(true);
-    }
-  }, []);
-
-  // Handle sidebar collapse toggle
-  const handleToggleSidebarCollapse = () => {
-    const newState = !isSidebarCollapsed;
-    setIsSidebarCollapsed(newState);
-    localStorage.setItem("sidebar-collapsed", String(newState));
-  };
-
-  // Listen for changes to localStorage from other tabs
-  useEffect(() => {
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === "sidebar-collapsed" && e.newValue !== null) {
-        setIsSidebarCollapsed(e.newValue === "true");
-      }
-    };
-    
-    window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
-  }, []);
 
   // Check if current page should show filter sidebar
   const showFilters = FILTER_PAGES.some(
     (page) => pathname === page || (page !== "/" && pathname.startsWith(page))
   );
 
-  // Calculate sidebar width for margin
-  const sidebarWidth = showSidebar && showFilters 
-    ? (isSidebarCollapsed ? "lg:ml-12" : "lg:ml-72") 
-    : "";
+  // Calculate sidebar width for margin - always full width now
+  const sidebarWidth = showSidebar && showFilters ? "lg:ml-80" : "";
 
   return (
     <AuthGuard publicRoutes={PUBLIC_ROUTES}>
@@ -81,8 +48,6 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
           <Sidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
-            isCollapsed={isSidebarCollapsed}
-            onToggleCollapse={handleToggleSidebarCollapse}
           />
         )}
         

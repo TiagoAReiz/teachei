@@ -32,9 +32,9 @@ function LogoContent({
   const effectiveVariant = variant || (size === "xs" ? "icon" : "horizontal");
   
   const src = {
-    horizontal: "/logo-full.png",
-    vertical: "/logo-vertical.png",
-    icon: "/logo-icon.png",
+    horizontal: "/Logo_01.png",
+    vertical: "/Logo_02.png",
+    icon: "/Logo_03.png",
   }[effectiveVariant];
 
   return (
