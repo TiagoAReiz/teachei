@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { Car, Instagram, MessageCircle } from "lucide-react";
+import { Car, Instagram } from "lucide-react";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/ui/logo";
 
@@ -36,9 +37,9 @@ export function Footer() {
                   href={siteConfig.links.whatsapp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-3 rounded-2xl bg-background text-muted-foreground hover:text-white hover:bg-whatsapp transition-all shadow-sm hover:shadow-lg hover:-translate-y-1"
+                  className="p-3 rounded-2xl bg-background text-muted-foreground hover:text-white hover:bg-green-500 transition-all shadow-sm hover:shadow-lg hover:-translate-y-1"
                 >
-                  <MessageCircle size={20} />
+                  <WhatsAppIcon size={20} />
                 </a>
               </div>
             </div>

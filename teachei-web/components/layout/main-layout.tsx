@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
+import { Footer } from "./footer";
 import { AuthGuard } from "@/components/auth";
 import { cn } from "@/lib/utils";
 
@@ -54,12 +55,15 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
         
         <main
           className={cn(
-            "min-h-screen pt-32 pb-20 lg:pb-0 transition-all duration-300",
+            "min-h-screen pt-32 pb-20 lg:pb-0 transition-all duration-300 flex flex-col",
             sidebarWidth,
             className
           )}
         >
-          {children}
+          <div className="flex-1">
+            {children}
+          </div>
+          <Footer />
         </main>
         
         <MobileNav />
