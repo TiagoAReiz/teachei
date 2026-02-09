@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -30,10 +30,17 @@ const registerSchema = z.object({
 type RegisterFormData = z.infer<typeof registerSchema>;
 
 function RegisterForm() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect");
-  const { register: registerUser, isRegistering, registerError, googleLogin, isGoogleLoggingIn, googleLoginError } = useAuth({ redirectUrl });
+  const { register: registerUser, isRegistering, registerError, googleLogin, isGoogleLoggingIn, googleLoginError, isAuthenticated, isLoading } = useAuth({ redirectUrl });
   const [showError, setShowError] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      router.push("/feed");
+    }
+  }, [isAuthenticated, isLoading, router]);
 
   const {
     register,

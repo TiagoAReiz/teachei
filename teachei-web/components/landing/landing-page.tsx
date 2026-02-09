@@ -18,6 +18,7 @@ import { Logo } from "@/components/ui/logo";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { siteConfig } from "@/config/site";
 import { Footer } from "@/components/layout/footer";
+import { useAuth } from "@/hooks/use-auth";
 
 const features = [
   {
@@ -69,6 +70,7 @@ const howItWorks = [
 
 export function LandingPage() {
   const router = useRouter();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden selection:bg-primary selection:text-white">
@@ -87,12 +89,20 @@ export function LandingPage() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" onClick={() => router.push("/login")} className="hidden sm:flex hover:bg-primary/5">
-              Entrar
-            </Button>
-            <Button size="sm" onClick={() => router.push("/register")} className="shadow-lg shadow-primary/20">
-              Criar Conta
-            </Button>
+            {isAuthenticated ? (
+              <Button size="sm" onClick={() => router.push("/feed")} className="shadow-lg shadow-primary/20">
+                Ir para o Feed
+              </Button>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" onClick={() => router.push("/login")} className="hidden sm:flex hover:bg-primary/5">
+                  Entrar
+                </Button>
+                <Button size="sm" onClick={() => router.push("/register")} className="shadow-lg shadow-primary/20">
+                  Criar Conta
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>
