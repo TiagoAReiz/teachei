@@ -12,14 +12,14 @@ export function AuthLayout({ children, backgroundImage }: AuthLayoutProps) {
       {/* Left Side - Image/Brand (Desktop) */}
       <div className="hidden lg:flex lg:w-1/2 relative bg-primary">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-50"
+          className="absolute inset-0 bg-cover bg-center"
           style={{ 
             backgroundImage: backgroundImage 
               ? `url(${backgroundImage})` 
               : "url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=1200')" 
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/90 to-primary-dark/90" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/90 via-primary/40 to-background/10" />
         
         <div className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-white">
           <div className="mb-8">
@@ -37,14 +37,14 @@ export function AuthLayout({ children, backgroundImage }: AuthLayoutProps) {
       {/* Mobile Header */}
       <div className="lg:hidden relative h-48 bg-primary overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40"
+          className="absolute inset-0 bg-cover bg-center"
           style={{ 
             backgroundImage: backgroundImage 
               ? `url(${backgroundImage})` 
               : "url('https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800')" 
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-primary/90 to-transparent z-10" />
         <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center">
           <Logo size="md" href="/" />
         </div>

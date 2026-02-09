@@ -296,9 +296,9 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
     <div className={cn(
       "flex flex-col overflow-hidden transition-all duration-300 bg-surface",
       // Mobile styles (default)
-      "w-full h-full",
+      "w-full h-[calc(100%-5rem)] mb-20 rounded-b-[2rem] shadow-xl",
       // Desktop styles
-      "lg:w-72 lg:mx-4 lg:my-4 lg:h-[calc(100%-2rem)] lg:rounded-[2rem] lg:shadow-xl lg:shadow-primary/5",
+      "lg:w-72 lg:mx-4 lg:my-4 lg:h-[calc(100%-2rem)] lg:rounded-[2rem] lg:shadow-xl lg:shadow-primary/5 lg:mb-4",
       className
     )}>
       {/* Header */}

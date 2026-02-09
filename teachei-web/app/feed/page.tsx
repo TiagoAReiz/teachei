@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { MainLayout, SearchInput, SearchInputFallback } from "@/components/layout";
+import { MainLayout } from "@/components/layout";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
 import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";
@@ -65,13 +65,6 @@ function FeedContent() {
         <p className="text-muted">
           Descubra o que compradores estão procurando
         </p>
-      </div>
-
-      {/* Search Bar - Moved from Header */}
-      <div className="mb-8">
-        <Suspense fallback={<SearchInputFallback className="max-w-3xl mx-auto" />}>
-          <SearchInput className="max-w-3xl mx-auto shadow-xl shadow-primary/5" />
-        </Suspense>
       </div>
 
       {/* Filters */}

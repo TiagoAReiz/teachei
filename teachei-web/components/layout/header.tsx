@@ -9,6 +9,7 @@ import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
 import { NotificationsDropdown } from "@/components/notifications";
 import { useAuth } from "@/hooks/use-auth";
+import { SearchInput, SearchInputFallback } from "./search-input";
 import { cn } from "@/lib/utils";
 
 // Navigation items for icon nav
@@ -58,6 +59,11 @@ export function Header() {
           )}
         </div>
 
+        {/* Search Bar (Desktop) - Centered and prominent */}
+        <Suspense fallback={<SearchInputFallback className="hidden md:flex flex-1 max-w-lg mx-auto" />}>
+          <SearchInput className="hidden md:flex flex-1 max-w-lg mx-auto" />
+        </Suspense>
+
         {/* Right Actions */}
         <div className="flex items-center gap-3">
           {/* Contact */}
@@ -79,11 +85,12 @@ export function Header() {
                 <Plus size={18} />
                 <span>Anunciar</span>
               </Button>
+              {/* Mobile create button hidden as it exists in bottom nav */}
               <Button
                 size="icon"
                 variant="primary"
                 onClick={() => router.push("/create")}
-                className="sm:hidden h-10 w-10 shadow-lg"
+                className="hidden h-10 w-10 shadow-lg"
               >
                 <Plus size={20} />
               </Button>
@@ -177,6 +184,13 @@ export function Header() {
           )}
         </div>
       </div>
+
+      {/* Mobile Search - Floating below header */}
+      <Suspense fallback={<SearchInputFallback className="md:hidden mt-4 px-4" />}>
+        <div className="md:hidden mt-4 px-4">
+          <SearchInput className="shadow-lg rounded-full" />
+        </div>
+      </Suspense>
     </header>
   );
 }
