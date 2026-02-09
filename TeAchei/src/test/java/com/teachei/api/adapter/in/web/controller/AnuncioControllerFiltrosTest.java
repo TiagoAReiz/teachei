@@ -5,6 +5,7 @@ import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.Filt
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.MarcaOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.ModeloOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.OpcionalOption;
+import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.LocalizacaoOption;
 import com.teachei.api.config.StringToTipoVeiculoConverter;
 import com.teachei.api.config.WebMvcConfig;
 import com.teachei.api.domain.model.TipoVeiculo;
@@ -60,7 +61,8 @@ class AnuncioControllerFiltrosTest {
             List.of(TipoVeiculo.CARRO, TipoVeiculo.MOTO),
             List.of(new MarcaOption("23", "Chevrolet"), new MarcaOption("59", "Volkswagen")),
             List.of(new ModeloOption("123", "Onix 1.0 LT", "Onix")),
-            List.of(new OpcionalOption("ar", "Ar-condicionado"))
+            List.of(new OpcionalOption("ar", "Ar-condicionado")),
+            List.of()
         );
 
         when(buscarFiltrosDisponiveisUseCase.buscar(null, null))
@@ -87,6 +89,7 @@ class AnuncioControllerFiltrosTest {
             List.of(TipoVeiculo.CARRO),
             List.of(new MarcaOption("23", "Chevrolet")),
             List.of(),
+            List.of(),
             List.of()
         );
 
@@ -112,6 +115,7 @@ class AnuncioControllerFiltrosTest {
                 new ModeloOption("123", "Onix 1.0 LT", "Onix"),
                 new ModeloOption("124", "Onix 1.0 LTZ", "Onix")
             ),
+            List.of(),
             List.of()
         );
 
@@ -130,6 +134,7 @@ class AnuncioControllerFiltrosTest {
     @DisplayName("should return empty arrays when no intentions exist")
     void shouldReturnEmptyWhenNoIntentions() throws Exception {
         var filtros = new FiltrosDisponiveis(
+            List.of(),
             List.of(),
             List.of(),
             List.of(),

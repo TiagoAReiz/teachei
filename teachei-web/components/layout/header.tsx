@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
-import { Plus, Home, Bookmark, FileText, Headphones, Gauge } from "lucide-react";
+import { Plus, Home, Bookmark, FileText, Headphones, Gauge, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
@@ -24,6 +24,29 @@ export function Header() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const searchButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        mobileSearchRef.current &&
+        !mobileSearchRef.current.contains(event.target as Node) &&
+        searchButtonRef.current &&
+        !searchButtonRef.current.contains(event.target as Node)
+      ) {
+        setShowMobileSearch(false);
+      }
+    }
+
+    if (showMobileSearch) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showMobileSearch]);
 
   return (
     <header className="fixed top-4 left-4 right-4 z-[900]">
@@ -66,6 +89,15 @@ export function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-3">
+          {/* Mobile Search Toggle */}
+          <button
+            ref={searchButtonRef}
+            onClick={() => setShowMobileSearch(!showMobileSearch)}
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white text-muted hover:text-primary hover:shadow-lg transition-all"
+          >
+            <Search size={20} />
+          </button>
+
           {/* Contact */}
           <Link
             href="/contato"
@@ -186,11 +218,13 @@ export function Header() {
       </div>
 
       {/* Mobile Search - Floating below header */}
-      <Suspense fallback={<SearchInputFallback className="md:hidden mt-4 px-4" />}>
-        <div className="md:hidden mt-4 px-4">
-          <SearchInput className="shadow-lg rounded-full" />
-        </div>
-      </Suspense>
+      {showMobileSearch && (
+        <Suspense fallback={<SearchInputFallback className="md:hidden mt-4 px-4" />}>
+          <div ref={mobileSearchRef} className="md:hidden mt-4 px-4 animate-in fade-in slide-in-from-top-2 duration-200">
+            <SearchInput className="shadow-lg rounded-full" />
+          </div>
+        </Suspense>
+      )}
     </header>
   );
 }
