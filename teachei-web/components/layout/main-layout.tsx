@@ -15,7 +15,8 @@ const PUBLIC_ROUTES = [
   "/intention",  // Public intention view
   "/user",       // Public user profiles
   "/termos",     // Terms of service
-  "/privacidade" // Privacy policy
+  "/privacidade", // Privacy policy
+  "/contato"     // Contact page
 ];
 
 // Pages that should show the filter sidebar
