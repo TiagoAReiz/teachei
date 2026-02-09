@@ -207,7 +207,7 @@ public class AnuncioController {
         var anuncio = buscarAnunciosUseCase.buscarPorId(id);
         
         // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
-        // boolean assinaturaAtiva = currentUser != null && 
+        // boolean assinaturaAtiva = currentUser != null &&  
         //     verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
         // boolean isOwner = currentUser != null && 
         //     anuncio.getUsuarioId().equals(currentUser.getId());
