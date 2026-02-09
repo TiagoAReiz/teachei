@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { Card, CardContent } from "@/components/ui";
-import { Phone, Mail, Instagram, MessageCircle } from "lucide-react";
+import { Phone, Mail, Instagram } from "lucide-react";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { siteConfig } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 
 const contactChannels = [
   {
-    icon: MessageCircle,
+    icon: WhatsAppIcon,
     label: "WhatsApp",
     value: "(11) 94443-4123",
     description: "Fale conosco pelo WhatsApp",

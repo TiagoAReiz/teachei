@@ -22,7 +22,7 @@ export function AuthLayout({ children, backgroundImage }: AuthLayoutProps) {
         <div className="absolute inset-0 bg-gradient-to-b from-primary/90 via-primary/40 to-background/10" />
         
         <div className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-white">
-          <div className="mb-8">
+          <div className="mb-8 bg-white/95 backdrop-blur-sm p-6 rounded-[2rem] shadow-2xl shadow-black/20 transform hover:scale-105 transition-transform duration-300">
             <Logo size="xl" href="/" />
           </div>
           <h1 className="text-3xl font-bold text-center mb-4">
@@ -45,13 +45,15 @@ export function AuthLayout({ children, backgroundImage }: AuthLayoutProps) {
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-primary/90 to-transparent z-10" />
-        <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center">
-          <Logo size="md" href="/" />
+        <div className="absolute -bottom-6 left-0 right-0 z-20 flex justify-center">
+          <div className="bg-white/95 backdrop-blur-sm p-4 rounded-2xl shadow-xl shadow-black/10">
+            <Logo size="md" href="/" />
+          </div>
         </div>
       </div>
 
       {/* Right Side - Form */}
-      <div className="flex-1 flex items-center justify-center p-6 lg:p-12">
+      <div className="flex-1 flex items-center justify-center p-6 lg:p-12 pt-12 lg:pt-12">
         <div className="w-full max-w-md">
           {children}
         </div>

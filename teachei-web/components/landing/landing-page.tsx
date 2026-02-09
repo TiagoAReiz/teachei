@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { Logo } from "@/components/ui/logo";
+import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { siteConfig } from "@/config/site";
 import { Footer } from "@/components/layout/footer";
 
@@ -32,7 +33,7 @@ const features = [
     color: "bg-purple-500",
   },
   {
-    icon: MessageCircle,
+    icon: WhatsAppIcon,
     title: "Contato Direto",
     description: "Comunique-se diretamente via WhatsApp com compradores interessados.",
     color: "bg-green-500",
@@ -62,7 +63,7 @@ const howItWorks = [
     step: 3,
     title: "Negociação direta",
     description: "Envie sua proposta diretamente pelo WhatsApp.",
-    icon: MessageCircle,
+    icon: WhatsAppIcon,
   },
 ];
 
@@ -130,21 +131,6 @@ export function LandingPage() {
               Ver intenções
             </Button>
           </div>
-
-          {/* Stats/Social Proof */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto border-t border-border/50 pt-12">
-            {[
-              { label: "Compradores", value: "2k+" },
-              { label: "Intenções", value: "5k+" },
-              { label: "Vendas", value: "1k+" },
-              { label: "Cidades", value: "100+" },
-            ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <div className="text-3xl font-black text-foreground mb-1">{stat.value}</div>
-                <div className="text-sm font-bold text-muted-foreground uppercase tracking-wide">{stat.label}</div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -203,8 +189,8 @@ export function LandingPage() {
                   key={index}
                   className="bg-surface hover:bg-white p-8 rounded-[2rem] border-0 shadow-lg hover:shadow-2xl hover:shadow-primary/10 transition-all duration-300 group hover:-translate-y-2"
                 >
-                  <div className={`w-14 h-14 ${feature.color} bg-opacity-10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-                    <Icon className={feature.color.replace('bg-', 'text-')} size={28} />
+                  <div className={`w-16 h-16 ${feature.color} rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform shadow-lg`}>
+                    <Icon className="text-white" size={32} />
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">{feature.title}</h3>
                   <p className="text-muted-foreground leading-relaxed text-sm">{feature.description}</p>
