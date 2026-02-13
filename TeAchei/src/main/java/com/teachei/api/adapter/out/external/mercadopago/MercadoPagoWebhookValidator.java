@@ -25,7 +25,7 @@ public class MercadoPagoWebhookValidator {
     private static final Logger log = LoggerFactory.getLogger(MercadoPagoWebhookValidator.class);
     private static final String HMAC_SHA256 = "HmacSHA256";
 
-    @Value("${mercadopago.webhook-secret:}")
+    @Value("${mercadopago.webhook-secret}")
     private String webhookSecret;
 
     /**

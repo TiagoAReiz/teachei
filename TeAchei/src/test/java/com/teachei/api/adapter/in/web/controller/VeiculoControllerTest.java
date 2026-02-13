@@ -2,17 +2,17 @@ package com.teachei.api.adapter.in.web.controller;
 
 import com.teachei.api.application.ports.in.BuscarVeiculosUseCase;
 import com.teachei.api.application.ports.in.BuscarVeiculosUseCase.MarcaDTO;
+import com.teachei.api.adapter.in.web.GlobalExceptionHandler;
 import com.teachei.api.config.StringToTipoVeiculoConverter;
-import com.teachei.api.config.WebMvcConfig;
 import com.teachei.api.domain.model.TipoVeiculo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.format.support.DefaultFormattingConversionService;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -21,19 +21,32 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(VeiculoController.class)
-@Import({WebMvcConfig.class, StringToTipoVeiculoConverter.class})
 @DisplayName("VeiculoController - Case Insensitive Enum")
 class VeiculoControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
     private BuscarVeiculosUseCase buscarVeiculosUseCase;
 
+    @BeforeEach
+    void setUp() {
+        buscarVeiculosUseCase = org.mockito.Mockito.mock(BuscarVeiculosUseCase.class);
+        var controller = new VeiculoController(buscarVeiculosUseCase);
+
+        DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService();
+        conversionService.addConverter(new StringToTipoVeiculoConverter());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+            .setControllerAdvice(new GlobalExceptionHandler())
+            .setConversionService(conversionService)
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
+            .build();
+    }
+
     @Test
-    @WithMockUser
     @DisplayName("should accept lowercase tipo in path variable")
     void shouldAcceptLowercaseTipo() throws Exception {
         when(buscarVeiculosUseCase.buscarMarcas(TipoVeiculo.MOTO))
@@ -41,11 +54,10 @@ class VeiculoControllerTest {
 
         mockMvc.perform(get("/v1/veiculos/moto/marcas"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.items[0].nome").value("Honda"));
+            .andExpect(jsonPath("$.marcas[0].nome").value("Honda"));
     }
 
     @Test
-    @WithMockUser
     @DisplayName("should accept uppercase tipo in path variable")
     void shouldAcceptUppercaseTipo() throws Exception {
         when(buscarVeiculosUseCase.buscarMarcas(TipoVeiculo.CARRO))
@@ -53,11 +65,10 @@ class VeiculoControllerTest {
 
         mockMvc.perform(get("/v1/veiculos/CARRO/marcas"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.items[0].nome").value("Volkswagen"));
+            .andExpect(jsonPath("$.marcas[0].nome").value("Volkswagen"));
     }
 
     @Test
-    @WithMockUser
     @DisplayName("should accept mixed case tipo in path variable")
     void shouldAcceptMixedCaseTipo() throws Exception {
         when(buscarVeiculosUseCase.buscarMarcas(TipoVeiculo.CAMINHAO))
@@ -65,15 +76,14 @@ class VeiculoControllerTest {
 
         mockMvc.perform(get("/v1/veiculos/Caminhao/marcas"))
             .andExpect(status().isOk())
-            .andExpect(jsonPath("$.items[0].nome").value("Scania"));
+            .andExpect(jsonPath("$.marcas[0].nome").value("Scania"));
     }
 
     @Test
-    @WithMockUser
     @DisplayName("should return 400 for invalid tipo value")
     void shouldReturn400ForInvalidTipo() throws Exception {
         mockMvc.perform(get("/v1/veiculos/bicicleta/marcas"))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.errorCode").value("INVALID_PARAMETER"));
+            .andExpect(jsonPath("$.code").value("INVALID_PARAMETER"));
     }
 }

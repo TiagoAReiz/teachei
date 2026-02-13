@@ -21,7 +21,7 @@ public class CosmosConfiguration extends AbstractCosmosConfiguration {
     @Value("${azure.cosmos.database}")
     private String database;
 
-    @Value("${azure.cosmos.populate-query-metrics:false}")
+    @Value("${azure.cosmos.populate-query-metrics}")
     private boolean queryMetrics;
 
     @Bean

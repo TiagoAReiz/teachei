@@ -10,19 +10,23 @@ spring:
       ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
     show-sql: false
-
-  # Disable Cosmos DB for tests
-  autoconfigure:
-    exclude:
-      - com.azure.spring.data.cosmos.core.CosmosTemplate
+  
+server:
+  port: 0
 
 # Disable Cosmos DB
 azure:
   cosmos:
     uri: https://localhost:8081
-    key: test-key
+    key: C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==
     database: test
     populate-query-metrics: false
+  storage:
+    connection-string: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://127.0.0.1:10000/devstoreaccount1;
+    blob-endpoint: http://127.0.0.1:10000/devstoreaccount1
+    containers:
+      profile-photos: profile-photos
+      vehicle-photos: vehicle-photos
 
 # JWT Configuration
 jwt:
@@ -43,7 +47,26 @@ fipe:
 app:
   base-url: http://localhost:8080
   frontend-url: http://localhost:3000
+  cors-origins: http://localhost:3000
+  admin:
+    secret: test-admin-secret
 
 # Payment
 payment:
   price-per-ad: 29.90
+  intention-expiry-days: 60
+
+subscription:
+  plans:
+    individual:
+      price: 200
+      duration-days: 30
+      recurring: false
+    quarterly:
+      price: 3000
+      duration-days: 90
+      recurring: true
+    annual:
+      price: 9000
+      duration-days: 365
+      recurring: true

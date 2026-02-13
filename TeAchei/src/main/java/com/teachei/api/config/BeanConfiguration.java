@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeanConfiguration {
 
-    @Value("${app.frontend-url:http://localhost:3000}")
+    @Value("${app.frontend-url}")
     private String frontendUrl;
 
-    @Value("${app.base-url:http://localhost:8080}")
+    @Value("${app.base-url}")
     private String backendUrl;
 
     // Domain Services
@@ -157,6 +157,5 @@ public class BeanConfiguration {
         return new AlterarSenhaUseCaseImpl(usuarioRepository, passwordEncoder);
     }
 }
-
 
 

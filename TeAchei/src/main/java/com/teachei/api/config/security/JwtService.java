@@ -20,7 +20,7 @@ public class JwtService {
 
     public JwtService(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.expiration-hours:1}") long expirationHours) {
+            @Value("${jwt.expiration-hours}") long expirationHours) {
         this.algorithm = Algorithm.HMAC256(secret);
         this.verifier = JWT.require(algorithm)
             .withIssuer("teachei-api")
@@ -61,6 +61,5 @@ public class JwtService {
         return expirationHours * 60 * 60 * 1000;
     }
 }
-
 
 

@@ -1,21 +1,27 @@
 package com.teachei.api.adapter.in.web.controller;
 
-import com.teachei.api.application.ports.in.*;
+import com.teachei.api.adapter.in.web.GlobalExceptionHandler;
+import com.teachei.api.application.ports.in.AtualizarAnuncioUseCase;
+import com.teachei.api.application.ports.in.BuscarAnunciosUseCase;
+import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase;
+import com.teachei.api.application.ports.in.CriarAnuncioUseCase;
+import com.teachei.api.application.ports.in.ExcluirAnuncioUseCase;
+import com.teachei.api.application.ports.in.FinalizarAnuncioUseCase;
+import com.teachei.api.application.ports.in.VerificarAssinaturaUseCase;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.MarcaOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.ModeloOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.OpcionalOption;
-import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.LocalizacaoOption;
 import com.teachei.api.config.StringToTipoVeiculoConverter;
-import com.teachei.api.config.WebMvcConfig;
 import com.teachei.api.domain.model.TipoVeiculo;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.format.support.DefaultFormattingConversionService;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -25,35 +31,57 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AnuncioController.class)
-@Import({WebMvcConfig.class, StringToTipoVeiculoConverter.class})
 @DisplayName("AnuncioController - Filtros Disponíveis")
 class AnuncioControllerFiltrosTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
     private CriarAnuncioUseCase criarAnuncioUseCase;
 
-    @MockBean
     private BuscarAnunciosUseCase buscarAnunciosUseCase;
 
-    @MockBean
     private BuscarFiltrosDisponiveisUseCase buscarFiltrosDisponiveisUseCase;
 
-    @MockBean
     private AtualizarAnuncioUseCase atualizarAnuncioUseCase;
 
-    @MockBean
     private ExcluirAnuncioUseCase excluirAnuncioUseCase;
 
-    @MockBean
     private FinalizarAnuncioUseCase finalizarAnuncioUseCase;
 
-    @MockBean
     private VerificarAssinaturaUseCase verificarAssinaturaUseCase;
 
+    @BeforeEach
+    void setUp() {
+        criarAnuncioUseCase = org.mockito.Mockito.mock(CriarAnuncioUseCase.class);
+        buscarAnunciosUseCase = org.mockito.Mockito.mock(BuscarAnunciosUseCase.class);
+        buscarFiltrosDisponiveisUseCase = org.mockito.Mockito.mock(BuscarFiltrosDisponiveisUseCase.class);
+        atualizarAnuncioUseCase = org.mockito.Mockito.mock(AtualizarAnuncioUseCase.class);
+        excluirAnuncioUseCase = org.mockito.Mockito.mock(ExcluirAnuncioUseCase.class);
+        finalizarAnuncioUseCase = org.mockito.Mockito.mock(FinalizarAnuncioUseCase.class);
+        verificarAssinaturaUseCase = org.mockito.Mockito.mock(VerificarAssinaturaUseCase.class);
+
+        var controller = new AnuncioController(
+            criarAnuncioUseCase,
+            buscarAnunciosUseCase,
+            buscarFiltrosDisponiveisUseCase,
+            atualizarAnuncioUseCase,
+            excluirAnuncioUseCase,
+            finalizarAnuncioUseCase,
+            verificarAssinaturaUseCase
+        );
+
+        DefaultFormattingConversionService conversionService = new DefaultFormattingConversionService();
+        conversionService.addConverter(new StringToTipoVeiculoConverter());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+
+        mockMvc = MockMvcBuilders.standaloneSetup(controller)
+            .setControllerAdvice(new GlobalExceptionHandler())
+            .setConversionService(conversionService)
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper))
+            .build();
+    }
     @Test
     @DisplayName("should return available filters without parameters")
     void shouldReturnFiltersWithoutParams() throws Exception {
