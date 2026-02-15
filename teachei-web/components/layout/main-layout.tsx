@@ -2,6 +2,7 @@
 
 import { useState, useEffect, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { AdSense } from "@/components/adsense";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
@@ -44,15 +45,16 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
   return (
     <AuthGuard publicRoutes={PUBLIC_ROUTES}>
       <div className="min-h-screen bg-background">
+        <AdSense />
         <Header />
-        
+
         {showSidebar && (
           <Sidebar
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
           />
         )}
-        
+
         <main
           className={cn(
             "min-h-screen pt-32 pb-20 lg:pb-0 transition-all duration-300 flex flex-col",
@@ -65,7 +67,7 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
           </div>
           <Footer />
         </main>
-        
+
         <MobileNav />
       </div>
     </AuthGuard>

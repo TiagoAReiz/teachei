@@ -19,6 +19,7 @@ import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { siteConfig } from "@/config/site";
 import { Footer } from "@/components/layout/footer";
 import { useAuth } from "@/hooks/use-auth";
+import { AdSense } from "@/components/adsense";
 
 const features = [
   {
@@ -68,12 +69,33 @@ const howItWorks = [
   },
 ];
 
+const faqs = [
+  {
+    question: "O TeAchei cobra taxa de venda?",
+    answer: "Não! O TeAchei é gratuito para compradores publicarem intenções e para vendedores entrarem em contato. Nossa missão é facilitar o encontro entre as partes.",
+  },
+  {
+    question: "Como garanto a segurança da negociação?",
+    answer: "Recomendamos que todas as conversas e transações sejam feitas com cautela. Nunca faça pagamentos antecipados sem ver o veículo. Consulte nosso guia de segurança para mais dicas.",
+  },
+  {
+    question: "Posso vender motos ou caminhões?",
+    answer: "Sim! Aceitamos intenções de compra para carros, motos e caminhões. Basta selecionar a categoria correta ao criar sua intenção.",
+  },
+  {
+    question: "A Tabela FIPE é atualizada?",
+    answer: "Sim, nossos dados são sincronizados mensalmente com a Tabela FIPE oficial para garantir que você tenha sempre a referência de preço correta.",
+  },
+];
+
+
 export function LandingPage() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden selection:bg-primary selection:text-white">
+      <AdSense />
       {/* Header */}
       <header className="fixed top-6 left-0 right-0 z-50 px-4">
         <div className="max-w-7xl mx-auto bg-surface-glass backdrop-blur-xl border border-white/20 shadow-2xl shadow-primary/10 rounded-full h-20 px-6 lg:px-8 flex items-center justify-between transition-all duration-300">
@@ -113,20 +135,20 @@ export function LandingPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[1000px] bg-primary/5 rounded-full blur-[100px] -z-10 animate-float" />
         <div className="absolute top-1/4 right-0 w-96 h-96 bg-accent/10 rounded-full blur-[80px] -z-10" />
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500/10 rounded-full blur-[60px] -z-10" />
-        
+
         <div className="max-w-7xl mx-auto px-4 lg:px-8 relative text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/50 border border-white/50 backdrop-blur-sm shadow-sm mb-8 animate-fade-in">
             <span className="flex h-2 w-2 rounded-full bg-success"></span>
             <span className="text-sm font-bold text-muted-foreground">Nova plataforma de vendas</span>
           </div>
-          
+
           <h1 className="text-5xl lg:text-7xl font-black text-foreground leading-[1.1] mb-8 tracking-tight">
             Venda seu carro para quem <br className="hidden lg:block" />
             <span className="bg-gradient-to-r from-primary via-purple-500 to-accent bg-clip-text text-transparent">
               já quer comprar.
             </span>
           </h1>
-          
+
           <p className="text-xl lg:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto leading-relaxed">
             O TeAchei inverte o jogo: conectamos vendedores diretamente com compradores qualificados que buscam exatamente o seu veículo.
           </p>
@@ -211,6 +233,29 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="py-24 lg:py-32 bg-surface">
+        <div className="max-w-4xl mx-auto px-4 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-5xl font-black text-foreground mb-6">
+              Perguntas Frequentes
+            </h2>
+            <p className="text-muted-foreground text-xl">
+              Tire suas dúvidas sobre o funcionamento do TeAchei.
+            </p>
+          </div>
+
+          <div className="grid gap-6">
+            {faqs.map((faq, index) => (
+              <div key={index} className="bg-background border border-border p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                <h3 className="text-xl font-bold text-foreground mb-3">{faq.question}</h3>
+                <p className="text-muted-foreground leading-relaxed">{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 lg:py-32">
         <div className="max-w-6xl mx-auto px-4 lg:px-8">
@@ -219,10 +264,10 @@ export function LandingPage() {
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
             <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-            
+
             <div className="relative z-10">
               <h2 className="text-4xl lg:text-6xl font-black text-white mb-8 tracking-tight">
-                Pronto para encontrar seu <br/> próximo comprador?
+                Pronto para encontrar seu <br /> próximo comprador?
               </h2>
               <p className="text-white/80 text-xl mb-12 max-w-2xl mx-auto font-medium">
                 Junte-se a milhares de vendedores que já estão conectando com compradores qualificados todos os dias.

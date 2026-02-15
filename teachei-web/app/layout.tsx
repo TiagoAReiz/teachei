@@ -73,12 +73,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" suppressHydrationWarning>
       <head>
-        {/* AdSense script - ESTÁ CORRETO AQUI NO HEAD, NÃO MOVER! */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7405468272628923"
-          crossOrigin="anonymous"
-        ></script>
+
       </head>
       <body className={`${poppins.variable} font-display antialiased`} suppressHydrationWarning>
         <Providers>{children}</Providers>

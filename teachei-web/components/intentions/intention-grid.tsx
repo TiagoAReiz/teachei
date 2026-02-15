@@ -42,6 +42,17 @@ export function IntentionGrid({
         <p className="text-muted text-center max-w-sm">
           Tente ajustar os filtros ou faça uma nova busca para encontrar o que procura.
         </p>
+        <div className="mt-6 flex flex-col items-center gap-4">
+          <p className="text-sm text-muted-foreground">
+            Enquanto isso, que tal conferir nossas dicas?
+          </p>
+          <a
+            href="/guias"
+            className="text-primary hover:underline text-sm font-medium"
+          >
+            Ver Guias e Dicas Automotivas
+          </a>
+        </div>
       </div>
     );
   }

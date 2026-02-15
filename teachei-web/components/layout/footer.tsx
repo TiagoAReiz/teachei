@@ -14,7 +14,7 @@ export function Footer() {
           {/* Decorative background elements */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-          
+
           <div className="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-12">
             {/* Brand */}
             <div className="col-span-1 md:col-span-2 space-y-6">
@@ -58,6 +58,18 @@ export function Footer() {
                   <Link href="/create" className="text-muted-foreground hover:text-primary transition-colors font-medium flex items-center gap-2 group">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary/30 group-hover:bg-primary transition-colors" />
                     Criar Intenção
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/guias" className="text-muted-foreground hover:text-primary transition-colors font-medium flex items-center gap-2 group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary/30 group-hover:bg-primary transition-colors" />
+                    Guias e Dicas
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/sobre" className="text-muted-foreground hover:text-primary transition-colors font-medium flex items-center gap-2 group">
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary/30 group-hover:bg-primary transition-colors" />
+                    Sobre Nós
                   </Link>
                 </li>
                 <li>
