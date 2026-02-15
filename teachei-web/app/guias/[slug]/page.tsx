@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MainLayout } from "@/components/layout";
 import { guides } from "@/lib/guides";
-import { ChevronLeft, Clock, Calendar, Share2 } from "lucide-react";
+import { ChevronLeft, Clock, Calendar } from "lucide-react";
 import Markdown from "react-markdown";
 
 interface Props {

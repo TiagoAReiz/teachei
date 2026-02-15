@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Car, Instagram } from "lucide-react";
+import { Instagram } from "lucide-react";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { siteConfig } from "@/config/site";
 import { Logo } from "@/components/ui/logo";

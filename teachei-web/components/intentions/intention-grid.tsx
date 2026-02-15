@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { IntentionCard } from "./intention-card";
 import { SkeletonCard } from "@/components/ui/skeleton";
 import type { Anuncio } from "@/types";
@@ -46,12 +48,12 @@ export function IntentionGrid({
           <p className="text-sm text-muted-foreground">
             Enquanto isso, que tal conferir nossas dicas?
           </p>
-          <a
+          <Link
             href="/guias"
             className="text-primary hover:underline text-sm font-medium"
           >
             Ver Guias e Dicas Automotivas
-          </a>
+          </Link>
         </div>
       </div>
     );

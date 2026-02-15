@@ -1,22 +1,17 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import {
   Search,
-  MessageCircle,
   Shield,
   ArrowRight,
   Target,
-  Instagram,
-  CheckCircle2,
-  Zap,
-  TrendingUp
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui";
 import { Logo } from "@/components/ui/logo";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
-import { siteConfig } from "@/config/site";
 import { Footer } from "@/components/layout/footer";
 import { useAuth } from "@/hooks/use-auth";
 import { AdSense } from "@/components/adsense";
@@ -179,7 +174,7 @@ export function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-            {howItWorks.map((item, index) => {
+            {howItWorks.map((item) => {
               const Icon = item.icon;
               return (
                 <div key={item.step} className="relative group">

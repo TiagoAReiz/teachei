@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { MainLayout } from "@/components/layout";
 import { guides } from "@/lib/guides";
-import { Clock, Tag } from "lucide-react";
+import { Clock } from "lucide-react";
 
 export const metadata: Metadata = {
     title: "Guias e Dicas Automotivas",

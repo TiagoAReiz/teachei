@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Car, Bike, Truck, ChevronLeft, ChevronRight, ChevronDown, MapPin } from "lucide-react";
+import { Car, Bike, Truck, ChevronLeft, ChevronDown, MapPin } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
@@ -65,7 +65,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
     null, // Always get all types to show all available type buttons
     filters.marca || null
   );
-  
+
   // Fetch types and brands filtered by selected type (for brand/model options)
   const { data: filteredOptions, isLoading: isLoadingFilteredOptions, error: filteredOptionsError } = useAvailableFilters(
     filters.tipo || null,
@@ -76,14 +76,14 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
 
   // Build year options (includes next year)
   const allYearOptions = generateYearOptions(30);
-  
+
   // Filter max year options based on selected min year
   const yearOptionsMin = allYearOptions;
   const yearOptionsMax = useMemo(() => {
     if (!filters.anoMin) return allYearOptions;
     return allYearOptions.filter(opt => parseInt(opt.value) >= filters.anoMin!);
   }, [allYearOptions, filters.anoMin]);
-  
+
   // Price validation error
   const priceError = useMemo(() => {
     if (filters.precoMin !== null && filters.precoMax !== null && filters.precoMin > filters.precoMax) {
@@ -117,7 +117,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
       ...(marcas?.map((m) => ({ value: m.codigo, label: m.nome })) || []),
     ];
   }, [filteredOptions]);
-  
+
   // Group models by base name (filtered by selected type and brand)
   const groupedModels = useMemo(() => {
     type ModeloArray = NonNullable<typeof filteredOptions>["modelos"];
@@ -192,17 +192,17 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
 
   const applyFilters = (newFilters: FilterState) => {
     const params = new URLSearchParams();
-    
+
     if (newFilters.cidade) params.set("cidade", newFilters.cidade);
     if (newFilters.estado) params.set("estado", newFilters.estado);
     if (newFilters.tipo) params.set("tipo", newFilters.tipo);
     if (newFilters.marca) params.set("marca", newFilters.marca);
-    
+
     // Handle model/version filtering
     if (newFilters.modelo) {
       // Keep the base model name for UI state
       params.set("modelo", newFilters.modelo);
-      
+
       if (newFilters.versao) {
         // Specific version selected - send that version code
         params.set("modeloCodigo", newFilters.versao);
@@ -215,7 +215,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
         }
       }
     }
-    
+
     if (newFilters.opcionais.length > 0) params.set("opcionais", newFilters.opcionais.join(","));
     if (newFilters.precoMin !== null) params.set("precoMin", newFilters.precoMin.toString());
     if (newFilters.precoMax !== null) params.set("precoMax", newFilters.precoMax.toString());
@@ -223,7 +223,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
     if (newFilters.anoMax !== null) params.set("anoMax", newFilters.anoMax.toString());
     if (newFilters.kmMin !== null) params.set("kmMin", newFilters.kmMin.toString());
     if (newFilters.kmMax !== null) params.set("kmMax", newFilters.kmMax.toString());
-    
+
     // Keep search param if exists
     const search = searchParams.get("search");
     if (search) params.set("search", search);
@@ -563,9 +563,9 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
             <Select
               options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
               value={filters.anoMax?.toString() || ""}
-              onChange={(value) => setFilters((prev) => ({ 
-                ...prev, 
-                anoMax: value ? parseInt(value) : null 
+              onChange={(value) => setFilters((prev) => ({
+                ...prev,
+                anoMax: value ? parseInt(value) : null
               }))}
               className="text-sm bg-white shadow-sm border-0 rounded-xl h-10"
             />

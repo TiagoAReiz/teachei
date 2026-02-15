@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Bookmark, Share2, Car, Bike, Truck, Gauge } from "lucide-react";
 import { Card, CardContent, Badge } from "@/components/ui";
 import { cn, formatCurrency, formatRelativeTime, vehicleTypeLabels, formatOpcional, sanitizeUrl } from "@/lib/utils";
@@ -32,7 +33,7 @@ export function IntentionCard({ intention }: IntentionCardProps) {
   const handleShare = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (navigator.share) {
       await navigator.share({
         title: `Procuro ${intention.veiculo.modeloNome}`,
@@ -75,17 +76,19 @@ export function IntentionCard({ intention }: IntentionCardProps) {
         {/* Vehicle Image/Icon Area */}
         <div className="relative h-48 overflow-hidden rounded-t-2xl">
           {intention.veiculo.fotoReferenciaUrl ? (
-            <img
-              src={sanitizeUrl(intention.veiculo.fotoReferenciaUrl)}
+            <Image
+              src={sanitizeUrl(intention.veiculo.fotoReferenciaUrl) || ""}
               alt={`${intention.veiculo.marcaNome} ${intention.veiculo.modeloNome}`}
-              className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           ) : (
             <div className="absolute inset-0 bg-muted/30 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
               <VehicleIcon size={80} className="text-primary/40" strokeWidth={1.5} />
             </div>
           )}
-          
+
           {/* Vehicle Type Badge */}
           <Badge variant="default" className="absolute top-3 left-3 bg-primary text-white">
             {vehicleTypeLabels[intention.tipo]}
@@ -97,8 +100,8 @@ export function IntentionCard({ intention }: IntentionCardProps) {
               onClick={handleSave}
               className={cn(
                 "p-2 rounded-full transition-colors",
-                saved 
-                  ? "bg-primary text-white" 
+                saved
+                  ? "bg-primary text-white"
                   : "bg-white/80 text-muted hover:bg-white hover:text-foreground"
               )}
             >
