@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Bookmark, Share2, Car, Bike, Truck, Gauge } from "lucide-react";
@@ -23,6 +25,7 @@ interface IntentionCardProps {
 export function IntentionCard({ intention }: IntentionCardProps) {
   const { isSaved, toggleSave } = useSavedIntentions();
   const saved = isSaved(intention.id);
+  const [imageError, setImageError] = useState(false);
 
   const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -75,13 +78,14 @@ export function IntentionCard({ intention }: IntentionCardProps) {
       <Card hoverable className="group h-full">
         {/* Vehicle Image/Icon Area */}
         <div className="relative h-48 overflow-hidden rounded-t-2xl">
-          {intention.veiculo.fotoReferenciaUrl ? (
+          {intention.veiculo.fotoReferenciaUrl && !imageError ? (
             <Image
               src={sanitizeUrl(intention.veiculo.fotoReferenciaUrl) || ""}
               alt={`${intention.veiculo.marcaNome} ${intention.veiculo.modeloNome}`}
               fill
               className="object-cover transition-transform duration-300 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              onError={() => setImageError(true)}
             />
           ) : (
             <div className="absolute inset-0 bg-muted/30 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
