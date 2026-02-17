@@ -32,6 +32,7 @@ const vehicleTypeIcons: Record<TipoVeiculo, typeof Car> = {
   CAMINHAO: Truck,
 };
 import { Button, Card, CardContent, Badge, Avatar } from "@/components/ui";
+import { IntentionCarousel } from "@/components/intentions";
 import { formatCurrency, formatRelativeTime, formatExpiration, vehicleTypeLabels, getWhatsAppLink, getInstagramLink, formatOpcional, sanitizeUrl } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
 import { getUserProfile } from "@/lib/auth";
@@ -146,13 +147,12 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
           >
             <ArrowLeft size={24} />
           </button>
-          
+
           <div className="flex items-center gap-2">
             <button
               onClick={() => toggleSave(intention.id)}
-              className={`p-2 rounded-full transition-colors ${
-                saved ? "bg-primary text-white" : "text-muted hover:text-foreground hover:bg-muted/10"
-              }`}
+              className={`p-2 rounded-full transition-colors ${saved ? "bg-primary text-white" : "text-muted hover:text-foreground hover:bg-muted/10"
+                }`}
             >
               <Bookmark size={22} fill={saved ? "currentColor" : "none"} />
             </button>
@@ -173,7 +173,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
             <VehicleIcon size={120} className="text-primary/40" strokeWidth={1} />
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
-          
+
           {/* Badges */}
           <div className="absolute top-4 left-4 flex gap-2">
             <Badge variant="default" className="bg-primary text-white">
@@ -274,7 +274,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                   <ImageIcon size={18} className="text-muted" />
                   Foto de referência
                 </h2>
-                <img 
+                <img
                   src={sanitizeUrl(intention.veiculo.fotoReferenciaUrl)}
                   alt="Foto de referência do veículo"
                   className="w-full max-w-md h-auto rounded-xl border border-border object-cover"
@@ -298,19 +298,19 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
             <Card className="mb-6">
               <CardContent className="p-6">
                 <h2 className="font-semibold text-foreground mb-4">Contato do Comprador</h2>
-                
+
                 {/* TODO: Para cobrar assinatura, ocultar se !intention.assinaturaAtiva && !isOwner */}
                 {/* Seller Profile Info */}
                 {sellerProfile && (
-                  <Link 
+                  <Link
                     href={`/profile/${intention.usuarioId}`}
                     className="flex items-center gap-3 p-3 bg-muted/5 rounded-xl hover:bg-muted/10 transition-colors mb-4"
                   >
-                    <Avatar 
+                    <Avatar
                       src={sellerProfile.avatarUrl}
                       fotoUrl={sellerProfile.fotoUrl}
-                      fallback={sellerProfile.nome} 
-                      size="lg" 
+                      fallback={sellerProfile.nome}
+                      size="lg"
                     />
                     <div className="flex-1">
                       <p className="font-medium text-foreground">{sellerProfile.nome}</p>
@@ -319,7 +319,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                     <User size={18} className="text-muted" />
                   </Link>
                 )}
-                
+
                 {/* Location - always visible */}
                 {(intention.contato.cidade || intention.contato.estado) && (
                   <p className="text-muted flex items-center gap-2 mb-4">
@@ -327,7 +327,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                     {intention.contato.localizacao || [intention.contato.cidade, intention.contato.estado].filter(Boolean).join(", ")}
                   </p>
                 )}
-                  
+
                 {intention.contatoOculto && (
                   <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
                     <p className="text-foreground font-medium mb-2">
@@ -363,7 +363,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                         </div>
                       </a>
                     )}
-                    
+
                     {/* Instagram */}
                     {intention.contato.instagram && (
                       <a
@@ -386,6 +386,19 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
               </CardContent>
             </Card>
           )}
+        </div>
+
+        {/* Similar Intentions Carousel */}
+        <div className="mt-12 mb-8">
+          <IntentionCarousel
+            title={`Outras pessoas procurando por ${intention.veiculo.modeloBaseNome || intention.veiculo.modeloNome}`}
+            filters={{
+              modeloCodigo: intention.veiculo.modeloCodigo,
+              tipoVeiculo: intention.tipo, // Ensure type matches
+            }}
+            ctaLink={`/feed?modeloCodigo=${intention.veiculo.modeloCodigo}&tipo=${intention.tipo}`}
+            ctaText="Ver mais"
+          />
         </div>
 
         {/* Fixed CTA */}

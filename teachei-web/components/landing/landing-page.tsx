@@ -15,6 +15,7 @@ import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { Footer } from "@/components/layout/footer";
 import { useAuth } from "@/hooks/use-auth";
 import { AdSense } from "@/components/adsense";
+import { IntentionCarousel } from "@/components/intentions";
 
 const features = [
   {
@@ -161,6 +162,19 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* Carros Carousel */}
+      <section className="py-12 bg-surface/30">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <IntentionCarousel
+            title="Últimas Intenções de Carros"
+            subtitle="Veja o que estão buscando agora"
+            filters={{ tipoVeiculo: "CARRO" }}
+            ctaLink="/feed?tipo=CARRO"
+            ctaText="Pesquisar Carros"
+          />
+        </div>
+      </section>
+
       {/* How it works */}
       <section id="como-funciona" className="py-24 lg:py-32 bg-surface/50 relative">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
@@ -196,6 +210,18 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* Motos Carousel */}
+      <section className="py-12">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <IntentionCarousel
+            title="Últimas Intenções de Motos"
+            filters={{ tipoVeiculo: "MOTO" }}
+            ctaLink="/feed?tipo=MOTO"
+            ctaText="Pesquisar Motos"
+          />
+        </div>
+      </section>
+
       {/* Features */}
       <section id="recursos" className="py-24 lg:py-32">
         <div className="max-w-7xl mx-auto px-4 lg:px-8">
@@ -225,6 +251,18 @@ export function LandingPage() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Caminhões Carousel */}
+      <section className="py-12 bg-surface/30">
+        <div className="max-w-7xl mx-auto px-4 lg:px-8">
+          <IntentionCarousel
+            title="Últimas Intenções de Caminhões"
+            filters={{ tipoVeiculo: "CAMINHAO" }}
+            ctaLink="/feed?tipo=CAMINHAO"
+            ctaText="Pesquisar Caminhões"
+          />
         </div>
       </section>
 

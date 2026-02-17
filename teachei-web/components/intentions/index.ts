@@ -4,6 +4,7 @@ export { IntentionGrid } from "./intention-grid";
 export { IntentionFilters } from "./intention-filters";
 export { FilterSidebar } from "./filter-sidebar";
 export { SortDropdown, SORT_OPTIONS } from "./sort-dropdown";
+export { IntentionCarousel } from "./intention-carousel";
 export type { FilterState } from "./filter-sidebar";
 
 
