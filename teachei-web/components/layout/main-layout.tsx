@@ -2,7 +2,6 @@
 
 import { useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { AdSense } from "@/components/adsense";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
@@ -24,12 +23,6 @@ const PUBLIC_ROUTES = [
 // Pages that should show the filter sidebar
 const FILTER_PAGES = ["/", "/feed"];
 
-// Pages where AdSense should NOT be shown
-const NO_ADS_ROUTES = [
-  "/termos",
-  "/privacidade",
-  "/contato"
-];
 
 interface MainLayoutProps {
   children: ReactNode;
@@ -52,7 +45,6 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
   return (
     <AuthGuard publicRoutes={PUBLIC_ROUTES}>
       <div className="min-h-screen bg-background">
-        {!NO_ADS_ROUTES.some(route => pathname.startsWith(route)) && <AdSense />}
         <Header />
 
         {showSidebar && (

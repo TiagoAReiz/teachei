@@ -3,16 +3,17 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
+import { DisplayAdUnit, InFeedAdUnit } from "@/components/ads/ad-unit";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
 import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";
 
 function HomeContent() {
   const searchParams = useSearchParams();
-  
+
   // Handle model filter - can be single modeloCodigo or comma-separated modelos
   const modeloCodigo = searchParams.get("modeloCodigo") || undefined;
   const modelos = searchParams.get("modelos")?.split(",").filter(Boolean) || undefined;
-  
+
   const filters: Omit<Filters, "page"> = {
     tipoVeiculo: (searchParams.get("tipo") as TipoVeiculo) || undefined,
     search: searchParams.get("search") || undefined,
@@ -52,6 +53,9 @@ function HomeContent() {
         </p>
       </div>
 
+      {/* Ad Unit - Top */}
+      <DisplayAdUnit className="mb-6" />
+
       {/* Filters */}
       <IntentionFilters className="mb-6" />
 
@@ -63,6 +67,9 @@ function HomeContent() {
         hasMore={hasNextPage}
         isLoadingMore={isFetchingNextPage}
       />
+
+      {/* Ad Unit - Bottom */}
+      <InFeedAdUnit className="mt-6" />
     </div>
   );
 }

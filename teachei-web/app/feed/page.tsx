@@ -4,12 +4,13 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { MainLayout } from "@/components/layout";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
+import { DisplayAdUnit, InFeedAdUnit } from "@/components/ads/ad-unit";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
 import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";
 
 function FeedContent() {
   const searchParams = useSearchParams();
-  
+
   // Parse all filter parameters from URL
   const ordenar = searchParams.get("ordenar") as SortOption | null;
   const marcaCodigo = searchParams.get("marca");
@@ -67,6 +68,9 @@ function FeedContent() {
         </p>
       </div>
 
+      {/* Ad Unit - Top */}
+      <DisplayAdUnit className="mb-6" />
+
       {/* Filters */}
       <IntentionFilters className="mb-6" />
 
@@ -78,6 +82,9 @@ function FeedContent() {
         hasMore={hasNextPage}
         isLoadingMore={isFetchingNextPage}
       />
+
+      {/* Ad Unit - Bottom */}
+      <InFeedAdUnit className="mt-6" />
     </div>
   );
 }

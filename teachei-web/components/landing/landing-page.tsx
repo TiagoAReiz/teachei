@@ -14,7 +14,6 @@ import { Logo } from "@/components/ui/logo";
 import { WhatsAppIcon } from "@/components/ui/whatsapp-icon";
 import { Footer } from "@/components/layout/footer";
 import { useAuth } from "@/hooks/use-auth";
-import { AdSense } from "@/components/adsense";
 import { IntentionCarousel } from "@/components/intentions";
 
 const features = [
@@ -91,7 +90,6 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden selection:bg-primary selection:text-white">
-      <AdSense />
       {/* Header */}
       <header className="fixed top-6 left-0 right-0 z-50 px-4">
         <div className="max-w-7xl mx-auto bg-surface-glass backdrop-blur-xl border border-white/20 shadow-2xl shadow-primary/10 rounded-full h-20 px-6 lg:px-8 flex items-center justify-between transition-all duration-300">
