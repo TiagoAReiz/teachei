@@ -32,7 +32,6 @@ const vehicleTypeIcons: Record<TipoVeiculo, typeof Car> = {
   CAMINHAO: Truck,
 };
 import { Button, Card, CardContent, Badge, Avatar } from "@/components/ui";
-import { InArticleAdUnit } from "@/components/ads/ad-unit";
 import { IntentionCarousel } from "@/components/intentions";
 import { formatCurrency, formatRelativeTime, formatExpiration, vehicleTypeLabels, getWhatsAppLink, getInstagramLink, formatOpcional, sanitizeUrl } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
@@ -389,10 +388,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
           )}
         </div>
 
-        {/* Ad Unit */}
-        <div className="px-4 lg:px-6">
-          <InArticleAdUnit />
-        </div>
+
 
         {/* Similar Intentions Carousel */}
         <div className="mt-12 mb-8">

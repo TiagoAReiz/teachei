@@ -28,8 +28,7 @@ interface AdUnitProps {
  * Reusable Google AdSense ad unit component.
  * Renders an actual ad block (`<ins>`) that displays a real advertisement.
  * 
- * The main adsbygoogle.js script is loaded globally in layout.tsx.
- * This component only handles individual ad unit rendering.
+ * The main adsbygoogle.js script is injected only when this ad unit is present on the page.
  */
 export function AdUnit({
     slot,
