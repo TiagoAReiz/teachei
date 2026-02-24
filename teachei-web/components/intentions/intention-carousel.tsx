@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, ChevronRight, Search } from "lucide-react";
+import { ArrowRight, ChevronRight } from "lucide-react";
 import { useIntentions } from "@/hooks/use-intentions";
 import { IntentionCard } from "./intention-card";
 import { Button } from "@/components/ui/button";
 import { SkeletonCard } from "@/components/ui/skeleton";
 import type { IntentionFilters } from "@/types";
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 
 interface IntentionCarouselProps {
     title: string;
@@ -27,6 +27,17 @@ export function IntentionCarousel({
     // Always fetch 10 items for the carousel
     const { data, isLoading } = useIntentions({ ...filters, size: 10 });
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+
+    const checkScroll = () => {
+        if (scrollContainerRef.current) {
+            setCanScrollLeft(scrollContainerRef.current.scrollLeft > 0);
+        }
+    };
+
+    useEffect(() => {
+        checkScroll();
+    }, [data]);
 
     const scroll = (direction: "left" | "right") => {
         if (scrollContainerRef.current) {
@@ -70,7 +81,7 @@ export function IntentionCarousel({
                 <button
                     onClick={() => scroll("left")}
                     className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-background/80 backdrop-blur-sm border border-border rounded-full shadow-lg flex items-center justify-center text-foreground opacity-0 group-hover/carousel:opacity-100 transition-opacity disabled:opacity-0 -ml-5 hidden lg:flex hover:bg-background"
-                    disabled={!scrollContainerRef.current || scrollContainerRef.current.scrollLeft <= 0}
+                    disabled={!canScrollLeft}
                 >
                     <ChevronRight className="w-6 h-6 rotate-180" />
                 </button>
@@ -85,6 +96,7 @@ export function IntentionCarousel({
                 {/* Carousel Container */}
                 <div
                     ref={scrollContainerRef}
+                    onScroll={checkScroll}
                     className="flex overflow-x-auto gap-4 pb-8 -mx-4 px-4 lg:mx-0 lg:px-0 scrollbar-hide snap-x snap-mandatory"
                     style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                 >
