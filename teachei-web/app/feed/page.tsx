@@ -75,9 +75,6 @@ function FeedContent() {
         </p>
       </div>
 
-      {/* Ad Unit - Top */}
-      <DisplayAdUnit className="mb-6" />
-
       {/* Filters */}
       <IntentionFilters className="mb-6" />
 
@@ -90,8 +87,6 @@ function FeedContent() {
         isLoadingMore={isFetchingNextPage}
       />
 
-      {/* Ad Unit - Bottom */}
-      <InFeedAdUnit className="mt-6" />
     </div>
   );
 }
