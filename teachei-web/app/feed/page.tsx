@@ -5,7 +5,6 @@ import { useSearchParams } from "next/navigation";
 import Script from "next/script";
 import { MainLayout } from "@/components/layout";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
-import { DisplayAdUnit, InFeedAdUnit } from "@/components/ads/ad-unit";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
 import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";
 
@@ -59,12 +58,6 @@ function FeedContent() {
 
   return (
     <div className="p-4 lg:p-6">
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7405468272628923"
-        crossOrigin="anonymous"
-        strategy="lazyOnload"
-      />
       {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground mb-2">

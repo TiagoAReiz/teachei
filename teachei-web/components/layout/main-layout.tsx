@@ -17,7 +17,9 @@ const PUBLIC_ROUTES = [
   "/user",       // Public user profiles
   "/termos",     // Terms of service
   "/privacidade", // Privacy policy
-  "/contato"     // Contact page
+  "/contato",    // Contact page
+  "/guias",      // Guides and tips
+  "/sobre"       // About page
 ];
 
 // Pages that should show the filter sidebar

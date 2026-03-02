@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { MainLayout } from "@/components/layout";
 import { Users, Target, ShieldCheck } from "lucide-react";
+import { AdSense } from "@/components/adsense";
 
 export const metadata: Metadata = {
     title: "Sobre Nós",
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
     return (
         <MainLayout>
+            <AdSense />
             <div className="bg-background min-h-screen">
                 {/* Hero */}
                 <div className="relative py-20 lg:py-32 overflow-hidden bg-surface">

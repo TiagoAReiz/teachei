@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Script from "next/script";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
-import { DisplayAdUnit, InFeedAdUnit } from "@/components/ads/ad-unit";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
 import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";
 
@@ -44,12 +43,6 @@ function HomeContent() {
 
   return (
     <div className="p-4 lg:p-6">
-      <Script
-        async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7405468272628923"
-        crossOrigin="anonymous"
-        strategy="lazyOnload"
-      />
       {/* Page Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground mb-2">
@@ -59,9 +52,6 @@ function HomeContent() {
           Descubra o que compradores estão procurando
         </p>
       </div>
-
-      {/* Ad Unit - Top */}
-      <DisplayAdUnit className="mb-6" />
 
       {/* Filters */}
       <IntentionFilters className="mb-6" />
@@ -74,9 +64,6 @@ function HomeContent() {
         hasMore={hasNextPage}
         isLoadingMore={isFetchingNextPage}
       />
-
-      {/* Ad Unit - Bottom */}
-      <InFeedAdUnit className="mt-6" />
     </div>
   );
 }

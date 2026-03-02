@@ -6,6 +6,7 @@ import { MainLayout } from "@/components/layout";
 import { guides } from "@/lib/guides";
 import { ChevronLeft, Clock, Calendar } from "lucide-react";
 import Markdown from "react-markdown";
+import { AdSense } from "@/components/adsense";
 
 interface Props {
     params: Promise<{ slug: string }>;
@@ -46,6 +47,7 @@ export default async function GuidePostPage({ params }: Props) {
 
     return (
         <MainLayout>
+            <AdSense />
             <article className="min-h-screen bg-background pb-20">
                 {/* Header */}
                 <div className="bg-surface border-b border-border">
