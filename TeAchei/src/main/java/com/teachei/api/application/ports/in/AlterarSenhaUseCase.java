@@ -13,7 +13,7 @@ public interface AlterarSenhaUseCase {
      * @param usuarioId the user ID
      * @param command the password change command
      */
-    void executar(UUID usuarioId, AlterarSenhaCommand command);
+    void executar(UUID usuarioId, AlterarSenhaCommand command);  
 
     /**
      * Command for password change.
