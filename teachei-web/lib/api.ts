@@ -54,13 +54,19 @@ export async function apiFetch<T>(
     headers,
   });
 
-  // Handle 401/403 - remove token and redirect to login
+  // Handle 401/403
   if (response.status === 401 || response.status === 403) {
-    removeToken();
-    if (typeof window !== "undefined") {
-      window.location.href = "/login";
+    // For authenticated requests, redirect to login
+    if (requireAuth) {
+      removeToken();
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+      throw new Error(response.status === 401 ? "Unauthorized" : "Forbidden");
     }
-    throw new Error(response.status === 401 ? "Unauthorized" : "Forbidden");
+    // For public requests (login, register, google), let the error propagate with backend message
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || (response.status === 401 ? "Credenciais inválidas" : "Acesso negado"));
   }
 
   // Handle 429 - rate limited
