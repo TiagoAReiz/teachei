@@ -40,6 +40,13 @@ public interface PerfilRepositoryPort {
      * @param id the profile ID
      */
     void deletar(UUID id);
+
+    /**
+     * Deletes a profile by user ID.
+     *
+     * @param usuarioId the user ID
+     */
+    void deletarPorUsuarioId(UUID usuarioId);
 }
 
 

@@ -1,9 +1,6 @@
 package com.teachei.api.adapter.in.web.dto.request;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public record RegistroRequest(
     @NotBlank(message = "Email é obrigatório")
@@ -19,7 +16,10 @@ public record RegistroRequest(
     String senha,
 
     @Size(max = 100, message = "Nome deve ter no máximo 100 caracteres")
-    String nome
+    String nome,
+
+    @AssertTrue(message = "Você deve aceitar os termos de uso e política de privacidade")
+    Boolean aceitouTermos
 ) {}
 
 

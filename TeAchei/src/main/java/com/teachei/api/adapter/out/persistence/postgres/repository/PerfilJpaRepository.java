@@ -11,6 +11,8 @@ import java.util.UUID;
 public interface PerfilJpaRepository extends JpaRepository<PerfilEntity, UUID> {
 
     Optional<PerfilEntity> findByUsuarioId(UUID usuarioId);
+
+    void deleteByUsuarioId(UUID usuarioId);
 }
 
 

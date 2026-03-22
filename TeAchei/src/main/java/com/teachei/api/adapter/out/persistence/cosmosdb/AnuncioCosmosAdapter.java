@@ -193,6 +193,12 @@ public class AnuncioCosmosAdapter implements AnuncioRepositoryPort {
         // We need to find the document first to get the usuarioId (partition key)
         repository.findById(id).ifPresent(repository::delete);
     }
+
+    @Override
+    public void deletarPorUsuarioId(UUID usuarioId) {
+        var documents = repository.findByUsuarioId(usuarioId.toString());
+        repository.deleteAll(documents);
+    }
 }
 
 

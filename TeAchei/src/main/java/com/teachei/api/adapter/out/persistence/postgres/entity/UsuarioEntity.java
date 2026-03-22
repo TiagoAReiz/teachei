@@ -26,6 +26,12 @@ public class UsuarioEntity {
     @Column(nullable = false)
     private boolean ativo = true;
 
+    @Column(name = "aceitou_termos", nullable = false)
+    private boolean aceitouTermos = false;
+
+    @Column(name = "aceitou_termos_em")
+    private LocalDateTime aceitouTermosEm;
+
     @CreatedDate
     @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime criadoEm;
@@ -38,11 +44,14 @@ public class UsuarioEntity {
     }
 
     public UsuarioEntity(UUID id, String email, String senha, boolean ativo,
+                         boolean aceitouTermos, LocalDateTime aceitouTermosEm,
                          LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
         this.id = id;
         this.email = email;
         this.senha = senha;
         this.ativo = ativo;
+        this.aceitouTermos = aceitouTermos;
+        this.aceitouTermosEm = aceitouTermosEm;
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
     }
@@ -78,6 +87,22 @@ public class UsuarioEntity {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public boolean isAceitouTermos() {
+        return aceitouTermos;
+    }
+
+    public void setAceitouTermos(boolean aceitouTermos) {
+        this.aceitouTermos = aceitouTermos;
+    }
+
+    public LocalDateTime getAceitouTermosEm() {
+        return aceitouTermosEm;
+    }
+
+    public void setAceitouTermosEm(LocalDateTime aceitouTermosEm) {
+        this.aceitouTermosEm = aceitouTermosEm;
     }
 
     public LocalDateTime getCriadoEm() {

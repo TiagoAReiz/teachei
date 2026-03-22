@@ -17,8 +17,9 @@ public interface AutenticarGoogleUseCase {
     /**
      * Command for Google authentication.
      */
-    record GoogleAuthCommand( 
-        String accessToken
+    record GoogleAuthCommand(
+        String accessToken,
+        Boolean aceitouTermos
     ) {
         public GoogleAuthCommand {
             if (accessToken == null || accessToken.isBlank()) {

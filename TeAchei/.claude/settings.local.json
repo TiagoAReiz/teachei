@@ -5,7 +5,9 @@
       "Bash(git remote:*)",
       "Bash(gh api:*)",
       "WebFetch(domain:github.com)",
-      "WebFetch(domain:raw.githubusercontent.com)"
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(wc -l /c/Users/tiago/Desktop/WorkPlace/TeAchei/TeAchei/src/main/java/com/teachei/api/**/*.java)",
+      "Bash(./mvnw compile:*)"
     ]
   }
 }

@@ -22,6 +22,9 @@ import org.springframework.web.filter.CorsFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -30,6 +33,9 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailsService userDetailsService;
+
+    @Value("${app.cors-origins:}")
+    private String corsOrigins;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           CustomUserDetailsService userDetailsService) {
@@ -54,6 +60,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/v1/veiculos/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/perfil/{usuarioId}").permitAll()
                 .requestMatchers(HttpMethod.GET, "/v1/assinaturas/planos").permitAll()
+                .requestMatchers(HttpMethod.GET, "/v1/legal/**").permitAll()
                 // Actuator endpoints
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/actuator/**").authenticated()
@@ -69,11 +76,18 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow ALL origins - CORS completely disabled
-        configuration.setAllowedOriginPatterns(List.of("*"));
+
+        if (corsOrigins != null && !corsOrigins.isBlank()) {
+            List<String> origins = Arrays.asList(corsOrigins.split(","));
+            configuration.setAllowedOriginPatterns(origins);
+        } else {
+            // Fallback for development only
+            configuration.setAllowedOriginPatterns(List.of("http://localhost:*", "http://127.0.0.1:*"));
+        }
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
+        configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 

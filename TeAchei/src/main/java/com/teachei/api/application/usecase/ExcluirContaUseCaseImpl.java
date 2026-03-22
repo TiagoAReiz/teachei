@@ -1,0 +1,69 @@
+package com.teachei.api.application.usecase;
+
+import com.teachei.api.application.ports.in.ExcluirContaUseCase;
+import com.teachei.api.application.ports.out.*;
+import com.teachei.api.domain.exception.UsuarioNaoEncontradoException;
+
+import java.util.UUID;
+
+/**
+ * Implementation of account deletion use case.
+ * Deletes all user data in compliance with LGPD.
+ * Payment transactions are preserved for legal requirements (5 years).
+ */
+public class ExcluirContaUseCaseImpl implements ExcluirContaUseCase {
+
+    private final UsuarioRepositoryPort usuarioRepository;
+    private final PerfilRepositoryPort perfilRepository;
+    private final AnuncioRepositoryPort anuncioRepository;
+    private final AssinaturaRepositoryPort assinaturaRepository;
+    private final BlobStoragePort blobStorage;
+
+    public ExcluirContaUseCaseImpl(UsuarioRepositoryPort usuarioRepository,
+                                    PerfilRepositoryPort perfilRepository,
+                                    AnuncioRepositoryPort anuncioRepository,
+                                    AssinaturaRepositoryPort assinaturaRepository,
+                                    BlobStoragePort blobStorage) {
+        this.usuarioRepository = usuarioRepository;
+        this.perfilRepository = perfilRepository;
+        this.anuncioRepository = anuncioRepository;
+        this.assinaturaRepository = assinaturaRepository;
+        this.blobStorage = blobStorage;
+    }
+
+    @Override
+    public void executar(UUID usuarioId) {
+        // Verify user exists
+        var usuario = usuarioRepository.buscarPorId(usuarioId)
+            .orElseThrow(() -> new UsuarioNaoEncontradoException(usuarioId));
+
+        // Delete profile photo from blob storage
+        try {
+            blobStorage.deleteProfilePhoto(usuarioId);
+        } catch (Exception e) {
+            // Best effort cleanup - don't fail deletion
+        }
+
+        // Delete announcement photos from blob storage
+        var anuncios = anuncioRepository.buscarPorUsuarioId(usuarioId);
+        for (var anuncio : anuncios) {
+            if (anuncio.getId() != null) {
+                try {
+                    blobStorage.deleteIntentionPhoto(anuncio.getId());
+                } catch (Exception e) {
+                    // Best effort cleanup
+                }
+            }
+        }
+        anuncioRepository.deletarPorUsuarioId(usuarioId);
+
+        // Delete subscriptions
+        assinaturaRepository.deletarPorUsuarioId(usuarioId);
+
+        // Delete profile
+        perfilRepository.deletarPorUsuarioId(usuarioId);
+
+        // Delete user account
+        usuarioRepository.deletar(usuarioId);
+    }
+}

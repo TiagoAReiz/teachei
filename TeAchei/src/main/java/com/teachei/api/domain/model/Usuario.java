@@ -13,18 +13,23 @@ public class Usuario {
     private String email;
     private String senha;
     private boolean ativo;
+    private boolean aceitouTermos;
+    private LocalDateTime aceitouTermosEm;
     private LocalDateTime criadoEm;
     private LocalDateTime atualizadoEm;
 
     public Usuario() {
     }
 
-    public Usuario(UUID id, String email, String senha, boolean ativo, 
+    public Usuario(UUID id, String email, String senha, boolean ativo,
+                   boolean aceitouTermos, LocalDateTime aceitouTermosEm,
                    LocalDateTime criadoEm, LocalDateTime atualizadoEm) {
         this.id = id;
         this.email = email;
         this.senha = senha;
         this.ativo = ativo;
+        this.aceitouTermos = aceitouTermos;
+        this.aceitouTermosEm = aceitouTermosEm;
         this.criadoEm = criadoEm;
         this.atualizadoEm = atualizadoEm;
     }
@@ -35,6 +40,8 @@ public class Usuario {
         usuario.email = email;
         usuario.senha = senhaHash;
         usuario.ativo = true;
+        usuario.aceitouTermos = true;
+        usuario.aceitouTermosEm = LocalDateTime.now();
         usuario.criadoEm = LocalDateTime.now();
         usuario.atualizadoEm = LocalDateTime.now();
         return usuario;
@@ -51,6 +58,8 @@ public class Usuario {
         // Mark as OAuth user - this hash cannot be matched by any password
         usuario.senha = "GOOGLE_OAUTH:" + googleId;
         usuario.ativo = true;
+        usuario.aceitouTermos = true;
+        usuario.aceitouTermosEm = LocalDateTime.now();
         usuario.criadoEm = LocalDateTime.now();
         usuario.atualizadoEm = LocalDateTime.now();
         return usuario;
@@ -75,6 +84,12 @@ public class Usuario {
 
     public void alterarSenha(String novaSenhaHash) {
         this.senha = novaSenhaHash;
+        this.atualizadoEm = LocalDateTime.now();
+    }
+
+    public void aceitarTermos() {
+        this.aceitouTermos = true;
+        this.aceitouTermosEm = LocalDateTime.now();
         this.atualizadoEm = LocalDateTime.now();
     }
 
@@ -109,6 +124,22 @@ public class Usuario {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public boolean isAceitouTermos() {
+        return aceitouTermos;
+    }
+
+    public void setAceitouTermos(boolean aceitouTermos) {
+        this.aceitouTermos = aceitouTermos;
+    }
+
+    public LocalDateTime getAceitouTermosEm() {
+        return aceitouTermosEm;
+    }
+
+    public void setAceitouTermosEm(LocalDateTime aceitouTermosEm) {
+        this.aceitouTermosEm = aceitouTermosEm;
     }
 
     public LocalDateTime getCriadoEm() {

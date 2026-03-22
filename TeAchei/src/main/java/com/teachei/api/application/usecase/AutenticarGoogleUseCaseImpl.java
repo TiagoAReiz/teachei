@@ -45,7 +45,13 @@ public class AutenticarGoogleUseCaseImpl implements AutenticarGoogleUseCase {
 
         // Find existing user or create new one
         Usuario usuario = usuarioRepository.buscarPorEmail(googleUserInfo.email())
-            .orElseGet(() -> createNewUser(googleUserInfo));
+            .orElseGet(() -> {
+                if (!Boolean.TRUE.equals(command.aceitouTermos())) {
+                    throw new CredenciaisInvalidasException(
+                        "Você deve aceitar os termos de uso e política de privacidade para criar uma conta");
+                }
+                return createNewUser(googleUserInfo);
+            });
 
         // Check if user is active
         if (!usuario.isAtivo()) {

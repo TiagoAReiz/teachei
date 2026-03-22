@@ -156,6 +156,18 @@ public class BeanConfiguration {
             PasswordEncoderPort passwordEncoder) {
         return new AlterarSenhaUseCaseImpl(usuarioRepository, passwordEncoder);
     }
+
+    @Bean
+    public ExcluirContaUseCase excluirContaUseCase(
+            UsuarioRepositoryPort usuarioRepository,
+            PerfilRepositoryPort perfilRepository,
+            AnuncioRepositoryPort anuncioRepository,
+            AssinaturaRepositoryPort assinaturaRepository,
+            BlobStoragePort blobStorage) {
+        return new ExcluirContaUseCaseImpl(
+            usuarioRepository, perfilRepository, anuncioRepository,
+            assinaturaRepository, blobStorage);
+    }
 }
 
 

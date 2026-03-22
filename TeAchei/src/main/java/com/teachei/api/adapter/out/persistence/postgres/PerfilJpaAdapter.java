@@ -43,6 +43,11 @@ public class PerfilJpaAdapter implements PerfilRepositoryPort {
     public void deletar(UUID id) {
         repository.deleteById(id);
     }
+
+    @Override
+    public void deletarPorUsuarioId(UUID usuarioId) {
+        repository.deleteByUsuarioId(usuarioId);
+    }
 }
 
 

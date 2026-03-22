@@ -108,6 +108,13 @@ public interface AnuncioRepositoryPort {
     void deletar(String id);
 
     /**
+     * Deletes all intentions for a user.
+     *
+     * @param usuarioId the user ID
+     */
+    void deletarPorUsuarioId(UUID usuarioId);
+
+    /**
      * Search result wrapper.
      */
     record ResultadoBusca(

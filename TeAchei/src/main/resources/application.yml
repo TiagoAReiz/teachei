@@ -63,7 +63,7 @@ jwt:
 mercadopago:
   access-token: ${MERCADOPAGO_ACCESS_TOKEN}
   public-key: ${MERCADOPAGO_PUBLIC_KEY}
-  webhook-secret: ${MERCADOPAGO_WEBHOOK_SECRET:}
+  webhook-secret: ${MERCADOPAGO_WEBHOOK_SECRET}
 
 # FIPE API Configuration
 fipe:
@@ -127,10 +127,10 @@ management:
 # Logging
 logging:
   level:
-    com.teachei: DEBUG
+    com.teachei: INFO
     org.springframework.security: INFO
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql: TRACE
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql: WARN
 
 ---
 # Development Profile
@@ -143,9 +143,13 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
+mercadopago:
+  webhook-secret: ${MERCADOPAGO_WEBHOOK_SECRET:dev-secret-not-for-production}
+
 logging:
   level:
     com.teachei: DEBUG
+    org.hibernate.SQL: DEBUG
 
 ---
 # Production Profile

@@ -56,4 +56,6 @@ public interface AssinaturaJpaRepository extends JpaRepository<AssinaturaEntity,
      */
     @Query("SELECT a FROM AssinaturaEntity a WHERE a.status = 'ATIVO' AND a.dataFim < :now")
     List<AssinaturaEntity> findExpiredSubscriptions(@Param("now") LocalDateTime now);
+
+    void deleteByUsuarioId(UUID usuarioId);
 }

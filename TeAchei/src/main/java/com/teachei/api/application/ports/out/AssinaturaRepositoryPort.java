@@ -45,4 +45,9 @@ public interface AssinaturaRepositoryPort {
      * Find expired subscriptions that need status update.
      */
     List<Assinatura> buscarExpiradas();
+
+    /**
+     * Delete all subscriptions for a user.
+     */
+    void deletarPorUsuarioId(UUID usuarioId);
 }

@@ -74,4 +74,9 @@ public class AssinaturaJpaAdapter implements AssinaturaRepositoryPort {
             .map(mapper::toDomain)
             .collect(Collectors.toList());
     }
+
+    @Override
+    public void deletarPorUsuarioId(UUID usuarioId) {
+        repository.deleteByUsuarioId(usuarioId);
+    }
 }

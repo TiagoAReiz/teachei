@@ -75,7 +75,8 @@ public class AuthController {
     @PostMapping("/google")
     public ResponseEntity<AuthResponse> googleAuth(@Valid @RequestBody GoogleAuthRequest request) {
         var command = new AutenticarGoogleUseCase.GoogleAuthCommand(
-            request.credential()
+            request.credential(),
+            request.aceitouTermos()
         );
 
         var result = autenticarGoogleUseCase.executar(command);

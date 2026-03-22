@@ -4,8 +4,12 @@ import jakarta.validation.constraints.NotBlank;
 
 /**
  * Request DTO for Google OAuth authentication.
+ * aceitouTermos is required for new users (first login).
+ * Existing users logging in again can omit it.
  */
 public record GoogleAuthRequest(
     @NotBlank(message = "Token de acesso do Google é obrigatório")
-    String credential
+    String credential,
+
+    Boolean aceitouTermos
 ) {}

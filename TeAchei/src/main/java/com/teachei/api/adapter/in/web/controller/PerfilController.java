@@ -3,6 +3,7 @@ package com.teachei.api.adapter.in.web.controller;
 import com.teachei.api.adapter.in.web.dto.request.AtualizarPerfilRequest;
 import com.teachei.api.adapter.in.web.dto.response.PerfilPublicoResponse;
 import com.teachei.api.adapter.in.web.dto.response.PerfilResponse;
+import com.teachei.api.application.ports.in.ExcluirContaUseCase;
 import com.teachei.api.application.ports.in.GerenciarPerfilUseCase;
 import com.teachei.api.config.security.CurrentUser;
 import jakarta.validation.Valid;
@@ -17,9 +18,12 @@ import java.util.UUID;
 public class PerfilController {
 
     private final GerenciarPerfilUseCase gerenciarPerfilUseCase;
+    private final ExcluirContaUseCase excluirContaUseCase;
 
-    public PerfilController(GerenciarPerfilUseCase gerenciarPerfilUseCase) {
+    public PerfilController(GerenciarPerfilUseCase gerenciarPerfilUseCase,
+                            ExcluirContaUseCase excluirContaUseCase) {
         this.gerenciarPerfilUseCase = gerenciarPerfilUseCase;
+        this.excluirContaUseCase = excluirContaUseCase;
     }
 
     @GetMapping
@@ -63,6 +67,12 @@ public class PerfilController {
 
         var perfil = gerenciarPerfilUseCase.atualizar(currentUser.getId(), command);
         return ResponseEntity.ok(PerfilResponse.fromDomain(perfil));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> excluirConta(@AuthenticationPrincipal CurrentUser currentUser) {
+        excluirContaUseCase.executar(currentUser.getId());
+        return ResponseEntity.noContent().build();
     }
 }
 
