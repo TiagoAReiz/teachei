@@ -50,7 +50,9 @@ function LoginForm() {
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       // Send the access token to our backend for verification
-      googleLogin(tokenResponse.access_token, {
+      // Existing users don't need aceitouTermos, new users will get an error
+      // and should register via /register page instead
+      googleLogin({ credential: tokenResponse.access_token }, {
         onError: () => setShowError(true),
       });
     },

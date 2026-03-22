@@ -7,7 +7,8 @@
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(wc -l /c/Users/tiago/Desktop/WorkPlace/TeAchei/TeAchei/src/main/java/com/teachei/api/**/*.java)",
-      "Bash(./mvnw compile:*)"
+      "Bash(./mvnw compile:*)",
+      "Bash(npx next:*)"
     ]
   }
 }

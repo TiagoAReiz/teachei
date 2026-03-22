@@ -12,6 +12,7 @@ import {
   updateProfile,
   getUserProfile,
   changePassword,
+  deleteAccount,
   LoginResult,
   ChangePasswordRequest,
 } from "@/lib/auth";
@@ -73,7 +74,7 @@ export function useAuth(options: LoginOptions = {}) {
 
   // Google login mutation
   const googleLoginMutation = useMutation({
-    mutationFn: (credential: string) => loginWithGoogle(credential),
+    mutationFn: ({ credential, aceitouTermos }: { credential: string; aceitouTermos?: boolean }) => loginWithGoogle(credential, aceitouTermos),
     onSuccess: (result: LoginResult) => {
       queryClient.setQueryData(["auth", "user"], result.user);
       // Navigate based on role - if no role, show role selection
@@ -97,6 +98,15 @@ export function useAuth(options: LoginOptions = {}) {
   // Change password mutation
   const changePasswordMutation = useMutation({
     mutationFn: (data: ChangePasswordRequest) => changePassword(data),
+  });
+
+  // Delete account mutation
+  const deleteAccountMutation = useMutation({
+    mutationFn: () => deleteAccount(),
+    onSuccess: () => {
+      queryClient.clear();
+      logoutUser();
+    },
   });
 
   // Logout function
@@ -130,6 +140,9 @@ export function useAuth(options: LoginOptions = {}) {
     changePasswordAsync: changePasswordMutation.mutateAsync,
     isChangingPassword: changePasswordMutation.isPending,
     changePasswordError: changePasswordMutation.error,
+    deleteAccount: deleteAccountMutation.mutate,
+    isDeletingAccount: deleteAccountMutation.isPending,
+    deleteAccountError: deleteAccountMutation.error,
     logout,
   };
 }

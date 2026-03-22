@@ -6,7 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Mail, Lock, User, Phone, ArrowRight } from "lucide-react";
+import { Mail, Lock, User, Phone, ArrowRight, Check } from "lucide-react";
 import { useGoogleLogin } from "@react-oauth/google";
 import { AuthLayout } from "@/components/layout/auth-layout";
 import { Button, Input } from "@/components/ui";
@@ -35,6 +35,8 @@ function RegisterForm() {
   const redirectUrl = searchParams.get("redirect");
   const { register: registerUser, isRegistering, registerError, googleLogin, isGoogleLoggingIn, googleLoginError, isAuthenticated, isLoading } = useAuth({ redirectUrl });
   const [showError, setShowError] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsError, setTermsError] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
@@ -50,19 +52,28 @@ function RegisterForm() {
     resolver: zodResolver(registerSchema),
   });
 
+  const validateTerms = (): boolean => {
+    if (!termsAccepted) {
+      setTermsError(true);
+      return false;
+    }
+    setTermsError(false);
+    return true;
+  };
+
   const onSubmit = (data: RegisterFormData) => {
+    if (!validateTerms()) return;
     setShowError(false);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { confirmarSenha, ...registerData } = data;
-    registerUser(registerData, {
+    const { confirmarSenha, telefone, ...rest } = data;
+    registerUser({ ...rest, aceitouTermos: true }, {
       onError: () => setShowError(true),
     });
   };
 
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      // Send the access token to our backend for verification
-      googleLogin(tokenResponse.access_token, {
+      googleLogin({ credential: tokenResponse.access_token, aceitouTermos: true }, {
         onError: () => setShowError(true),
       });
     },
@@ -80,10 +91,50 @@ function RegisterForm() {
         </p>
       </div>
 
+      {/* Terms Checkbox */}
+      <div className="mb-5">
+        <label className="flex items-start gap-3 cursor-pointer group">
+          <div className="relative flex-shrink-0 mt-0.5">
+            <input
+              type="checkbox"
+              checked={termsAccepted}
+              onChange={(e) => {
+                setTermsAccepted(e.target.checked);
+                if (e.target.checked) setTermsError(false);
+              }}
+              className="sr-only peer"
+            />
+            <div className={`w-5 h-5 rounded-md border-2 transition-all flex items-center justify-center ${
+              termsError ? "border-error" : "border-border group-hover:border-primary"
+            } peer-checked:bg-primary peer-checked:border-primary`}>
+              <Check size={14} className="text-white opacity-0 peer-checked:opacity-100 transition-opacity" />
+            </div>
+          </div>
+          <span className="text-sm text-muted leading-tight">
+            Li e aceito os{" "}
+            <Link href="/termos" className="text-primary hover:underline" target="_blank">
+              Termos de Uso
+            </Link>{" "}
+            e a{" "}
+            <Link href="/privacidade" className="text-primary hover:underline" target="_blank">
+              Política de Privacidade
+            </Link>
+          </span>
+        </label>
+        {termsError && (
+          <p className="text-sm text-error mt-1 ml-8">
+            Você deve aceitar os termos para criar uma conta
+          </p>
+        )}
+      </div>
+
       {/* Social Login */}
       <div className="flex flex-col gap-3 mb-6">
-        <button 
-          onClick={() => handleGoogleLogin()}
+        <button
+          onClick={() => {
+            if (!validateTerms()) return;
+            handleGoogleLogin();
+          }}
           disabled={isGoogleLoggingIn}
           className="group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-full bg-surface border border-border text-foreground h-[52px] px-6 transition-transform active:scale-[0.98] font-semibold hover:bg-muted/10 disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -162,20 +213,8 @@ function RegisterForm() {
         </Button>
       </form>
 
-      {/* Terms */}
-      <p className="mt-6 text-center text-xs text-muted">
-        Ao criar uma conta, você concorda com nossos{" "}
-        <Link href="/termos" className="text-primary hover:underline">
-          Termos de Uso
-        </Link>{" "}
-        e{" "}
-        <Link href="/privacidade" className="text-primary hover:underline">
-          Política de Privacidade
-        </Link>
-      </p>
-
       {/* Login Link */}
-      <div className="mt-6 text-center">
+      <div className="mt-8 text-center">
         <p className="text-muted text-sm">
           Já tem uma conta?{" "}
           <Link href="/login" className="text-primary font-bold hover:underline ml-1">

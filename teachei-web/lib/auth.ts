@@ -13,6 +13,7 @@ import { perfilToUser } from "@/types";
 // Google auth request
 export interface GoogleAuthRequest {
   credential: string; // Google ID token
+  aceitouTermos?: boolean;
 }
 
 // Combined login result with user data
@@ -81,11 +82,11 @@ export async function register(data: RegisterRequest): Promise<LoginResult> {
  * Login/Register with Google
  * Sends Google ID token to backend for verification
  */
-export async function loginWithGoogle(credential: string): Promise<LoginResult> {
+export async function loginWithGoogle(credential: string, aceitouTermos?: boolean): Promise<LoginResult> {
   // Step 1: Send Google credential to backend
   const authResponse = await api.post<AuthResponse>(
     API_ENDPOINTS.AUTH_GOOGLE,
-    { credential },
+    { credential, aceitouTermos },
     { requireAuth: false }
   );
 
@@ -160,4 +161,11 @@ export interface ChangePasswordRequest {
  */
 export async function changePassword(data: ChangePasswordRequest): Promise<void> {
   await api.put(API_ENDPOINTS.AUTH_CHANGE_PASSWORD, data);
+}
+
+/**
+ * Delete user account and all associated data (LGPD compliance)
+ */
+export async function deleteAccount(): Promise<void> {
+  await api.delete(API_ENDPOINTS.PROFILE);
 }

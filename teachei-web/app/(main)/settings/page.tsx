@@ -4,8 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { User, Mail, Phone, Instagram, Facebook, Camera, Lock, Eye, EyeOff, Trash2 } from "lucide-react";
+import { User, Mail, Phone, Instagram, Facebook, Camera, Lock, Eye, EyeOff, Trash2, AlertTriangle } from "lucide-react";
 import { Button, Input, Card, CardContent, Avatar, LocationPicker } from "@/components/ui";
+import { Dialog, DialogHeader, DialogTitle, DialogDescription, DialogContent, DialogFooter } from "@/components/ui/dialog";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/toast";
 import { isValidUF } from "@/lib/ibge";
@@ -46,7 +47,7 @@ type PasswordFormData = z.infer<typeof passwordSchema>;
 const MAX_PHOTO_SIZE = 2 * 1024 * 1024; // 2MB - max size accepted by Azure Blob Storage
 
 export default function SettingsPage() {
-  const { user, updateProfile, updateProfileAsync, isUpdatingProfile, changePassword, isChangingPassword, refetch } = useAuth();
+  const { user, updateProfile, updateProfileAsync, isUpdatingProfile, changePassword, isChangingPassword, deleteAccount, isDeletingAccount, refetch } = useAuth();
   const { success, error } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hasMounted, setHasMounted] = useState(false);
@@ -55,6 +56,8 @@ export default function SettingsPage() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   // Prevent hydration mismatch by waiting for client mount
   useEffect(() => {
@@ -450,7 +453,12 @@ export default function SettingsPage() {
             </div>
 
             <div className="pt-4">
-              <Button variant="danger" className="w-full sm:w-auto">
+              <Button
+                variant="danger"
+                className="w-full sm:w-auto"
+                onClick={() => setShowDeleteDialog(true)}
+              >
+                <Trash2 size={16} />
                 Excluir conta
               </Button>
               <p className="text-xs text-muted mt-2">
@@ -460,6 +468,75 @@ export default function SettingsPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Delete Account Confirmation Dialog */}
+      <Dialog isOpen={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}>
+        <DialogHeader onClose={() => setShowDeleteDialog(false)}>
+          <DialogTitle>
+            <span className="flex items-center gap-2 text-error">
+              <AlertTriangle size={24} />
+              Excluir conta
+            </span>
+          </DialogTitle>
+          <DialogDescription>
+            Esta ação é permanente e não pode ser desfeita.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogContent>
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-error/10 border border-error/20">
+              <p className="text-sm text-foreground font-medium mb-2">Ao excluir sua conta, serão removidos:</p>
+              <ul className="text-sm text-muted space-y-1">
+                <li>- Seu perfil e foto</li>
+                <li>- Todos os seus anúncios de intenção</li>
+                <li>- Suas assinaturas</li>
+                <li>- Seus dados pessoais</li>
+              </ul>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Digite <span className="font-bold text-error">EXCLUIR</span> para confirmar
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder="EXCLUIR"
+                className="w-full bg-surface border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-xl h-12 px-4 focus:ring-2 focus:ring-error focus:bg-surface transition-all text-base"
+              />
+            </div>
+          </div>
+        </DialogContent>
+        <DialogFooter>
+          <Button
+            variant="secondary"
+            className="flex-1"
+            onClick={() => {
+              setShowDeleteDialog(false);
+              setDeleteConfirmText("");
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            variant="danger"
+            className="flex-1"
+            disabled={deleteConfirmText !== "EXCLUIR"}
+            isLoading={isDeletingAccount}
+            onClick={() => {
+              deleteAccount(undefined, {
+                onError: (err: Error) => {
+                  error(err.message || "Erro ao excluir conta");
+                  setShowDeleteDialog(false);
+                  setDeleteConfirmText("");
+                },
+              });
+            }}
+          >
+            Excluir permanentemente
+          </Button>
+        </DialogFooter>
+      </Dialog>
     </div>
   );
 }
