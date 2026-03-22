@@ -5,7 +5,7 @@ spring:
 
   # Database Configuration
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?sslmode=${POSTGRES_SSLMODE}
+    url: jdbc:postgresql://${POSTGRES_HOST}:${POSTGRES_PORT:5432}/${POSTGRES_DB}?sslmode=${POSTGRES_SSLMODE:require}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -33,7 +33,7 @@ spring:
 
 # Server Configuration
 server:
-  port: ${SERVER_PORT}
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /api
   tomcat:
@@ -46,28 +46,28 @@ azure:
     uri: ${COSMOS_ENDPOINT}
     key: ${COSMOS_KEY}
     database: ${COSMOS_DATABASE}
-    populate-query-metrics: ${COSMOS_POPULATE_QUERY_METRICS}
+    populate-query-metrics: ${COSMOS_POPULATE_QUERY_METRICS:false}
   storage:
     connection-string: ${AZURE_STORAGE_CONNECTION_STRING}
     blob-endpoint: ${AZURE_STORAGE_BLOB_ENDPOINT}
     containers:
-      profile-photos: ${AZURE_STORAGE_PROFILE_PHOTOS_CONTAINER}
-      vehicle-photos: ${AZURE_STORAGE_VEHICLE_PHOTOS_CONTAINER}
+      profile-photos: ${AZURE_STORAGE_PROFILE_PHOTOS_CONTAINER:profile-photos}
+      vehicle-photos: ${AZURE_STORAGE_VEHICLE_PHOTOS_CONTAINER:vehicle-photos}
 
 # JWT Configuration
 jwt:
   secret: ${JWT_SECRET}
-  expiration-hours: ${JWT_EXPIRATION_HOURS}
+  expiration-hours: ${JWT_EXPIRATION_HOURS:1}
 
 # Mercado Pago Configuration
 mercadopago:
   access-token: ${MERCADOPAGO_ACCESS_TOKEN}
   public-key: ${MERCADOPAGO_PUBLIC_KEY}
-  webhook-secret: ${MERCADOPAGO_WEBHOOK_SECRET}
+  webhook-secret: ${MERCADOPAGO_WEBHOOK_SECRET:}
 
 # FIPE API Configuration
 fipe:
-  base-url: ${FIPE_API_BASE_URL}
+  base-url: ${FIPE_API_BASE_URL:https://parallelum.com.br/fipe/api/v1}
 
 # Application URLs
 app:
@@ -75,26 +75,26 @@ app:
   frontend-url: ${FRONTEND_URL}
   cors-origins: ${CORS_ALLOWED_ORIGINS}
   admin:
-    secret: ${APP_ADMIN_SECRET}
+    secret: ${APP_ADMIN_SECRET:}
 
 # Payment Configuration
 payment:
-  price-per-ad: ${PAYMENT_PRICE_PER_AD}
-  intention-expiry-days: ${INTENTION_EXPIRY_DAYS}
+  price-per-ad: ${PAYMENT_PRICE_PER_AD:2.00}
+  intention-expiry-days: ${INTENTION_EXPIRY_DAYS:60}
 
 # Subscription Plans Configuration (prices in centavos)
 subscription:
   plans:
     individual:
-      price: ${SUBSCRIPTION_INDIVIDUAL_PRICE}
+      price: ${SUBSCRIPTION_INDIVIDUAL_PRICE:200}
       duration-days: 30
       recurring: false
     quarterly:
-      price: ${SUBSCRIPTION_QUARTERLY_PRICE}
+      price: ${SUBSCRIPTION_QUARTERLY_PRICE:3000}
       duration-days: 90
       recurring: true
     annual:
-      price: ${SUBSCRIPTION_ANNUAL_PRICE}
+      price: ${SUBSCRIPTION_ANNUAL_PRICE:9000}
       duration-days: 365
       recurring: true
 
