@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(find /c/Users/tiago/Desktop/WorkPlace/TeAchei/TeAchei -type f \\\\\\(-name *.env* -o -name .env* \\\\\\))"
+      "Bash(find /c/Users/tiago/Desktop/WorkPlace/TeAchei/TeAchei -type f \\\\\\(-name *.env* -o -name .env* \\\\\\))",
+      "Bash(git remote:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }
