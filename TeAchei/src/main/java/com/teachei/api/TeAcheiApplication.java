@@ -13,8 +13,5 @@ public class TeAcheiApplication {
     public static void main(String[] args) {
         SpringApplication.run(TeAcheiApplication.class, args);
     }
-
+    //
 }
-
-
-
