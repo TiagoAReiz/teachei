@@ -77,13 +77,11 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        if (corsOrigins != null && !corsOrigins.isBlank()) {
-            List<String> origins = Arrays.asList(corsOrigins.split(","));
-            configuration.setAllowedOriginPatterns(origins);
-        } else {
-            // Fallback for development only
-            configuration.setAllowedOriginPatterns(List.of("http://localhost:*", "http://127.0.0.1:*"));
-        }
+        configuration.setAllowedOriginPatterns(List.of(
+            "https://teachei.shop",
+            "http://localhost:*",
+            "http://127.0.0.1:*"
+        ));
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));
