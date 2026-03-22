@@ -16,8 +16,8 @@ public interface BuscarAnunciosUseCase {
     /**
      * Searches for active intentions with filters.
      *
-     * @param filtro the search filters
-     * @param pagina the page number (0-based)
+     * @param filtro  the search filters
+     * @param pagina  the page number (0-based)
      * @param tamanho the page size
      * @return paginated results
      */
@@ -43,24 +43,25 @@ public interface BuscarAnunciosUseCase {
      * Filter criteria for searching intentions.
      */
     record FiltroAnuncio(
-        TipoVeiculo tipo,
-        String marcaCodigo,
-        String modeloCodigo,
-        List<String> modelos, // Multiple model codes (alternative to single modeloCodigo)
-        Integer anoMin,
-        Integer anoMax,
-        BigDecimal precoMin,
-        BigDecimal precoMax,
-        Integer kmMin,
-        Integer kmMax,
-        String search,
-        List<String> opcionais,
-        String cidade,
-        String estado,
-        OrdemAnuncio ordenar // Sort order (default: RECENTE)
+            TipoVeiculo tipo,
+            String marcaCodigo,
+            String modeloCodigo,
+            List<String> modelos, // Multiple model codes (alternative to single modeloCodigo)
+            Integer anoMin,
+            Integer anoMax,
+            BigDecimal precoMin,
+            BigDecimal precoMax,
+            Integer kmMin,
+            Integer kmMax,
+            String search,
+            List<String> opcionais,
+            String cidade,
+            String estado,
+            OrdemAnuncio ordenar // Sort order (default: RECENTE)
     ) {
         public static FiltroAnuncio vazio() {
-            return new FiltroAnuncio(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+            return new FiltroAnuncio(null, null, null, null, null, null, null, null, null, null, null, null, null, null,
+                    null);
         }
     }
 
@@ -68,13 +69,10 @@ public interface BuscarAnunciosUseCase {
      * Paginated result wrapper.
      */
     record ResultadoPaginado<T>(
-        List<T> items,
-        int pagina,
-        int tamanho,
-        long total,
-        int totalPaginas
-    ) {}
+            List<T> items,
+            int pagina,
+            int tamanho,
+            long total,
+            int totalPaginas) {
+    }
 }
-
-
-
