@@ -31,12 +31,12 @@ public class AnuncioController {
     private final VerificarAssinaturaUseCase verificarAssinaturaUseCase;
 
     public AnuncioController(CriarAnuncioUseCase criarAnuncioUseCase,
-                             BuscarAnunciosUseCase buscarAnunciosUseCase,
-                             BuscarFiltrosDisponiveisUseCase buscarFiltrosDisponiveisUseCase,
-                             AtualizarAnuncioUseCase atualizarAnuncioUseCase,
-                             ExcluirAnuncioUseCase excluirAnuncioUseCase,
-                             FinalizarAnuncioUseCase finalizarAnuncioUseCase,
-                             VerificarAssinaturaUseCase verificarAssinaturaUseCase) {
+            BuscarAnunciosUseCase buscarAnunciosUseCase,
+            BuscarFiltrosDisponiveisUseCase buscarFiltrosDisponiveisUseCase,
+            AtualizarAnuncioUseCase atualizarAnuncioUseCase,
+            ExcluirAnuncioUseCase excluirAnuncioUseCase,
+            FinalizarAnuncioUseCase finalizarAnuncioUseCase,
+            VerificarAssinaturaUseCase verificarAssinaturaUseCase) {
         this.criarAnuncioUseCase = criarAnuncioUseCase;
         this.buscarAnunciosUseCase = buscarAnunciosUseCase;
         this.buscarFiltrosDisponiveisUseCase = buscarFiltrosDisponiveisUseCase;
@@ -50,39 +50,38 @@ public class AnuncioController {
     public ResponseEntity<AnuncioResponse> criar(
             @AuthenticationPrincipal CurrentUser currentUser,
             @Valid @RequestBody CriarAnuncioRequest request) {
-        
+
         // Map version requests to commands
-        var versoesCommand = request.versoes() != null 
-            ? request.versoes().stream()
-                .map(v -> new CriarAnuncioUseCase.VersaoCommand(v.codigo(), v.nome()))
-                .toList()
-            : List.<CriarAnuncioUseCase.VersaoCommand>of();
-        
+        var versoesCommand = request.versoes() != null
+                ? request.versoes().stream()
+                        .map(v -> new CriarAnuncioUseCase.VersaoCommand(v.codigo(), v.nome()))
+                        .toList()
+                : List.<CriarAnuncioUseCase.VersaoCommand>of();
+
         var command = new CriarAnuncioUseCase.CriarAnuncioCommand(
-            request.tipo(),
-            request.marcaCodigo(),
-            request.marcaNome(),
-            request.modeloCodigo(),
-            request.modeloNome(),
-            request.modeloBaseNome(),
-            versoesCommand,
-            request.todasVersoes(),
-            request.anos(),
-            request.cores(),
-            request.precoMaximo(),
-            request.quilometragemMinima(),
-            request.quilometragemMaxima(),
-            request.opcionais(),
-            request.observacoes(),
-            request.dadosManuais(),
-            request.cidade(),
-            request.estado(),
-            request.fotoReferenciaBase64()
-        );
+                request.tipo(),
+                request.marcaCodigo(),
+                request.marcaNome(),
+                request.modeloCodigo(),
+                request.modeloNome(),
+                request.modeloBaseNome(),
+                versoesCommand,
+                request.todasVersoes(),
+                request.anos(),
+                request.cores(),
+                request.precoMaximo(),
+                request.quilometragemMinima(),
+                request.quilometragemMaxima(),
+                request.opcionais(),
+                request.observacoes(),
+                request.dadosManuais(),
+                request.cidade(),
+                request.estado(),
+                request.fotoReferenciaBase64());
 
         var anuncio = criarAnuncioUseCase.executar(currentUser.getId(), command);
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body(AnuncioResponse.fromDomain(anuncio));
+                .body(AnuncioResponse.fromDomain(anuncio));
     }
 
     @GetMapping
@@ -98,7 +97,8 @@ public class AnuncioController {
             @RequestParam(required = false) Integer ano,
             @RequestParam(required = false) Integer anoMin,
             @RequestParam(required = false) Integer anoMax,
-            // Price range filters (also accept legacy 'precoMinimo' for backwards compatibility)
+            // Price range filters (also accept legacy 'precoMinimo' for backwards
+            // compatibility)
             @RequestParam(required = false) BigDecimal precoMinimo,
             @RequestParam(required = false) BigDecimal precoMin,
             @RequestParam(required = false) BigDecimal precoMax,
@@ -123,80 +123,78 @@ public class AnuncioController {
         TipoVeiculo tipoFinal = tipo != null ? tipo : tipoVeiculo;
         int pageFinal = pagina != null ? pagina : page;
         int sizeFinal = tamanho != null ? tamanho : size;
-        
+
         // Handle legacy 'ano' parameter - treat as both min and max
         Integer anoMinFinal = anoMin != null ? anoMin : ano;
         Integer anoMaxFinal = anoMax != null ? anoMax : ano;
-        
+
         // Handle legacy 'precoMinimo' parameter
         BigDecimal precoMinFinal = precoMin != null ? precoMin : precoMinimo;
-        
+
         // Parse comma-separated modelos into a list
         List<String> modelosList = modelos != null && !modelos.isBlank()
-            ? java.util.Arrays.asList(modelos.split(","))
-            : null;
+                ? java.util.Arrays.asList(modelos.split(","))
+                : null;
 
         var filtro = new BuscarAnunciosUseCase.FiltroAnuncio(
-            tipoFinal, marcaCodigo, modeloCodigo, modelosList,
-            anoMinFinal, anoMaxFinal,
-            precoMinFinal, precoMax,
-            kmMin, kmMax,
-            search, opcionais,
-            cidade, estado,
-            ordenar);
+                tipoFinal, marcaCodigo, modeloCodigo, modelosList,
+                anoMinFinal, anoMaxFinal,
+                precoMinFinal, precoMax,
+                kmMin, kmMax,
+                search, opcionais,
+                cidade, estado,
+                ordenar);
 
         var resultado = buscarAnunciosUseCase.buscar(filtro, pageFinal, sizeFinal);
 
         // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
-        // boolean assinaturaAtiva = currentUser != null && 
-        //     verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
+        // boolean assinaturaAtiva = currentUser != null &&
+        // verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
         // App gratuito por agora - contato sempre visível
         boolean assinaturaAtiva = true;
 
         List<AnuncioResponse> content = resultado.items().stream()
-            .map(anuncio -> {
-                // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
-                // boolean isOwner = currentUser != null && 
-                //     anuncio.getUsuarioId().equals(currentUser.getId());
-                // boolean ocultarContato = !isOwner && !assinaturaAtiva;
-                // App gratuito por agora - contato sempre visível
-                boolean ocultarContato = false;
-                return AnuncioResponse.fromDomain(anuncio, ocultarContato, assinaturaAtiva);
-            })
-            .toList();
+                .map(anuncio -> {
+                    // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
+                    // boolean isOwner = currentUser != null &&
+                    // anuncio.getUsuarioId().equals(currentUser.getId());
+                    // boolean ocultarContato = !isOwner && !assinaturaAtiva;
+                    // App gratuito por agora - contato sempre visível
+                    boolean ocultarContato = false;
+                    return AnuncioResponse.fromDomain(anuncio, ocultarContato, assinaturaAtiva);
+                })
+                .toList();
 
         return ResponseEntity.ok(PaginaResponse.of(
-            content,
-            resultado.pagina(),
-            resultado.tamanho(),
-            resultado.total(),
-            resultado.totalPaginas()
-        ));
+                content,
+                resultado.pagina(),
+                resultado.tamanho(),
+                resultado.total(),
+                resultado.totalPaginas()));
     }
 
     @GetMapping("/filtros")
     public ResponseEntity<FiltrosDisponiveisResponse> filtrosDisponiveis(
             @RequestParam(required = false) TipoVeiculo tipo,
             @RequestParam(required = false) String marcaCodigo) {
-        
+
         var filtros = buscarFiltrosDisponiveisUseCase.buscar(tipo, marcaCodigo);
-        
+
         var response = new FiltrosDisponiveisResponse(
-            filtros.tipos(),
-            filtros.marcas().stream()
-                .map(m -> new FiltrosDisponiveisResponse.MarcaOption(m.codigo(), m.nome()))
-                .toList(),
-            filtros.modelos().stream()
-                .map(m -> new FiltrosDisponiveisResponse.ModeloOption(m.codigo(), m.nome(), m.baseNome()))
-                .toList(),
-            filtros.opcionais().stream()
-                .map(op -> new FiltrosDisponiveisResponse.OpcionalOption(op.codigo(), op.label()))
-                .toList(),
-            filtros.localizacoes().stream()
-                .map(loc -> new FiltrosDisponiveisResponse.LocalizacaoOption(loc.cidade(), loc.estado()))
-                .toList()
-        );
-        
+                filtros.tipos(),
+                filtros.marcas().stream()
+                        .map(m -> new FiltrosDisponiveisResponse.MarcaOption(m.codigo(), m.nome()))
+                        .toList(),
+                filtros.modelos().stream()
+                        .map(m -> new FiltrosDisponiveisResponse.ModeloOption(m.codigo(), m.nome(), m.baseNome()))
+                        .toList(),
+                filtros.opcionais().stream()
+                        .map(op -> new FiltrosDisponiveisResponse.OpcionalOption(op.codigo(), op.label()))
+                        .toList(),
+                filtros.localizacoes().stream()
+                        .map(loc -> new FiltrosDisponiveisResponse.LocalizacaoOption(loc.cidade(), loc.estado()))
+                        .toList());
+
         return ResponseEntity.ok(response);
     }
 
@@ -205,17 +203,17 @@ public class AnuncioController {
             @AuthenticationPrincipal CurrentUser currentUser,
             @PathVariable String id) {
         var anuncio = buscarAnunciosUseCase.buscarPorId(id);
-        
+
         // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
-        // boolean assinaturaAtiva = currentUser != null &&  
-        //     verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
-        // boolean isOwner = currentUser != null && 
-        //     anuncio.getUsuarioId().equals(currentUser.getId());
+        // boolean assinaturaAtiva = currentUser != null &&
+        // verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
+        // boolean isOwner = currentUser != null &&
+        // anuncio.getUsuarioId().equals(currentUser.getId());
         // boolean ocultarContato = !isOwner && !assinaturaAtiva;
         // App gratuito por agora - contato sempre visível
         boolean assinaturaAtiva = true;
         boolean ocultarContato = false;
-        
+
         return ResponseEntity.ok(AnuncioResponse.fromDomain(anuncio, ocultarContato, assinaturaAtiva));
     }
 
@@ -224,8 +222,8 @@ public class AnuncioController {
             @AuthenticationPrincipal CurrentUser currentUser) {
         var anuncios = buscarAnunciosUseCase.buscarPorUsuario(currentUser.getId());
         var response = anuncios.stream()
-            .map(AnuncioResponse::fromDomain)
-            .toList();
+                .map(AnuncioResponse::fromDomain)
+                .toList();
         return ResponseEntity.ok(response);
     }
 
@@ -234,18 +232,19 @@ public class AnuncioController {
             @PathVariable java.util.UUID usuarioId) {
         // Busca todas as intenções do usuário
         var anuncios = buscarAnunciosUseCase.buscarPorUsuario(usuarioId);
-        
+
         // Filtra apenas intenções ATIVAS e aplica lógica de contato
         // TODO: Para cobrar assinatura, descomentar verificação de assinatura abaixo
-        // boolean assinaturaAtiva = verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
+        // boolean assinaturaAtiva =
+        // verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
         // App gratuito por agora - contato sempre visível
         boolean assinaturaAtiva = true;
         boolean ocultarContato = false;
-        
+
         var response = anuncios.stream()
-            .filter(a -> a.getStatus() == com.teachei.api.domain.model.StatusAnuncio.ATIVO)
-            .map(a -> AnuncioResponse.fromDomain(a, ocultarContato, assinaturaAtiva))
-            .toList();
+                .filter(a -> a.getStatus() == com.teachei.api.domain.model.StatusAnuncio.ATIVO)
+                .map(a -> AnuncioResponse.fromDomain(a, ocultarContato, assinaturaAtiva))
+                .toList();
         return ResponseEntity.ok(response);
     }
 
@@ -254,28 +253,27 @@ public class AnuncioController {
             @AuthenticationPrincipal CurrentUser currentUser,
             @PathVariable String id,
             @Valid @RequestBody AtualizarAnuncioRequest request) {
-        
+
         // Map version requests to commands
-        var versoesCommand = request.versoes() != null 
-            ? request.versoes().stream()
-                .map(v -> new AtualizarAnuncioUseCase.VersaoCommand(v.codigo(), v.nome()))
-                .toList()
-            : List.<AtualizarAnuncioUseCase.VersaoCommand>of();
-        
+        var versoesCommand = request.versoes() != null
+                ? request.versoes().stream()
+                        .map(v -> new AtualizarAnuncioUseCase.VersaoCommand(v.codigo(), v.nome()))
+                        .toList()
+                : List.<AtualizarAnuncioUseCase.VersaoCommand>of();
+
         var command = new AtualizarAnuncioUseCase.AtualizarAnuncioCommand(
-            versoesCommand,
-            request.todasVersoes(),
-            request.anos(),
-            request.cores(),
-            request.precoMaximo(),
-            request.quilometragemMinima(),
-            request.quilometragemMaxima(),
-            request.opcionais(),
-            request.observacoes(),
-            request.cidade(),
-            request.estado(),
-            request.fotoReferenciaBase64()
-        );
+                versoesCommand,
+                request.todasVersoes(),
+                request.anos(),
+                request.cores(),
+                request.precoMaximo(),
+                request.quilometragemMinima(),
+                request.quilometragemMaxima(),
+                request.opcionais(),
+                request.observacoes(),
+                request.cidade(),
+                request.estado(),
+                request.fotoReferenciaBase64());
 
         var anuncio = atualizarAnuncioUseCase.executar(currentUser.getId(), id, command);
         return ResponseEntity.ok(AnuncioResponse.fromDomain(anuncio));
@@ -285,7 +283,7 @@ public class AnuncioController {
     public ResponseEntity<Void> excluir(
             @AuthenticationPrincipal CurrentUser currentUser,
             @PathVariable String id) {
-        
+
         excluirAnuncioUseCase.executar(currentUser.getId(), id);
         return ResponseEntity.noContent().build();
     }
@@ -294,11 +292,8 @@ public class AnuncioController {
     public ResponseEntity<AnuncioResponse> finalizar(
             @AuthenticationPrincipal CurrentUser currentUser,
             @PathVariable String id) {
-        
+
         var anuncio = finalizarAnuncioUseCase.executar(currentUser.getId(), id);
         return ResponseEntity.ok(AnuncioResponse.fromDomain(anuncio));
     }
 }
-
-
-
