@@ -26,9 +26,9 @@ public class AuthController {
     private final AlterarSenhaUseCase alterarSenhaUseCase;
 
     public AuthController(RegistrarUsuarioUseCase registrarUsuarioUseCase,
-                          AutenticarUsuarioUseCase autenticarUsuarioUseCase,
-                          AutenticarGoogleUseCase autenticarGoogleUseCase,
-                          AlterarSenhaUseCase alterarSenhaUseCase) {
+            AutenticarUsuarioUseCase autenticarUsuarioUseCase,
+            AutenticarGoogleUseCase autenticarGoogleUseCase,
+            AlterarSenhaUseCase alterarSenhaUseCase) {
         this.registrarUsuarioUseCase = registrarUsuarioUseCase;
         this.autenticarUsuarioUseCase = autenticarUsuarioUseCase;
         this.autenticarGoogleUseCase = autenticarGoogleUseCase;
@@ -38,72 +38,62 @@ public class AuthController {
     @PostMapping("/registrar")
     public ResponseEntity<AuthResponse> registrar(@Valid @RequestBody RegistroRequest request) {
         var command = new RegistrarUsuarioUseCase.RegistrarUsuarioCommand(
-            request.email(),
-            request.senha(),
-            request.nome()
-        );
+                request.email(),
+                request.senha(),
+                request.nome());
 
         var result = registrarUsuarioUseCase.executar(command);
 
         return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(new AuthResponse(
-                result.token(),
-                result.usuarioId(),
-                result.email(),
-                result.expiresIn()
-            ));
+                .status(HttpStatus.CREATED)
+                .body(new AuthResponse(
+                        result.token(),
+                        result.usuarioId(),
+                        result.email(),
+                        result.expiresIn()));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         var command = new AutenticarUsuarioUseCase.AutenticarUsuarioCommand(
-            request.email(),
-            request.senha()
-        );
+                request.email(),
+                request.senha());
 
         var result = autenticarUsuarioUseCase.executar(command);
 
         return ResponseEntity.ok(new AuthResponse(
-            result.token(),
-            result.usuarioId(),
-            result.email(),
-            result.expiresIn()
-        ));
+                result.token(),
+                result.usuarioId(),
+                result.email(),
+                result.expiresIn()));
     }
 
     @PostMapping("/google")
     public ResponseEntity<AuthResponse> googleAuth(@Valid @RequestBody GoogleAuthRequest request) {
         var command = new AutenticarGoogleUseCase.GoogleAuthCommand(
-            request.credential(),
-            request.aceitouTermos()
-        );
+                request.credential(),
+                request.aceitouTermos());
 
         var result = autenticarGoogleUseCase.executar(command);
 
         return ResponseEntity.ok(new AuthResponse(
-            result.token(),
-            result.usuarioId(),
-            result.email(),
-            result.expiresIn()
-        ));
+                result.token(),
+                result.usuarioId(),
+                result.email(),
+                result.expiresIn()));
     }
 
     @PutMapping("/senha")
     public ResponseEntity<Void> alterarSenha(
             @AuthenticationPrincipal CurrentUser currentUser,
             @Valid @RequestBody AlterarSenhaRequest request) {
-        
+
         var command = new AlterarSenhaUseCase.AlterarSenhaCommand(
-            request.senhaAtual(),
-            request.novaSenha()
-        );
+                request.senhaAtual(),
+                request.novaSenha());
 
         alterarSenhaUseCase.executar(currentUser.getId(), command);
 
         return ResponseEntity.noContent().build();
     }
 }
-
-
-
