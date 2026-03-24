@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(curl:*)",
-      "Bash(git diff:*)"
+      "Bash(git diff:*)",
+      "Bash(grep -E \"\\\\.\\(sql|ddl\\)$\")",
+      "Bash(./mvnw compile:*)",
+      "Bash(./mvnw test:*)"
     ]
   }
 }
