@@ -3,6 +3,7 @@ package com.teachei.api.application.usecase;
 import com.teachei.api.application.ports.in.ExcluirContaUseCase;
 import com.teachei.api.application.ports.out.*;
 import com.teachei.api.domain.exception.UsuarioNaoEncontradoException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -32,6 +33,11 @@ public class ExcluirContaUseCaseImpl implements ExcluirContaUseCase {
     }
 
     @Override
+    @Transactional
+    // @Transactional cobre apenas as deleções relacionais (Postgres): assinatura,
+    // perfil e usuário fazem rollback juntos em caso de falha.
+    // Blob Storage e Cosmos (anúncios) NÃO participam da transação JPA — são
+    // best-effort e, se já tiverem sido removidos, não são restaurados num rollback.
     public void executar(UUID usuarioId) {
         // Verify user exists
         var usuario = usuarioRepository.buscarPorId(usuarioId)

@@ -8,6 +8,7 @@ import com.teachei.api.config.security.JwtService;
 import com.teachei.api.domain.exception.CredenciaisInvalidasException;
 import com.teachei.api.domain.model.Perfil;
 import com.teachei.api.domain.model.Usuario;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -33,6 +34,7 @@ public class AutenticarGoogleUseCaseImpl implements AutenticarGoogleUseCase {
     }
 
     @Override
+    @Transactional
     public AuthResult executar(GoogleAuthCommand command) {
         // Verify Google access token and get user info
         var googleUserInfo = googleAuthPort.verifyToken(command.accessToken())

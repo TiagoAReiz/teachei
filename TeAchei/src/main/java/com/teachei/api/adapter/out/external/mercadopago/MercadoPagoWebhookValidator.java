@@ -73,8 +73,10 @@ public class MercadoPagoWebhookValidator {
             // Calculate HMAC-SHA256
             String calculatedSignature = calculateHmac(manifest, webhookSecret);
 
-            // Compare signatures
-            boolean isValid = calculatedSignature.equals(v1);
+            // Compare signatures using constant-time comparison to prevent timing attacks
+            boolean isValid = java.security.MessageDigest.isEqual(
+                calculatedSignature.getBytes(StandardCharsets.UTF_8),
+                v1.getBytes(StandardCharsets.UTF_8));
             
             if (!isValid) {
                 log.warn("Webhook signature validation failed. Expected: {}, Got: {}", 

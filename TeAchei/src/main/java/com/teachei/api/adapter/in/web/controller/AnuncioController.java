@@ -10,6 +10,7 @@ import com.teachei.api.config.security.CurrentUser;
 import com.teachei.api.domain.model.OrdemAnuncio;
 import com.teachei.api.domain.model.TipoVeiculo;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +30,11 @@ public class AnuncioController {
         private final ExcluirAnuncioUseCase excluirAnuncioUseCase;
         private final FinalizarAnuncioUseCase finalizarAnuncioUseCase;
         private final VerificarAssinaturaUseCase verificarAssinaturaUseCase;
+
+        // Feature flag: quando false (default), o app é gratuito e o contato fica
+        // sempre visível. Quando true, aplica a verificação real de assinatura.
+        @Value("${app.subscription.enabled:false}")
+        private boolean subscriptionEnabled;
 
         public AnuncioController(CriarAnuncioUseCase criarAnuncioUseCase,
                         BuscarAnunciosUseCase buscarAnunciosUseCase,
@@ -147,20 +153,16 @@ public class AnuncioController {
 
                 var resultado = buscarAnunciosUseCase.buscar(filtro, pageFinal, sizeFinal);
 
-                // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
-                // boolean assinaturaAtiva = currentUser != null &&
-                // verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
-                // App gratuito por agora - contato sempre visível
-                boolean assinaturaAtiva = true;
+                // Quando a cobrança está desativada (default), contato sempre visível.
+                boolean assinaturaAtiva = !subscriptionEnabled
+                                || (currentUser != null
+                                                && verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId()));
 
                 List<AnuncioResponse> content = resultado.items().stream()
                                 .map(anuncio -> {
-                                        // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
-                                        // boolean isOwner = currentUser != null &&
-                                        // anuncio.getUsuarioId().equals(currentUser.getId());
-                                        // boolean ocultarContato = !isOwner && !assinaturaAtiva;
-                                        // App gratuito por agora - contato sempre visível
-                                        boolean ocultarContato = false;
+                                        boolean isOwner = currentUser != null
+                                                        && anuncio.getUsuarioId().equals(currentUser.getId());
+                                        boolean ocultarContato = subscriptionEnabled && !isOwner && !assinaturaAtiva;
                                         return AnuncioResponse.fromDomain(anuncio, ocultarContato, assinaturaAtiva);
                                 })
                                 .toList();
@@ -208,15 +210,13 @@ public class AnuncioController {
                         @PathVariable String id) {
                 var anuncio = buscarAnunciosUseCase.buscarPorId(id);
 
-                // TODO: Para cobrar assinatura, descomentar as linhas abaixo e remover o bypass
-                // boolean assinaturaAtiva = currentUser != null &&
-                // verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
-                // boolean isOwner = currentUser != null &&
-                // anuncio.getUsuarioId().equals(currentUser.getId());
-                // boolean ocultarContato = !isOwner && !assinaturaAtiva;
-                // App gratuito por agora - contato sempre visível
-                boolean assinaturaAtiva = true;
-                boolean ocultarContato = false;
+                // Quando a cobrança está desativada (default), contato sempre visível.
+                boolean assinaturaAtiva = !subscriptionEnabled
+                                || (currentUser != null
+                                                && verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId()));
+                boolean isOwner = currentUser != null
+                                && anuncio.getUsuarioId().equals(currentUser.getId());
+                boolean ocultarContato = subscriptionEnabled && !isOwner && !assinaturaAtiva;
 
                 return ResponseEntity.ok(AnuncioResponse.fromDomain(anuncio, ocultarContato, assinaturaAtiva));
         }
@@ -233,21 +233,25 @@ public class AnuncioController {
 
         @GetMapping("/usuario/{usuarioId}")
         public ResponseEntity<List<AnuncioResponse>> anunciosPorUsuario(
+                        @AuthenticationPrincipal CurrentUser currentUser,
                         @PathVariable java.util.UUID usuarioId) {
                 // Busca todas as intenções do usuário
                 var anuncios = buscarAnunciosUseCase.buscarPorUsuario(usuarioId);
 
-                // Filtra apenas intenções ATIVAS e aplica lógica de contato
-                // TODO: Para cobrar assinatura, descomentar verificação de assinatura abaixo
-                // boolean assinaturaAtiva =
-                // verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId());
-                // App gratuito por agora - contato sempre visível
-                boolean assinaturaAtiva = true;
-                boolean ocultarContato = false;
+                // Quando a cobrança está desativada (default), contato sempre visível.
+                boolean assinaturaAtiva = !subscriptionEnabled
+                                || (currentUser != null
+                                                && verificarAssinaturaUseCase.temAssinaturaAtiva(currentUser.getId()));
 
+                // Filtra apenas intenções ATIVAS e aplica lógica de contato
                 var response = anuncios.stream()
                                 .filter(a -> a.getStatus() == com.teachei.api.domain.model.StatusAnuncio.ATIVO)
-                                .map(a -> AnuncioResponse.fromDomain(a, ocultarContato, assinaturaAtiva))
+                                .map(a -> {
+                                        boolean isOwner = currentUser != null
+                                                        && a.getUsuarioId().equals(currentUser.getId());
+                                        boolean ocultarContato = subscriptionEnabled && !isOwner && !assinaturaAtiva;
+                                        return AnuncioResponse.fromDomain(a, ocultarContato, assinaturaAtiva);
+                                })
                                 .toList();
                 return ResponseEntity.ok(response);
         }

@@ -60,11 +60,12 @@ public class AnuncioCosmosAdapter implements AnuncioRepositoryPort {
                                   String cidade, String estado,
                                   OrdemAnuncio ordenar,
                                   int pagina, int tamanho) {
-        // Get all active intentions and filter in memory
-        // Note: For production, implement proper Cosmos DB query with filters
-        int offset = pagina * tamanho;
-        
-        List<Anuncio> filtered = repository.findByStatusPaginated(status, offset, tamanho)
+        // In-memory filtering: loads ALL active intentions for the given status and
+        // filters/sorts/paginates in memory. Filters must be applied BEFORE counting
+        // and paginating so that 'total' reflects the filtered set and pages are
+        // computed over the filtered set. Known MVP limitation: for future scale,
+        // these filters should be pushed down into the Cosmos @Query.
+        List<Anuncio> filtered = repository.findByStatus(status)
             .stream()
             .map(mapper::toDomain)
             .filter(a -> tipo == null || a.getTipo() == tipo)
@@ -134,9 +135,15 @@ public class AnuncioCosmosAdapter implements AnuncioRepositoryPort {
             .sorted(getComparator(ordenar))
             .collect(Collectors.toList());
 
-        long total = repository.countByStatus(status);
+        long total = filtered.size();
 
-        return new ResultadoBusca(filtered, total);
+        // Paginate in memory over the filtered set; offset beyond the end yields empty.
+        int offset = pagina * tamanho;
+        List<Anuncio> paginaFiltrada = offset >= filtered.size()
+            ? List.of()
+            : filtered.subList(offset, Math.min(offset + tamanho, filtered.size()));
+
+        return new ResultadoBusca(paginaFiltrada, total);
     }
 
     private Comparator<Anuncio> getComparator(OrdemAnuncio ordenar) {

@@ -8,6 +8,7 @@ import com.teachei.api.config.security.JwtService;
 import com.teachei.api.domain.exception.EmailJaCadastradoException;
 import com.teachei.api.domain.model.Perfil;
 import com.teachei.api.domain.model.Usuario;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implementation of the user registration use case.
@@ -30,6 +31,7 @@ public class RegistrarUsuarioUseCaseImpl implements RegistrarUsuarioUseCase {
     }
 
     @Override
+    @Transactional
     public AuthResult executar(RegistrarUsuarioCommand command) {
         // Check if email already exists
         if (usuarioRepository.existePorEmail(command.email())) {

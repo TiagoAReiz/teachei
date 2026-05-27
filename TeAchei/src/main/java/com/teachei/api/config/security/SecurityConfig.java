@@ -24,6 +24,7 @@ import org.springframework.core.annotation.Order;
 
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,6 +37,9 @@ public class SecurityConfig {
 
     @Value("${app.cors-origins:}")
     private String corsOrigins;
+
+    @Value("${spring.profiles.active:default}")
+    private String activeProfile;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           CustomUserDetailsService userDetailsService) {
@@ -77,11 +81,33 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOriginPatterns(List.of(
-            "https://teachei.shop",
-            "http://localhost:*",
-            "http://127.0.0.1:*"
-        ));
+        boolean isProd = "prod".equalsIgnoreCase(activeProfile)
+            || "production".equalsIgnoreCase(activeProfile);
+
+        List<String> allowedOriginPatterns = new ArrayList<>();
+
+        // Origens vindas da config (app.cors-origins), separadas por vírgula.
+        if (corsOrigins != null && !corsOrigins.isBlank()) {
+            for (String origin : corsOrigins.split(",")) {
+                String trimmed = origin.trim();
+                if (!trimmed.isEmpty()) {
+                    allowedOriginPatterns.add(trimmed);
+                }
+            }
+        }
+
+        // Fallback de produção: nunca derrubar o site se a config vier vazia.
+        if (isProd && allowedOriginPatterns.isEmpty()) {
+            allowedOriginPatterns.add("https://teachei.shop");
+        }
+
+        // localhost/127.0.0.1 apenas fora de produção.
+        if (!isProd) {
+            allowedOriginPatterns.add("http://localhost:*");
+            allowedOriginPatterns.add("http://127.0.0.1:*");
+        }
+
+        configuration.setAllowedOriginPatterns(allowedOriginPatterns);
 
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept", "Origin", "X-Requested-With"));

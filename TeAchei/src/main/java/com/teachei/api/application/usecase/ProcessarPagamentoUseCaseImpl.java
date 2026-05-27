@@ -115,6 +115,19 @@ public class ProcessarPagamentoUseCaseImpl implements ProcessarPagamentoUseCase 
             return;
         }
 
+        // Persist transaction first so the idempotency guard (buscarPorPaymentId)
+        // works on webhook resends, even if activation repeats.
+        TransacaoRepositoryPort.Transacao transacao = TransacaoRepositoryPort.Transacao.criar(
+            payload.id(),
+            assinatura.getUsuarioId(),
+            null,
+            statusInfo.valor(),
+            statusInfo.metodoPagamento(),
+            statusInfo.status()
+        );
+        transacaoRepository.salvar(transacao);
+        log.info("Transaction persisted for payment {}: status={}", payload.id(), statusInfo.status());
+
         // Activate subscription if payment approved
         if (statusInfo.status() == StatusPagamento.APROVADO) {
             assinatura.ativar(payload.id().toString());
