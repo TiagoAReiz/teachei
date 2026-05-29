@@ -155,8 +155,9 @@ jobs:
               AZURE_STORAGE_CONNECTION_STRING="${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}" \
               AZURE_STORAGE_BLOB_ENDPOINT="${{ secrets.AZURE_STORAGE_BLOB_ENDPOINT }}" \
               APP_BASE_URL=https://teachei-api.icybush-e691b538.eastus2.azurecontainerapps.io \
-              FRONTEND_URL=https://teachei.shop
-          
+              FRONTEND_URL=https://teachei.shop \
+              CORS_ALLOWED_ORIGINS=https://teachei.shop
+
           # Configure ingress to target port 8080
           az containerapp ingress update \
             --name ${{ env.CONTAINER_APP_NAME }} \

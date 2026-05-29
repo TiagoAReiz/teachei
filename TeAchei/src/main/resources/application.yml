@@ -79,7 +79,7 @@ fipe:
 app:
   base-url: ${APP_BASE_URL}
   frontend-url: ${FRONTEND_URL}
-  cors-origins: ${CORS_ALLOWED_ORIGINS:}
+  cors-origins: ${CORS_ALLOWED_ORIGINS:https://teachei.shop}
   subscription:
     enabled: ${APP_SUBSCRIPTION_ENABLED:false}
   admin:
