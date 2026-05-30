@@ -4,8 +4,8 @@ import com.teachei.api.application.ports.out.GoogleAuthPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientResponseException;
 
 import java.util.Optional;
 
@@ -19,10 +19,10 @@ public class GoogleAuthAdapter implements GoogleAuthPort {
     private static final Logger log = LoggerFactory.getLogger(GoogleAuthAdapter.class);
     private static final String GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
-    private final WebClient webClient;
+    private final RestClient restClient;
 
-    public GoogleAuthAdapter(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder
+    public GoogleAuthAdapter(RestClient.Builder restClientBuilder) {
+        this.restClient = restClientBuilder
             .baseUrl(GOOGLE_USERINFO_URL)
             .build();
     }
@@ -30,11 +30,10 @@ public class GoogleAuthAdapter implements GoogleAuthPort {
     @Override
     public Optional<GoogleUserInfo> verifyToken(String accessToken) {
         try {
-            GoogleUserInfoResponse response = webClient.get()
+            GoogleUserInfoResponse response = restClient.get()
                 .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
-                .bodyToMono(GoogleUserInfoResponse.class)
-                .block();
+                .body(GoogleUserInfoResponse.class);
 
             if (response == null || response.email() == null) {
                 log.warn("Invalid Google token - no user info returned");
@@ -48,7 +47,7 @@ public class GoogleAuthAdapter implements GoogleAuthPort {
                 response.picture(),
                 response.email_verified() != null && response.email_verified()
             ));
-        } catch (WebClientResponseException e) {
+        } catch (RestClientResponseException e) {
             log.warn("Failed to verify Google token: {} - {}", e.getStatusCode(), e.getMessage());
             return Optional.empty();
         } catch (Exception e) {
