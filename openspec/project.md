@@ -6,7 +6,7 @@ TeAchei is an "inverted marketplace" where **buyers announce purchase intentions
 ## Tech Stack
 
 ### Backend
-- **Language**: Java 21 with Spring Boot 4.x
+- **Language**: Java 17 with Spring Boot 3.3.x
 - **Architecture**: Hexagonal (Ports & Adapters)
 - **Databases**: 
   - PostgreSQL 16 (users, profiles, transactions)
