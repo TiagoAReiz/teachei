@@ -15,15 +15,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
 /**
  * One-time migration to update legacy PENDENTE_PAGAMENTO status to ATIVO.
- * This runs on startup and is idempotent - safe to run multiple times.
+ *
+ * <p>Disabled by default. Running this on every startup is unsafe in a
+ * multi-replica deployment (all replicas race on {@code replaceItem}) and
+ * costs Cosmos RUs even when there is no work to do. To execute it again,
+ * set {@code app.migration.cosmos-status-migration.enabled=true} in the
+ * target environment, restart a single replica (scale to 1), let it run,
+ * then turn the flag back off and scale up.
  */
 @Component
+@ConditionalOnProperty(
+    name = "app.migration.cosmos-status-migration.enabled",
+    havingValue = "true"
+)
 public class CosmosDataMigration implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(CosmosDataMigration.class);

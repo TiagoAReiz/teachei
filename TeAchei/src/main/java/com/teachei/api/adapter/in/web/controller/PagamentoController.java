@@ -1,5 +1,6 @@
 package com.teachei.api.adapter.in.web.controller;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.teachei.api.adapter.out.external.mercadopago.MercadoPagoWebhookValidator;
 import com.teachei.api.application.ports.in.ProcessarPagamentoUseCase;
 import org.slf4j.Logger;
@@ -7,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 /**
  * Controller for payment webhooks.
@@ -37,8 +36,8 @@ public class PagamentoController {
             @RequestParam(required = false) String topic,
             @RequestParam(required = false, name = "data.id") Long dataId,
             @RequestParam(required = false) Long id,
-            @RequestBody(required = false) Map<String, Object> body) {
-        
+            @RequestBody(required = false) WebhookBody body) {
+
         // Mercado Pago webhook payloads may contain payment metadata; never log
         // the body at INFO. Headers/query params are non-sensitive identifiers.
         log.debug("Mercado Pago webhook received: signature={}, requestId={}, type={}, topic={}, dataId={}, id={}",
@@ -50,60 +49,42 @@ public class PagamentoController {
         // Support both IPN v1 format (topic/id) and Webhook v2 format (type/data.id)
         // IPN v1: ?topic=payment&id=123456
         // Webhook v2: ?type=payment&data.id=123456 or in body
-        
+
         // Normalize IPN v1 format to v2 format
         if (topic != null && type == null) {
-            type = topic; // topic=payment -> type=payment
+            type = topic;
             log.debug("IPN v1 format detected, using topic as type: {}", type);
         }
         if (id != null && dataId == null) {
-            dataId = id; // id=123456 -> data.id=123456
+            dataId = id;
             log.debug("IPN v1 format detected, using id as dataId: {}", dataId);
         }
 
         // Parse data from body if not in query params (Webhook v2 with JSON body)
         if (body != null) {
-            // Try to get type from body if not already set
-            if (type == null) {
-                type = (String) body.get("type");
+            if (type == null && body.type() != null) {
+                type = body.type();
             }
-            // Also check for "action" which contains info like "payment.created", "payment.updated"
-            if (type == null) {
-                String action = (String) body.get("action");
-                if (action != null && action.contains("payment")) {
-                    type = "payment";
-                    log.debug("Extracted type from action: {}", action);
+            if (type == null && body.action() != null && body.action().contains("payment")) {
+                type = "payment";
+                log.debug("Extracted type from action: {}", body.action());
+            }
+            if (dataId == null && body.data() != null && body.data().id() != null) {
+                try {
+                    dataId = Long.valueOf(body.data().id());
+                } catch (NumberFormatException e) {
+                    log.warn("Could not parse data.id as Long: {}", body.data().id());
                 }
             }
-            
-            // Try to get dataId from body if not already set
-            if (dataId == null) {
-                // Try data.id first
-                @SuppressWarnings("unchecked")
-                var data = (Map<String, Object>) body.get("data");
-                if (data != null && data.get("id") != null) {
-                    try {
-                        dataId = Long.valueOf(data.get("id").toString());
-                    } catch (NumberFormatException e) {
-                        log.warn("Could not parse data.id as Long: {}", data.get("id"));
-                    }
-                }
-                // Also try "id" directly from body (some formats)
-                if (dataId == null && body.get("id") != null) {
-                    try {
-                        Object bodyId = body.get("id");
-                        // Skip if it's a string ID (like webhook id, not payment id)
-                        if (bodyId instanceof Number) {
-                            dataId = ((Number) bodyId).longValue();
-                        } else {
-                            String idStr = bodyId.toString();
-                            // Only use if it looks like a numeric payment ID
-                            if (idStr.matches("\\d+")) {
-                                dataId = Long.valueOf(idStr);
-                            }
-                        }
-                    } catch (NumberFormatException e) {
-                        log.debug("Body id is not a numeric payment id: {}", body.get("id"));
+            // Fallback: some formats put the payment id at the top level
+            if (dataId == null && body.id() != null) {
+                Object bodyId = body.id();
+                if (bodyId instanceof Number n) {
+                    dataId = n.longValue();
+                } else {
+                    String idStr = bodyId.toString();
+                    if (idStr.matches("\\d+")) {
+                        dataId = Long.valueOf(idStr);
                     }
                 }
             }
@@ -141,5 +122,17 @@ public class PagamentoController {
 
         // Always return 200 quickly to acknowledge receipt
         return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Mercado Pago webhook body. Only the fields we actually consume are mapped;
+     * the rest are ignored so the API can evolve without breaking us.
+     * {@code id} stays {@code Object} because Mercado Pago has sent it as both
+     * Number and String depending on the variant.
+     */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public record WebhookBody(String type, String action, Object id, Data data) {
+        @JsonIgnoreProperties(ignoreUnknown = true)
+        public record Data(String id) {}
     }
 }

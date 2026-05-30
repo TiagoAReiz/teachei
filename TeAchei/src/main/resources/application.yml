@@ -84,6 +84,10 @@ app:
     enabled: ${APP_SUBSCRIPTION_ENABLED:false}
   admin:
     secret: ${APP_ADMIN_SECRET:}
+  # One-shot migrations. Default off; ligar pontualmente para rodar.
+  migration:
+    cosmos-status-migration:
+      enabled: ${COSMOS_STATUS_MIGRATION_ENABLED:false}
 
 # Payment Configuration
 payment:
