@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -31,175 +30,91 @@ public class GlobalExceptionHandler {
             .map(fe -> new ErrorResponse.FieldError(fe.getField(), fe.getDefaultMessage()))
             .toList();
 
-        var response = new ErrorResponse(
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(
             HttpStatus.BAD_REQUEST.value(),
-            "Bad Request",
+            HttpStatus.BAD_REQUEST.getReasonPhrase(),
             "Erro de validação",
             "VALIDATION_ERROR",
             request.getRequestURI(),
             fieldErrors
-        );
-
-        return ResponseEntity.badRequest().body(response);
+        ));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgument(
             IllegalArgumentException ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Bad Request",
-            ex.getMessage(),
-            "INVALID_ARGUMENT",
-            request.getRequestURI()
-        );
-        return ResponseEntity.badRequest().body(response);
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), "INVALID_ARGUMENT", request);
     }
 
     @ExceptionHandler(UsuarioNaoEncontradoException.class)
     public ResponseEntity<ErrorResponse> handleUsuarioNaoEncontrado(
             UsuarioNaoEncontradoException ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.NOT_FOUND.value(),
-            "Not Found",
-            ex.getMessage(),
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(AnuncioNaoEncontradoException.class)
     public ResponseEntity<ErrorResponse> handleAnuncioNaoEncontrado(
             AnuncioNaoEncontradoException ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.NOT_FOUND.value(),
-            "Not Found",
-            ex.getMessage(),
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return build(HttpStatus.NOT_FOUND, ex.getMessage(), ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(EmailJaCadastradoException.class)
     public ResponseEntity<ErrorResponse> handleEmailJaCadastrado(
             EmailJaCadastradoException ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.CONFLICT.value(),
-            "Conflict",
-            ex.getMessage(),
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return build(HttpStatus.CONFLICT, ex.getMessage(), ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ResponseEntity<ErrorResponse> handleCredenciaisInvalidas(
             CredenciaisInvalidasException ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.UNAUTHORIZED.value(),
-            "Unauthorized",
-            "Credenciais inválidas",
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        return build(HttpStatus.UNAUTHORIZED, "Credenciais inválidas", ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentials(
             BadCredentialsException ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.UNAUTHORIZED.value(),
-            "Unauthorized",
-            "Credenciais inválidas",
-            "INVALID_CREDENTIALS",
-            request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+        return build(HttpStatus.UNAUTHORIZED, "Credenciais inválidas", "INVALID_CREDENTIALS", request);
     }
 
     @ExceptionHandler({AcessoNegadoException.class, AccessDeniedException.class})
     public ResponseEntity<ErrorResponse> handleAcessoNegado(
             Exception ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.FORBIDDEN.value(),
-            "Forbidden",
-            "Acesso negado",
-            "ACCESS_DENIED",
-            request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        return build(HttpStatus.FORBIDDEN, "Acesso negado", "ACCESS_DENIED", request);
     }
 
     @ExceptionHandler(AnuncioInvalidoException.class)
     public ResponseEntity<ErrorResponse> handleAnuncioInvalido(
             AnuncioInvalidoException ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Bad Request",
-            ex.getMessage(),
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.badRequest().body(response);
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(PagamentoException.class)
     public ResponseEntity<ErrorResponse> handlePagamento(
             PagamentoException ex, HttpServletRequest request) {
-        var response = new ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Bad Request",
-            ex.getMessage(),
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.badRequest().body(response);
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(FipeApiException.class)
     public ResponseEntity<ErrorResponse> handleFipeApi(
             FipeApiException ex, HttpServletRequest request) {
         log.warn("FIPE API error: {} (HTTP {})", ex.getMessage(), ex.getHttpStatusCode());
-        var response = new ErrorResponse(
-            HttpStatus.SERVICE_UNAVAILABLE.value(),
-            "Service Unavailable",
+        return build(HttpStatus.SERVICE_UNAVAILABLE,
             "Serviço de consulta de veículos temporariamente indisponível",
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+            ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(ServicoIndisponivelException.class)
     public ResponseEntity<ErrorResponse> handleServicoIndisponivel(
             ServicoIndisponivelException ex, HttpServletRequest request) {
         log.error("External service unavailable: {}", ex.getMessage());
-        var response = new ErrorResponse(
-            HttpStatus.SERVICE_UNAVAILABLE.value(),
-            "Service Unavailable",
-            ex.getMessage(),
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
+        return build(HttpStatus.SERVICE_UNAVAILABLE, ex.getMessage(), ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(DomainException.class)
     public ResponseEntity<ErrorResponse> handleDomain(
             DomainException ex, HttpServletRequest request) {
         log.warn("Domain exception: {}", ex.getMessage());
-        var response = new ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Bad Request",
-            ex.getMessage(),
-            ex.getErrorCode(),
-            request.getRequestURI()
-        );
-        return ResponseEntity.badRequest().body(response);
+        return build(HttpStatus.BAD_REQUEST, ex.getMessage(), ex.getErrorCode(), request);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
@@ -210,34 +125,28 @@ public class GlobalExceptionHandler {
         if (cause != null && cause.getCause() instanceof IllegalArgumentException iae) {
             message = iae.getMessage();
         } else {
-            message = String.format("Valor inválido para o parâmetro '%s': %s", 
+            message = String.format("Valor inválido para o parâmetro '%s': %s",
                 ex.getName(), ex.getValue());
         }
-        
-        var response = new ErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
-            "Bad Request",
-            message,
-            "INVALID_PARAMETER",
-            request.getRequestURI()
-        );
-        return ResponseEntity.badRequest().body(response);
+        return build(HttpStatus.BAD_REQUEST, message, "INVALID_PARAMETER", request);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(
             Exception ex, HttpServletRequest request) {
         log.error("Unexpected error", ex);
-        var response = new ErrorResponse(
-            HttpStatus.INTERNAL_SERVER_ERROR.value(),
-            "Internal Server Error",
-            "Ocorreu um erro inesperado",
-            "INTERNAL_ERROR",
+        return build(HttpStatus.INTERNAL_SERVER_ERROR,
+            "Ocorreu um erro inesperado", "INTERNAL_ERROR", request);
+    }
+
+    private ResponseEntity<ErrorResponse> build(HttpStatus status, String message,
+                                                String code, HttpServletRequest request) {
+        return ResponseEntity.status(status).body(new ErrorResponse(
+            status.value(),
+            status.getReasonPhrase(),
+            message,
+            code,
             request.getRequestURI()
-        );
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        ));
     }
 }
-
-
-

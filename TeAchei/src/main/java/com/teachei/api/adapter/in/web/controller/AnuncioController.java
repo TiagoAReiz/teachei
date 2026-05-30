@@ -2,12 +2,12 @@ package com.teachei.api.adapter.in.web.controller;
 
 import com.teachei.api.adapter.in.web.dto.request.AtualizarAnuncioRequest;
 import com.teachei.api.adapter.in.web.dto.request.CriarAnuncioRequest;
+import com.teachei.api.adapter.in.web.dto.request.FiltroAnuncioQuery;
 import com.teachei.api.adapter.in.web.dto.response.AnuncioResponse;
 import com.teachei.api.adapter.in.web.dto.response.FiltrosDisponiveisResponse;
 import com.teachei.api.adapter.in.web.dto.response.PaginaResponse;
 import com.teachei.api.application.ports.in.*;
 import com.teachei.api.config.security.CurrentUser;
-import com.teachei.api.domain.model.OrdemAnuncio;
 import com.teachei.api.domain.model.TipoVeiculo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -93,65 +92,20 @@ public class AnuncioController {
         @GetMapping
         public ResponseEntity<PaginaResponse<AnuncioResponse>> listar(
                         @AuthenticationPrincipal CurrentUser currentUser,
-                        // Accept both 'tipo' and 'tipoVeiculo' parameter names
-                        @RequestParam(required = false) TipoVeiculo tipo,
-                        @RequestParam(required = false) TipoVeiculo tipoVeiculo,
-                        @RequestParam(required = false) String marcaCodigo,
-                        @RequestParam(required = false) String modeloCodigo,
-                        @RequestParam(required = false) String modelos, // Comma-separated model codes
-                        // Year range filters (also accept legacy 'ano' for backwards compatibility)
-                        @RequestParam(required = false) Integer ano,
-                        @RequestParam(required = false) Integer anoMin,
-                        @RequestParam(required = false) Integer anoMax,
-                        // Price range filters (also accept legacy 'precoMinimo' for backwards
-                        // compatibility)
-                        @RequestParam(required = false) BigDecimal precoMinimo,
-                        @RequestParam(required = false) BigDecimal precoMin,
-                        @RequestParam(required = false) BigDecimal precoMax,
-                        // Mileage range filters
-                        @RequestParam(required = false) Integer kmMin,
-                        @RequestParam(required = false) Integer kmMax,
-                        // Text search
-                        @RequestParam(required = false) String search,
-                        // Optionals filter (comma-separated)
-                        @RequestParam(required = false) List<String> opcionais,
-                        @RequestParam(required = false) String cidade,
-                        @RequestParam(required = false) String estado,
-                        // Sort order
-                        @RequestParam(required = false) OrdemAnuncio ordenar,
-                        // Accept both 'page'/'pagina' and 'size'/'tamanho' parameter names
-                        @RequestParam(defaultValue = "0") int page,
-                        @RequestParam(required = false) Integer pagina,
-                        @RequestParam(defaultValue = "20") int size,
-                        @RequestParam(required = false) Integer tamanho) {
-
-                // Use first non-null value for each parameter
-                TipoVeiculo tipoFinal = tipo != null ? tipo : tipoVeiculo;
-                int pageFinal = pagina != null ? pagina : page;
-                int sizeFinal = tamanho != null ? tamanho : size;
-
-                // Handle legacy 'ano' parameter - treat as both min and max
-                Integer anoMinFinal = anoMin != null ? anoMin : ano;
-                Integer anoMaxFinal = anoMax != null ? anoMax : ano;
-
-                // Handle legacy 'precoMinimo' parameter
-                BigDecimal precoMinFinal = precoMin != null ? precoMin : precoMinimo;
-
-                // Parse comma-separated modelos into a list
-                List<String> modelosList = modelos != null && !modelos.isBlank()
-                                ? java.util.Arrays.asList(modelos.split(","))
-                                : null;
+                        @ModelAttribute FiltroAnuncioQuery query) {
 
                 var filtro = new BuscarAnunciosUseCase.FiltroAnuncio(
-                                tipoFinal, marcaCodigo, modeloCodigo, modelosList,
-                                anoMinFinal, anoMaxFinal,
-                                precoMinFinal, precoMax,
-                                kmMin, kmMax,
-                                search, opcionais,
-                                cidade, estado,
-                                ordenar);
+                                query.resolvedTipo(), query.marcaCodigo(),
+                                query.modeloCodigo(), query.modelosList(),
+                                query.resolvedAnoMin(), query.resolvedAnoMax(),
+                                query.resolvedPrecoMin(), query.precoMax(),
+                                query.kmMin(), query.kmMax(),
+                                query.search(), query.opcionais(),
+                                query.cidade(), query.estado(),
+                                query.ordenar());
 
-                var resultado = buscarAnunciosUseCase.buscar(filtro, pageFinal, sizeFinal);
+                var resultado = buscarAnunciosUseCase.buscar(
+                                filtro, query.resolvedPage(), query.resolvedSize());
 
                 // Quando a cobrança está desativada (default), contato sempre visível.
                 boolean assinaturaAtiva = !subscriptionEnabled
