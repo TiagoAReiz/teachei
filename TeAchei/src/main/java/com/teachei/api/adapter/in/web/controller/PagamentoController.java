@@ -39,12 +39,13 @@ public class PagamentoController {
             @RequestParam(required = false) Long id,
             @RequestBody(required = false) Map<String, Object> body) {
         
-        log.info("=== MERCADO PAGO WEBHOOK RECEIVED ===");
-        log.info("Headers: x-signature={}, x-request-id={}", 
-                 xSignature != null ? "[PRESENT]" : "[MISSING]", 
-                 xRequestId != null ? xRequestId : "[MISSING]");
-        log.info("Query params: type={}, topic={}, data.id={}, id={}", type, topic, dataId, id);
-        log.info("Request body: {}", body);
+        // Mercado Pago webhook payloads may contain payment metadata; never log
+        // the body at INFO. Headers/query params are non-sensitive identifiers.
+        log.debug("Mercado Pago webhook received: signature={}, requestId={}, type={}, topic={}, dataId={}, id={}",
+                 xSignature != null ? "[PRESENT]" : "[MISSING]",
+                 xRequestId != null ? xRequestId : "[MISSING]",
+                 type, topic, dataId, id);
+        log.trace("Webhook body: {}", body);
 
         // Support both IPN v1 format (topic/id) and Webhook v2 format (type/data.id)
         // IPN v1: ?topic=payment&id=123456
@@ -53,11 +54,11 @@ public class PagamentoController {
         // Normalize IPN v1 format to v2 format
         if (topic != null && type == null) {
             type = topic; // topic=payment -> type=payment
-            log.info("IPN v1 format detected, using topic as type: {}", type);
+            log.debug("IPN v1 format detected, using topic as type: {}", type);
         }
         if (id != null && dataId == null) {
             dataId = id; // id=123456 -> data.id=123456
-            log.info("IPN v1 format detected, using id as dataId: {}", dataId);
+            log.debug("IPN v1 format detected, using id as dataId: {}", dataId);
         }
 
         // Parse data from body if not in query params (Webhook v2 with JSON body)
@@ -71,7 +72,7 @@ public class PagamentoController {
                 String action = (String) body.get("action");
                 if (action != null && action.contains("payment")) {
                     type = "payment";
-                    log.info("Extracted type from action: {}", action);
+                    log.debug("Extracted type from action: {}", action);
                 }
             }
             
@@ -106,14 +107,13 @@ public class PagamentoController {
                     }
                 }
             }
-            log.info("After body parsing: type={}, dataId={}", type, dataId);
+            log.debug("After body parsing: type={}, dataId={}", type, dataId);
         }
 
         // Validate webhook signature (security)
         String dataIdStr = dataId != null ? dataId.toString() : null;
         boolean signatureValid = webhookValidator.validateSignature(xSignature, xRequestId, dataIdStr);
-        log.info("Signature validation result: {}", signatureValid ? "VALID" : "INVALID/SKIPPED");
-        
+
         if (!signatureValid) {
             log.warn("Invalid webhook signature - rejecting request");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -121,7 +121,7 @@ public class PagamentoController {
 
         // Process the webhook
         if (type != null && dataId != null) {
-            log.info("Processing webhook: type={}, dataId={}", type, dataId);
+            log.debug("Processing webhook: type={}, dataId={}", type, dataId);
             try {
                 var payload = new ProcessarPagamentoUseCase.WebhookPayload(
                     type,
@@ -131,16 +131,14 @@ public class PagamentoController {
                     null
                 );
                 processarPagamentoUseCase.processarWebhook(payload);
-                log.info("Webhook processed successfully");
             } catch (Exception e) {
-                log.error("Error processing webhook: {}", e.getMessage(), e);
+                log.error("Error processing webhook for paymentId={}: {}", dataId, e.getMessage(), e);
                 // Still return 200 to avoid Mercado Pago retries for application errors
             }
         } else {
             log.warn("Webhook ignored: type or dataId is null");
         }
 
-        log.info("=== WEBHOOK PROCESSING COMPLETE ===");
         // Always return 200 quickly to acknowledge receipt
         return ResponseEntity.ok().build();
     }
