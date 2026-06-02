@@ -7,7 +7,7 @@ import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase;
 import com.teachei.api.application.ports.in.CriarAnuncioUseCase;
 import com.teachei.api.application.ports.in.ExcluirAnuncioUseCase;
 import com.teachei.api.application.ports.in.FinalizarAnuncioUseCase;
-import com.teachei.api.application.ports.in.VerificarAssinaturaUseCase;
+import com.teachei.api.assinatura.application.ports.in.VerificarAssinaturaUseCase;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.MarcaOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.ModeloOption;

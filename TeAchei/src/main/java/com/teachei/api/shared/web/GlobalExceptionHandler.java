@@ -1,4 +1,5 @@
 package com.teachei.api.shared.web;
+import com.teachei.api.pagamento.domain.exception.PagamentoException;
 import com.teachei.api.shared.domain.exception.AcessoNegadoException;
 import com.teachei.api.shared.domain.exception.ServicoIndisponivelException;
 import com.teachei.api.shared.domain.exception.DomainException;

@@ -1,4 +1,6 @@
 package com.teachei.api.application.usecase;
+import com.teachei.api.assinatura.application.ports.out.AssinaturaRepositoryPort;
+import com.teachei.api.perfil.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.shared.storage.BlobStoragePort;
 
 import com.teachei.api.application.ports.in.ExcluirContaUseCase;

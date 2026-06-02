@@ -1,4 +1,5 @@
 package com.teachei.api.adapter.in.web.controller;
+import com.teachei.api.assinatura.application.ports.in.VerificarAssinaturaUseCase;
 
 import com.teachei.api.adapter.in.web.dto.request.AtualizarAnuncioRequest;
 import com.teachei.api.adapter.in.web.dto.request.CriarAnuncioRequest;

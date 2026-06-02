@@ -1,4 +1,21 @@
 package com.teachei.api.config;
+import com.teachei.api.perfil.application.usecase.GerenciarPerfilUseCaseImpl;
+import com.teachei.api.perfil.application.ports.in.GerenciarPerfilUseCase;
+import com.teachei.api.perfil.application.ports.out.PerfilRepositoryPort;
+import com.teachei.api.assinatura.config.SubscriptionConfig;
+import com.teachei.api.assinatura.application.usecase.BuscarPlanosUseCaseImpl;
+import com.teachei.api.assinatura.application.usecase.VerificarAssinaturaUseCaseImpl;
+import com.teachei.api.assinatura.application.usecase.CancelarAssinaturaUseCaseImpl;
+import com.teachei.api.assinatura.application.usecase.CriarAssinaturaUseCaseImpl;
+import com.teachei.api.assinatura.application.ports.in.BuscarPlanosUseCase;
+import com.teachei.api.assinatura.application.ports.in.VerificarAssinaturaUseCase;
+import com.teachei.api.assinatura.application.ports.in.CancelarAssinaturaUseCase;
+import com.teachei.api.assinatura.application.ports.in.CriarAssinaturaUseCase;
+import com.teachei.api.assinatura.application.ports.out.AssinaturaRepositoryPort;
+import com.teachei.api.pagamento.application.usecase.ProcessarPagamentoUseCaseImpl;
+import com.teachei.api.pagamento.application.ports.in.ProcessarPagamentoUseCase;
+import com.teachei.api.pagamento.application.ports.out.TransacaoRepositoryPort;
+import com.teachei.api.pagamento.application.ports.out.PagamentoPort;
 import com.teachei.api.shared.storage.BlobStoragePort;
 
 import com.teachei.api.application.ports.in.*;

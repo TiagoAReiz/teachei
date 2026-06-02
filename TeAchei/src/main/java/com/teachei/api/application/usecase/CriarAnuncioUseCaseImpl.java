@@ -1,9 +1,10 @@
 package com.teachei.api.application.usecase;
+import com.teachei.api.perfil.domain.Perfil;
 
 import com.teachei.api.application.ports.in.CriarAnuncioUseCase;
 import com.teachei.api.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.shared.storage.BlobStoragePort;
-import com.teachei.api.application.ports.out.PerfilRepositoryPort;
+import com.teachei.api.perfil.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.domain.exception.UsuarioNaoEncontradoException;
 import com.teachei.api.domain.model.*;
 import com.teachei.api.domain.service.AnuncioService;

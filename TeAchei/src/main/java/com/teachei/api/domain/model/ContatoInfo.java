@@ -1,4 +1,5 @@
 package com.teachei.api.domain.model;
+import com.teachei.api.perfil.domain.Perfil;
 
 /**
  * Value Object for Contact Information.
