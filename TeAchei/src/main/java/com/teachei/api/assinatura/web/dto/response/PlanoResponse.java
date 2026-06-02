@@ -1,6 +1,6 @@
 package com.teachei.api.assinatura.web.dto.response;
 
-import com.teachei.api.assinatura.domain.PlanoAssinatura;
+import com.teachei.api.assinatura.domain.model.PlanoAssinatura;
 
 /**
  * Response DTO for subscription plan info.

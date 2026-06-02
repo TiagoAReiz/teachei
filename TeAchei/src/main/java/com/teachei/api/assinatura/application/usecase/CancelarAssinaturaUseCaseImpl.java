@@ -3,7 +3,7 @@ package com.teachei.api.assinatura.application.usecase;
 import com.teachei.api.assinatura.application.ports.in.CancelarAssinaturaUseCase;
 import com.teachei.api.assinatura.application.ports.out.AssinaturaRepositoryPort;
 import com.teachei.api.shared.domain.exception.AcessoNegadoException;
-import com.teachei.api.assinatura.domain.Assinatura;
+import com.teachei.api.assinatura.domain.model.Assinatura;
 
 import java.util.UUID;
 

@@ -1,8 +1,8 @@
 package com.teachei.api.anuncio.application.ports.in;
 
-import com.teachei.api.anuncio.domain.Anuncio;
-import com.teachei.api.anuncio.domain.OrdemAnuncio;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.anuncio.domain.model.Anuncio;
+import com.teachei.api.anuncio.domain.model.OrdemAnuncio;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.teachei.api.usuario.persistence.mapper;
 
 import com.teachei.api.usuario.persistence.entity.UsuarioEntity;
-import com.teachei.api.usuario.domain.Usuario;
+import com.teachei.api.usuario.domain.model.Usuario;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

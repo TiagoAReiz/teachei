@@ -1,7 +1,7 @@
 package com.teachei.api.pagamento.external.mercadopago;
 
 import com.teachei.api.pagamento.application.ports.out.PagamentoPort;
-import com.teachei.api.pagamento.domain.StatusPagamento;
+import com.teachei.api.pagamento.domain.model.StatusPagamento;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

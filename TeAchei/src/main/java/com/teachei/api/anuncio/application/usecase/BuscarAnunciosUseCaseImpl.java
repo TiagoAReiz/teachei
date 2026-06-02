@@ -3,8 +3,8 @@ package com.teachei.api.anuncio.application.usecase;
 import com.teachei.api.anuncio.application.ports.in.BuscarAnunciosUseCase;
 import com.teachei.api.anuncio.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.anuncio.domain.exception.AnuncioNaoEncontradoException;
-import com.teachei.api.anuncio.domain.Anuncio;
-import com.teachei.api.anuncio.domain.StatusAnuncio;
+import com.teachei.api.anuncio.domain.model.Anuncio;
+import com.teachei.api.anuncio.domain.model.StatusAnuncio;
 
 import java.util.List;
 import java.util.UUID;

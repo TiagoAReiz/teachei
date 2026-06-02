@@ -1,7 +1,7 @@
 package com.teachei.api.perfil.persistence.mapper;
 
 import com.teachei.api.perfil.persistence.entity.PerfilEntity;
-import com.teachei.api.perfil.domain.Perfil;
+import com.teachei.api.perfil.domain.model.Perfil;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

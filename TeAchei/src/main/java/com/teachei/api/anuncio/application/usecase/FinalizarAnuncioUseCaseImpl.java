@@ -5,8 +5,8 @@ import com.teachei.api.anuncio.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.shared.domain.exception.AcessoNegadoException;
 import com.teachei.api.anuncio.domain.exception.AnuncioInvalidoException;
 import com.teachei.api.anuncio.domain.exception.AnuncioNaoEncontradoException;
-import com.teachei.api.anuncio.domain.Anuncio;
-import com.teachei.api.anuncio.domain.StatusAnuncio;
+import com.teachei.api.anuncio.domain.model.Anuncio;
+import com.teachei.api.anuncio.domain.model.StatusAnuncio;
 
 import java.util.UUID;
 

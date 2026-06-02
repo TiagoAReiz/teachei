@@ -13,7 +13,7 @@ import com.teachei.api.anuncio.application.usecase.BuscarFiltrosDisponiveisUseCa
 import com.teachei.api.anuncio.application.usecase.CriarAnuncioUseCaseImpl;
 import com.teachei.api.anuncio.application.usecase.ExcluirAnuncioUseCaseImpl;
 import com.teachei.api.anuncio.application.usecase.FinalizarAnuncioUseCaseImpl;
-import com.teachei.api.anuncio.domain.AnuncioService;
+import com.teachei.api.anuncio.domain.service.AnuncioService;
 import com.teachei.api.perfil.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.shared.storage.BlobStoragePort;
 import org.springframework.context.annotation.Bean;

@@ -1,7 +1,7 @@
 package com.teachei.api.anuncio.web.dto.request;
 
-import com.teachei.api.anuncio.domain.OrdemAnuncio;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.anuncio.domain.model.OrdemAnuncio;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

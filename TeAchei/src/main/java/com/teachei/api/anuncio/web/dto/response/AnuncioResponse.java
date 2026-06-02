@@ -1,8 +1,8 @@
 package com.teachei.api.anuncio.web.dto.response;
 
-import com.teachei.api.anuncio.domain.Anuncio;
-import com.teachei.api.anuncio.domain.StatusAnuncio;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.anuncio.domain.model.Anuncio;
+import com.teachei.api.anuncio.domain.model.StatusAnuncio;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -77,7 +77,7 @@ public record AnuncioResponse(
         boolean dadosManuais,
         String fotoReferenciaUrl
     ) {
-        public static VeiculoResponse from(com.teachei.api.anuncio.domain.VeiculoInfo info) {
+        public static VeiculoResponse from(com.teachei.api.anuncio.domain.model.VeiculoInfo info) {
             if (info == null) return null;
             List<VersaoResponse> versoes = info.getVersoes() != null 
                 ? info.getVersoes().stream().map(VersaoResponse::from).toList()
@@ -119,7 +119,7 @@ public record AnuncioResponse(
         String codigo,
         String nome
     ) {
-        public static VersaoResponse from(com.teachei.api.anuncio.domain.VersaoInfo info) {
+        public static VersaoResponse from(com.teachei.api.anuncio.domain.model.VersaoInfo info) {
             if (info == null) return null;
             return new VersaoResponse(info.getCodigo(), info.getNome());
         }
@@ -133,7 +133,7 @@ public record AnuncioResponse(
         String estado,
         String localizacao
     ) {
-        public static ContatoResponse from(com.teachei.api.anuncio.domain.ContatoInfo info) {
+        public static ContatoResponse from(com.teachei.api.anuncio.domain.model.ContatoInfo info) {
             if (info == null) return null;
             return new ContatoResponse(
                 info.getWhatsapp(),
@@ -148,7 +148,7 @@ public record AnuncioResponse(
         /**
          * Creates a response with only location visible (for non-subscribers).
          */
-        public static ContatoResponse apenasLocalizacao(com.teachei.api.anuncio.domain.ContatoInfo info) {
+        public static ContatoResponse apenasLocalizacao(com.teachei.api.anuncio.domain.model.ContatoInfo info) {
             if (info == null) return null;
             return new ContatoResponse(
                 null,  // whatsapp hidden

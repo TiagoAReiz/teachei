@@ -1,4 +1,4 @@
-package com.teachei.api.assinatura.domain;
+package com.teachei.api.assinatura.domain.model;
 
 /**
  * Subscription plan types for seller access to buyer contact information.

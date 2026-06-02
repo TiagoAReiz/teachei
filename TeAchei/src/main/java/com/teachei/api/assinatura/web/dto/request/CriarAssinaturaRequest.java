@@ -1,6 +1,6 @@
 package com.teachei.api.assinatura.web.dto.request;
 
-import com.teachei.api.assinatura.domain.PlanoAssinatura;
+import com.teachei.api.assinatura.domain.model.PlanoAssinatura;
 import jakarta.validation.constraints.NotNull;
 
 /**

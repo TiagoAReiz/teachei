@@ -1,4 +1,4 @@
-package com.teachei.api.pagamento.domain;
+package com.teachei.api.pagamento.domain.model;
 
 /**
  * Enum representing payment status from Mercado Pago.

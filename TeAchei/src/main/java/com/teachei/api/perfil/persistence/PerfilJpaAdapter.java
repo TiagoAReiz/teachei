@@ -3,7 +3,7 @@ package com.teachei.api.perfil.persistence;
 import com.teachei.api.perfil.persistence.mapper.PerfilMapper;
 import com.teachei.api.perfil.persistence.repository.PerfilJpaRepository;
 import com.teachei.api.perfil.application.ports.out.PerfilRepositoryPort;
-import com.teachei.api.perfil.domain.Perfil;
+import com.teachei.api.perfil.domain.model.Perfil;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

@@ -2,7 +2,7 @@ package com.teachei.api.veiculo.external.fipe;
 
 import com.teachei.api.veiculo.application.ports.out.VeiculoDataPort;
 import com.teachei.api.shared.domain.exception.ServicoIndisponivelException;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

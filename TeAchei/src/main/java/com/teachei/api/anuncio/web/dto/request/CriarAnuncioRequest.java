@@ -1,6 +1,6 @@
 package com.teachei.api.anuncio.web.dto.request;
 
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;

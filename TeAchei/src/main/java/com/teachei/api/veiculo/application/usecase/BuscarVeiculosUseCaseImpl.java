@@ -2,7 +2,7 @@ package com.teachei.api.veiculo.application.usecase;
 
 import com.teachei.api.veiculo.application.ports.in.BuscarVeiculosUseCase;
 import com.teachei.api.veiculo.application.ports.out.VeiculoDataPort;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 
 import java.util.List;
 

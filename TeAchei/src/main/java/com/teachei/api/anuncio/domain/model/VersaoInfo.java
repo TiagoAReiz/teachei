@@ -1,4 +1,4 @@
-package com.teachei.api.anuncio.domain;
+package com.teachei.api.anuncio.domain.model;
 
 /**
  * Value Object for Vehicle Version Information.

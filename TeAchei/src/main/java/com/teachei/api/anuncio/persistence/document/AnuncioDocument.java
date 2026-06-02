@@ -2,9 +2,9 @@ package com.teachei.api.anuncio.persistence.document;
 
 import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
-import com.teachei.api.anuncio.domain.Nicho;
-import com.teachei.api.anuncio.domain.StatusAnuncio;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.anuncio.domain.model.Nicho;
+import com.teachei.api.anuncio.domain.model.StatusAnuncio;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;

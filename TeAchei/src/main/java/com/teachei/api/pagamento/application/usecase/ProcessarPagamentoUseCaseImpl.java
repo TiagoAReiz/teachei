@@ -4,8 +4,8 @@ import com.teachei.api.pagamento.application.ports.in.ProcessarPagamentoUseCase;
 import com.teachei.api.assinatura.application.ports.out.AssinaturaRepositoryPort;
 import com.teachei.api.pagamento.application.ports.out.PagamentoPort;
 import com.teachei.api.pagamento.application.ports.out.TransacaoRepositoryPort;
-import com.teachei.api.assinatura.domain.Assinatura;
-import com.teachei.api.pagamento.domain.StatusPagamento;
+import com.teachei.api.assinatura.domain.model.Assinatura;
+import com.teachei.api.pagamento.domain.model.StatusPagamento;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

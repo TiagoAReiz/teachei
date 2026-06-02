@@ -1,4 +1,4 @@
-package com.teachei.api.assinatura.domain;
+package com.teachei.api.assinatura.domain.model;
 
 /**
  * Status of a seller subscription.

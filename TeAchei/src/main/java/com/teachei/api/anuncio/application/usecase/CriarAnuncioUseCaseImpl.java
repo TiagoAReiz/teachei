@@ -1,13 +1,13 @@
 package com.teachei.api.anuncio.application.usecase;
-import com.teachei.api.perfil.domain.Perfil;
+import com.teachei.api.perfil.domain.model.Perfil;
 
 import com.teachei.api.anuncio.application.ports.in.CriarAnuncioUseCase;
 import com.teachei.api.anuncio.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.shared.storage.BlobStoragePort;
 import com.teachei.api.perfil.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.usuario.domain.exception.UsuarioNaoEncontradoException;
-import com.teachei.api.anuncio.domain.*;
-import com.teachei.api.anuncio.domain.AnuncioService;
+import com.teachei.api.anuncio.domain.model.*;
+import com.teachei.api.anuncio.domain.service.AnuncioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

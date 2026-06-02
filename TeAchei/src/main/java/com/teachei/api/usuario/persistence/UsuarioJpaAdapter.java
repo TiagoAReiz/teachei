@@ -3,7 +3,7 @@ package com.teachei.api.usuario.persistence;
 import com.teachei.api.usuario.persistence.mapper.UsuarioMapper;
 import com.teachei.api.usuario.persistence.repository.UsuarioJpaRepository;
 import com.teachei.api.usuario.application.ports.out.UsuarioRepositoryPort;
-import com.teachei.api.usuario.domain.Usuario;
+import com.teachei.api.usuario.domain.model.Usuario;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;

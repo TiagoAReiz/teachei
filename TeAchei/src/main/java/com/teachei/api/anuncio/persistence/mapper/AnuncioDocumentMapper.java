@@ -1,10 +1,10 @@
 package com.teachei.api.anuncio.persistence.mapper;
 
 import com.teachei.api.anuncio.persistence.document.AnuncioDocument;
-import com.teachei.api.anuncio.domain.Anuncio;
-import com.teachei.api.anuncio.domain.ContatoInfo;
-import com.teachei.api.anuncio.domain.VeiculoInfo;
-import com.teachei.api.anuncio.domain.VersaoInfo;
+import com.teachei.api.anuncio.domain.model.Anuncio;
+import com.teachei.api.anuncio.domain.model.ContatoInfo;
+import com.teachei.api.anuncio.domain.model.VeiculoInfo;
+import com.teachei.api.anuncio.domain.model.VersaoInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;

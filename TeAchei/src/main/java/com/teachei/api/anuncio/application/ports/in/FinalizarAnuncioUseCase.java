@@ -1,6 +1,6 @@
 package com.teachei.api.anuncio.application.ports.in;
 
-import com.teachei.api.anuncio.domain.Anuncio;
+import com.teachei.api.anuncio.domain.model.Anuncio;
 
 import java.util.UUID;
 

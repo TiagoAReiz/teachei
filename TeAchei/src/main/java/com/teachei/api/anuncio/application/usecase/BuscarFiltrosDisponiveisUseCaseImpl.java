@@ -6,10 +6,10 @@ import com.teachei.api.anuncio.application.ports.in.BuscarFiltrosDisponiveisUseC
 import com.teachei.api.anuncio.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.ModeloOption;
 import com.teachei.api.anuncio.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.OpcionalOption;
 import com.teachei.api.anuncio.application.ports.out.AnuncioRepositoryPort;
-import com.teachei.api.anuncio.domain.Anuncio;
-import com.teachei.api.anuncio.domain.OpcionalVeiculo;
-import com.teachei.api.shared.domain.TipoVeiculo;
-import com.teachei.api.anuncio.domain.VeiculoInfo;
+import com.teachei.api.anuncio.domain.model.Anuncio;
+import com.teachei.api.anuncio.domain.model.OpcionalVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
+import com.teachei.api.anuncio.domain.model.VeiculoInfo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

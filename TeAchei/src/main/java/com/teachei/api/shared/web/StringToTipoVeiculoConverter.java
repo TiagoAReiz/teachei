@@ -1,6 +1,6 @@
 package com.teachei.api.shared.web;
 
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 

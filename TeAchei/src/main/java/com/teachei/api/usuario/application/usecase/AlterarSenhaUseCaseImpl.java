@@ -5,7 +5,7 @@ import com.teachei.api.shared.security.PasswordEncoderPort;
 import com.teachei.api.usuario.application.ports.out.UsuarioRepositoryPort;
 import com.teachei.api.usuario.domain.exception.CredenciaisInvalidasException;
 import com.teachei.api.usuario.domain.exception.UsuarioNaoEncontradoException;
-import com.teachei.api.usuario.domain.Usuario;
+import com.teachei.api.usuario.domain.model.Usuario;
 
 import java.util.UUID;
 

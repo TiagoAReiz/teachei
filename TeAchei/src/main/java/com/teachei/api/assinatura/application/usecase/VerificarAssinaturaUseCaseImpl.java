@@ -2,8 +2,8 @@ package com.teachei.api.assinatura.application.usecase;
 
 import com.teachei.api.assinatura.application.ports.in.VerificarAssinaturaUseCase;
 import com.teachei.api.assinatura.application.ports.out.AssinaturaRepositoryPort;
-import com.teachei.api.assinatura.domain.Assinatura;
-import com.teachei.api.assinatura.domain.StatusAssinatura;
+import com.teachei.api.assinatura.domain.model.Assinatura;
+import com.teachei.api.assinatura.domain.model.StatusAssinatura;
 
 import java.util.Comparator;
 import java.util.Optional;

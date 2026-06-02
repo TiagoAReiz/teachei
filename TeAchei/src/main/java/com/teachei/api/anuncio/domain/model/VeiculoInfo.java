@@ -1,4 +1,4 @@
-package com.teachei.api.anuncio.domain;
+package com.teachei.api.anuncio.domain.model;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

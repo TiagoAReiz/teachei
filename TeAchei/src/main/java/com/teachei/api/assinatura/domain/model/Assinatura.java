@@ -1,4 +1,4 @@
-package com.teachei.api.assinatura.domain;
+package com.teachei.api.assinatura.domain.model;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

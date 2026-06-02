@@ -9,7 +9,7 @@ import com.teachei.api.anuncio.web.dto.response.FiltrosDisponiveisResponse;
 import com.teachei.api.shared.web.dto.response.PaginaResponse;
 import com.teachei.api.anuncio.application.ports.in.*;
 import com.teachei.api.shared.security.CurrentUser;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -200,7 +200,7 @@ public class AnuncioController {
 
                 // Filtra apenas intenções ATIVAS e aplica lógica de contato
                 var response = anuncios.stream()
-                                .filter(a -> a.getStatus() == com.teachei.api.anuncio.domain.StatusAnuncio.ATIVO)
+                                .filter(a -> a.getStatus() == com.teachei.api.anuncio.domain.model.StatusAnuncio.ATIVO)
                                 .map(a -> {
                                         boolean isOwner = currentUser != null
                                                         && a.getUsuarioId().equals(currentUser.getId());

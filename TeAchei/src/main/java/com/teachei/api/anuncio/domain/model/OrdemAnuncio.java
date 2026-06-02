@@ -1,4 +1,4 @@
-package com.teachei.api.anuncio.domain;
+package com.teachei.api.anuncio.domain.model;
 
 /**
  * Sort order options for intention listings.

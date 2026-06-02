@@ -1,6 +1,6 @@
 package com.teachei.api.pagamento.persistence.entity;
 
-import com.teachei.api.pagamento.domain.StatusPagamento;
+import com.teachei.api.pagamento.domain.model.StatusPagamento;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;

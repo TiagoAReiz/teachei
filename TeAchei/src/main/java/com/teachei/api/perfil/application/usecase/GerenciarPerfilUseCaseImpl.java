@@ -5,7 +5,7 @@ import com.teachei.api.shared.storage.BlobStoragePort;
 import com.teachei.api.perfil.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.shared.domain.exception.ServicoIndisponivelException;
 import com.teachei.api.usuario.domain.exception.UsuarioNaoEncontradoException;
-import com.teachei.api.perfil.domain.Perfil;
+import com.teachei.api.perfil.domain.model.Perfil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -3,10 +3,10 @@ package com.teachei.api.anuncio.persistence;
 import com.teachei.api.anuncio.persistence.mapper.AnuncioDocumentMapper;
 import com.teachei.api.anuncio.persistence.repository.AnuncioCosmosRepository;
 import com.teachei.api.anuncio.application.ports.out.AnuncioRepositoryPort;
-import com.teachei.api.anuncio.domain.Anuncio;
-import com.teachei.api.anuncio.domain.OrdemAnuncio;
-import com.teachei.api.anuncio.domain.StatusAnuncio;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.anuncio.domain.model.Anuncio;
+import com.teachei.api.anuncio.domain.model.OrdemAnuncio;
+import com.teachei.api.anuncio.domain.model.StatusAnuncio;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

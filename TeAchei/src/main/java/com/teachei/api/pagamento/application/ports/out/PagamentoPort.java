@@ -1,6 +1,6 @@
 package com.teachei.api.pagamento.application.ports.out;
 
-import com.teachei.api.pagamento.domain.StatusPagamento;
+import com.teachei.api.pagamento.domain.model.StatusPagamento;
 
 import java.math.BigDecimal;
 

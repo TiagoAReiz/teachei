@@ -13,7 +13,7 @@ import com.teachei.api.anuncio.application.ports.in.BuscarFiltrosDisponiveisUseC
 import com.teachei.api.anuncio.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.ModeloOption;
 import com.teachei.api.anuncio.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.OpcionalOption;
 import com.teachei.api.shared.web.StringToTipoVeiculoConverter;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,8 @@
-package com.teachei.api.anuncio.domain;
-import com.teachei.api.shared.domain.TipoVeiculo;
+package com.teachei.api.anuncio.domain.service;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 
 import com.teachei.api.anuncio.domain.exception.AnuncioInvalidoException;
-import com.teachei.api.anuncio.domain.*;
+import com.teachei.api.anuncio.domain.model.*;
 
 import java.math.BigDecimal;
 import java.util.List;

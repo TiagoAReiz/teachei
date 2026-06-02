@@ -1,7 +1,7 @@
 package com.teachei.api.shared.security;
 
 import com.teachei.api.usuario.application.ports.out.UsuarioRepositoryPort;
-import com.teachei.api.usuario.domain.Usuario;
+import com.teachei.api.usuario.domain.model.Usuario;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

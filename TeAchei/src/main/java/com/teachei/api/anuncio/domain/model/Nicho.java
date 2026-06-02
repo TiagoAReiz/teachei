@@ -1,4 +1,4 @@
-package com.teachei.api.anuncio.domain;
+package com.teachei.api.anuncio.domain.model;
 
 /**
  * Enum representing the marketplace niche.

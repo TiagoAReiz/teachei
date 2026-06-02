@@ -1,6 +1,6 @@
 package com.teachei.api.perfil.application.ports.out;
 
-import com.teachei.api.perfil.domain.Perfil;
+import com.teachei.api.perfil.domain.model.Perfil;
 
 import java.util.Optional;
 import java.util.UUID;

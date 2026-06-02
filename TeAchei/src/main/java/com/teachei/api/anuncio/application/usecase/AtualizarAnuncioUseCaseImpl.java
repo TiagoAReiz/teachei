@@ -5,10 +5,10 @@ import com.teachei.api.anuncio.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.shared.storage.BlobStoragePort;
 import com.teachei.api.shared.domain.exception.AcessoNegadoException;
 import com.teachei.api.anuncio.domain.exception.AnuncioNaoEncontradoException;
-import com.teachei.api.anuncio.domain.Anuncio;
-import com.teachei.api.anuncio.domain.OpcionalVeiculo;
-import com.teachei.api.anuncio.domain.VersaoInfo;
-import com.teachei.api.anuncio.domain.AnuncioService;
+import com.teachei.api.anuncio.domain.model.Anuncio;
+import com.teachei.api.anuncio.domain.model.OpcionalVeiculo;
+import com.teachei.api.anuncio.domain.model.VersaoInfo;
+import com.teachei.api.anuncio.domain.service.AnuncioService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

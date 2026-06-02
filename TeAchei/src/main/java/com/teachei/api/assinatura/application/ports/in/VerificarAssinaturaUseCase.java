@@ -1,6 +1,6 @@
 package com.teachei.api.assinatura.application.ports.in;
 
-import com.teachei.api.assinatura.domain.Assinatura;
+import com.teachei.api.assinatura.domain.model.Assinatura;
 
 import java.util.Optional;
 import java.util.UUID;

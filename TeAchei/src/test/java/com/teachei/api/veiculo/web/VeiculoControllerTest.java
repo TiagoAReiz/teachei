@@ -4,7 +4,7 @@ import com.teachei.api.veiculo.application.ports.in.BuscarVeiculosUseCase;
 import com.teachei.api.veiculo.application.ports.in.BuscarVeiculosUseCase.MarcaDTO;
 import com.teachei.api.shared.web.GlobalExceptionHandler;
 import com.teachei.api.shared.web.StringToTipoVeiculoConverter;
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -4,9 +4,9 @@ import com.teachei.api.assinatura.application.ports.in.CriarAssinaturaUseCase;
 import com.teachei.api.assinatura.application.ports.out.AssinaturaRepositoryPort;
 import com.teachei.api.pagamento.application.ports.out.PagamentoPort;
 import com.teachei.api.assinatura.config.SubscriptionConfig;
-import com.teachei.api.assinatura.domain.Assinatura;
-import com.teachei.api.assinatura.domain.PlanoAssinatura;
-import com.teachei.api.assinatura.domain.StatusAssinatura;
+import com.teachei.api.assinatura.domain.model.Assinatura;
+import com.teachei.api.assinatura.domain.model.PlanoAssinatura;
+import com.teachei.api.assinatura.domain.model.StatusAssinatura;
 
 import java.time.LocalDateTime;
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package com.teachei.api.assinatura.persistence.mapper;
 
 import com.teachei.api.assinatura.persistence.entity.AssinaturaEntity;
-import com.teachei.api.assinatura.domain.Assinatura;
+import com.teachei.api.assinatura.domain.model.Assinatura;
 import org.springframework.stereotype.Component;
 
 /**

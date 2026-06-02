@@ -6,8 +6,8 @@ import com.teachei.api.perfil.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.usuario.application.ports.out.UsuarioRepositoryPort;
 import com.teachei.api.shared.security.JwtService;
 import com.teachei.api.usuario.domain.exception.CredenciaisInvalidasException;
-import com.teachei.api.perfil.domain.Perfil;
-import com.teachei.api.usuario.domain.Usuario;
+import com.teachei.api.perfil.domain.model.Perfil;
+import com.teachei.api.usuario.domain.model.Usuario;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;

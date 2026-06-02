@@ -1,6 +1,6 @@
 package com.teachei.api.anuncio.web.dto.response;
 
-import com.teachei.api.shared.domain.TipoVeiculo;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 
 import java.util.List;
 

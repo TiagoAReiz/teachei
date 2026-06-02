@@ -1,8 +1,8 @@
 package com.teachei.api.assinatura.web.dto.response;
 
-import com.teachei.api.assinatura.domain.Assinatura;
-import com.teachei.api.assinatura.domain.PlanoAssinatura;
-import com.teachei.api.assinatura.domain.StatusAssinatura;
+import com.teachei.api.assinatura.domain.model.Assinatura;
+import com.teachei.api.assinatura.domain.model.PlanoAssinatura;
+import com.teachei.api.assinatura.domain.model.StatusAssinatura;
 
 import java.time.LocalDateTime;
 

@@ -1,5 +1,5 @@
-package com.teachei.api.anuncio.domain;
-import com.teachei.api.shared.domain.TipoVeiculo;
+package com.teachei.api.anuncio.domain.model;
+import com.teachei.api.shared.domain.model.TipoVeiculo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

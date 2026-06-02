@@ -1,7 +1,7 @@
 package com.teachei.api.assinatura.persistence.entity;
 
-import com.teachei.api.assinatura.domain.PlanoAssinatura;
-import com.teachei.api.assinatura.domain.StatusAssinatura;
+import com.teachei.api.assinatura.domain.model.PlanoAssinatura;
+import com.teachei.api.assinatura.domain.model.StatusAssinatura;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;

@@ -1,7 +1,7 @@
 package com.teachei.api.assinatura.persistence.repository;
 
 import com.teachei.api.assinatura.persistence.entity.AssinaturaEntity;
-import com.teachei.api.assinatura.domain.StatusAssinatura;
+import com.teachei.api.assinatura.domain.model.StatusAssinatura;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -2,7 +2,7 @@ package com.teachei.api.anuncio.persistence.repository;
 
 import com.azure.spring.data.cosmos.repository.CosmosRepository;
 import com.teachei.api.anuncio.persistence.document.AnuncioDocument;
-import com.teachei.api.anuncio.domain.StatusAnuncio;
+import com.teachei.api.anuncio.domain.model.StatusAnuncio;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

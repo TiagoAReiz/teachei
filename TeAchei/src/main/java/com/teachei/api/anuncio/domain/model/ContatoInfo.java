@@ -1,5 +1,5 @@
-package com.teachei.api.anuncio.domain;
-import com.teachei.api.perfil.domain.Perfil;
+package com.teachei.api.anuncio.domain.model;
+import com.teachei.api.perfil.domain.model.Perfil;
 
 /**
  * Value Object for Contact Information.

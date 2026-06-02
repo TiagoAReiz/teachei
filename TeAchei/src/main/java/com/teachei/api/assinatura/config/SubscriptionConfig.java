@@ -1,6 +1,6 @@
 package com.teachei.api.assinatura.config;
 
-import com.teachei.api.assinatura.domain.PlanoAssinatura;
+import com.teachei.api.assinatura.domain.model.PlanoAssinatura;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 

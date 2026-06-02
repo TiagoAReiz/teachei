@@ -1,6 +1,6 @@
 package com.teachei.api.assinatura.application.ports.in;
 
-import com.teachei.api.assinatura.domain.PlanoAssinatura;
+import com.teachei.api.assinatura.domain.model.PlanoAssinatura;
 
 import java.util.List;
 

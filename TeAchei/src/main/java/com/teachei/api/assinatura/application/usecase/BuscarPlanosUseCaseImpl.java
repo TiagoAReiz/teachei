@@ -2,7 +2,7 @@ package com.teachei.api.assinatura.application.usecase;
 
 import com.teachei.api.assinatura.application.ports.in.BuscarPlanosUseCase;
 import com.teachei.api.assinatura.config.SubscriptionConfig;
-import com.teachei.api.assinatura.domain.PlanoAssinatura;
+import com.teachei.api.assinatura.domain.model.PlanoAssinatura;
 
 import java.util.Arrays;
 import java.util.List;

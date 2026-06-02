@@ -3,8 +3,8 @@ package com.teachei.api.assinatura.persistence;
 import com.teachei.api.assinatura.persistence.mapper.AssinaturaMapper;
 import com.teachei.api.assinatura.persistence.repository.AssinaturaJpaRepository;
 import com.teachei.api.assinatura.application.ports.out.AssinaturaRepositoryPort;
-import com.teachei.api.assinatura.domain.Assinatura;
-import com.teachei.api.assinatura.domain.StatusAssinatura;
+import com.teachei.api.assinatura.domain.model.Assinatura;
+import com.teachei.api.assinatura.domain.model.StatusAssinatura;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

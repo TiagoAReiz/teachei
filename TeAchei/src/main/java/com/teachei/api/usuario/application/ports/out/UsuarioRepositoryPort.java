@@ -1,6 +1,6 @@
 package com.teachei.api.usuario.application.ports.out;
 
-import com.teachei.api.usuario.domain.Usuario;
+import com.teachei.api.usuario.domain.model.Usuario;
 
 import java.util.Optional;
 import java.util.UUID;
