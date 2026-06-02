@@ -6,7 +6,7 @@ import com.teachei.api.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.domain.model.Anuncio;
 import com.teachei.api.domain.model.OrdemAnuncio;
 import com.teachei.api.domain.model.StatusAnuncio;
-import com.teachei.api.domain.model.TipoVeiculo;
+import com.teachei.api.shared.domain.TipoVeiculo;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

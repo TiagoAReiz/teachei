@@ -1,4 +1,4 @@
-package com.teachei.api.config;
+package com.teachei.api.shared.web;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;

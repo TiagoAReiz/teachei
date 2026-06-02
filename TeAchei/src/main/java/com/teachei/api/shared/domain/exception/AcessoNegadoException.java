@@ -1,4 +1,4 @@
-package com.teachei.api.domain.exception;
+package com.teachei.api.shared.domain.exception;
 
 /**
  * Exception thrown when access is denied to a resource.

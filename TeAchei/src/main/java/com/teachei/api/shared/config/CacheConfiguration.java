@@ -1,4 +1,4 @@
-package com.teachei.api.config;
+package com.teachei.api.shared.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.cache.CacheManager;

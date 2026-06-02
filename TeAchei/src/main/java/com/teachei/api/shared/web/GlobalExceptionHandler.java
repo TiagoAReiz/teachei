@@ -1,6 +1,9 @@
-package com.teachei.api.adapter.in.web;
+package com.teachei.api.shared.web;
+import com.teachei.api.shared.domain.exception.AcessoNegadoException;
+import com.teachei.api.shared.domain.exception.ServicoIndisponivelException;
+import com.teachei.api.shared.domain.exception.DomainException;
 
-import com.teachei.api.adapter.in.web.dto.response.ErrorResponse;
+import com.teachei.api.shared.web.dto.response.ErrorResponse;
 import com.teachei.api.domain.exception.*;
 import com.teachei.api.veiculo.domain.exception.FipeApiException;
 import jakarta.servlet.http.HttpServletRequest;

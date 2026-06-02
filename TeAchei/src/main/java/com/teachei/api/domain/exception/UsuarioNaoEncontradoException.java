@@ -1,4 +1,5 @@
 package com.teachei.api.domain.exception;
+import com.teachei.api.shared.domain.exception.DomainException;
 
 import java.util.UUID;
 

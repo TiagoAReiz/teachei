@@ -1,6 +1,6 @@
 package com.teachei.api.adapter.in.web.controller;
 
-import com.teachei.api.adapter.in.web.GlobalExceptionHandler;
+import com.teachei.api.shared.web.GlobalExceptionHandler;
 import com.teachei.api.application.ports.in.AtualizarAnuncioUseCase;
 import com.teachei.api.application.ports.in.BuscarAnunciosUseCase;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase;
@@ -12,8 +12,8 @@ import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.Filt
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.MarcaOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.ModeloOption;
 import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.FiltrosDisponiveis.OpcionalOption;
-import com.teachei.api.config.StringToTipoVeiculoConverter;
-import com.teachei.api.domain.model.TipoVeiculo;
+import com.teachei.api.shared.web.StringToTipoVeiculoConverter;
+import com.teachei.api.shared.domain.TipoVeiculo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

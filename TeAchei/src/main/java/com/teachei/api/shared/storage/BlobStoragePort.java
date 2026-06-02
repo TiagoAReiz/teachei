@@ -1,4 +1,4 @@
-package com.teachei.api.application.ports.out;
+package com.teachei.api.shared.storage;
 
 import java.util.UUID;
 

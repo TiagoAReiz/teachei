@@ -1,11 +1,11 @@
-package com.teachei.api.adapter.out.storage;
+package com.teachei.api.shared.storage;
 
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobHttpHeaders;
-import com.teachei.api.application.ports.out.BlobStoragePort;
+import com.teachei.api.shared.storage.BlobStoragePort;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

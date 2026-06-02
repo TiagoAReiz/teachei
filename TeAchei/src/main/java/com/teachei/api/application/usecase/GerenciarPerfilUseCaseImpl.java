@@ -1,9 +1,9 @@
 package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.GerenciarPerfilUseCase;
-import com.teachei.api.application.ports.out.BlobStoragePort;
+import com.teachei.api.shared.storage.BlobStoragePort;
 import com.teachei.api.application.ports.out.PerfilRepositoryPort;
-import com.teachei.api.domain.exception.ServicoIndisponivelException;
+import com.teachei.api.shared.domain.exception.ServicoIndisponivelException;
 import com.teachei.api.domain.exception.UsuarioNaoEncontradoException;
 import com.teachei.api.domain.model.Perfil;
 import org.slf4j.Logger;

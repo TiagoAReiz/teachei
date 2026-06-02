@@ -1,4 +1,4 @@
-package com.teachei.api.domain.exception;
+package com.teachei.api.shared.domain.exception;
 
 /**
  * Base exception for domain layer errors.

@@ -4,7 +4,7 @@ import com.azure.spring.data.cosmos.core.mapping.Container;
 import com.azure.spring.data.cosmos.core.mapping.PartitionKey;
 import com.teachei.api.domain.model.Nicho;
 import com.teachei.api.domain.model.StatusAnuncio;
-import com.teachei.api.domain.model.TipoVeiculo;
+import com.teachei.api.shared.domain.TipoVeiculo;
 import org.springframework.data.annotation.Id;
 
 import java.math.BigDecimal;

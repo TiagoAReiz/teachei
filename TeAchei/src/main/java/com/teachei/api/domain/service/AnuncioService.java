@@ -1,4 +1,5 @@
 package com.teachei.api.domain.service;
+import com.teachei.api.shared.domain.TipoVeiculo;
 
 import com.teachei.api.domain.exception.AnuncioInvalidoException;
 import com.teachei.api.domain.model.*;

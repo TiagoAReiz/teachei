@@ -1,6 +1,6 @@
 package com.teachei.api.veiculo.application.ports.out;
 
-import com.teachei.api.domain.model.TipoVeiculo;
+import com.teachei.api.shared.domain.TipoVeiculo;
 
 import java.math.BigDecimal;
 import java.util.List;

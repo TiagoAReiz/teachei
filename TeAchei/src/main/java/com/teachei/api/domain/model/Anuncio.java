@@ -1,4 +1,5 @@
 package com.teachei.api.domain.model;
+import com.teachei.api.shared.domain.TipoVeiculo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

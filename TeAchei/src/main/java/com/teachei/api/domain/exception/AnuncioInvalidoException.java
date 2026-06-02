@@ -1,4 +1,5 @@
 package com.teachei.api.domain.exception;
+import com.teachei.api.shared.domain.exception.DomainException;
 
 /**
  * Exception thrown when an intention/announcement is invalid.

@@ -1,4 +1,4 @@
-package com.teachei.api.domain.model;
+package com.teachei.api.shared.domain;
 
 /**
  * Enum representing vehicle types.

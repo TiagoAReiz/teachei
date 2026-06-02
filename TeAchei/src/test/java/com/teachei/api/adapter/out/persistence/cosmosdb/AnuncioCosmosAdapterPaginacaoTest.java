@@ -6,7 +6,7 @@ import com.teachei.api.adapter.out.persistence.cosmosdb.repository.AnuncioCosmos
 import com.teachei.api.application.ports.out.AnuncioRepositoryPort.ResultadoBusca;
 import com.teachei.api.domain.model.Anuncio;
 import com.teachei.api.domain.model.StatusAnuncio;
-import com.teachei.api.domain.model.TipoVeiculo;
+import com.teachei.api.shared.domain.TipoVeiculo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

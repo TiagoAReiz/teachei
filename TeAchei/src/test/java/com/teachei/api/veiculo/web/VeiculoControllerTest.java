@@ -2,9 +2,9 @@ package com.teachei.api.veiculo.web;
 
 import com.teachei.api.veiculo.application.ports.in.BuscarVeiculosUseCase;
 import com.teachei.api.veiculo.application.ports.in.BuscarVeiculosUseCase.MarcaDTO;
-import com.teachei.api.adapter.in.web.GlobalExceptionHandler;
-import com.teachei.api.config.StringToTipoVeiculoConverter;
-import com.teachei.api.domain.model.TipoVeiculo;
+import com.teachei.api.shared.web.GlobalExceptionHandler;
+import com.teachei.api.shared.web.StringToTipoVeiculoConverter;
+import com.teachei.api.shared.domain.TipoVeiculo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

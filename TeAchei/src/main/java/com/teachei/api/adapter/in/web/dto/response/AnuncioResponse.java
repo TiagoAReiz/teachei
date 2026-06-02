@@ -2,7 +2,7 @@ package com.teachei.api.adapter.in.web.dto.response;
 
 import com.teachei.api.domain.model.Anuncio;
 import com.teachei.api.domain.model.StatusAnuncio;
-import com.teachei.api.domain.model.TipoVeiculo;
+import com.teachei.api.shared.domain.TipoVeiculo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -2,7 +2,7 @@ package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.CancelarAssinaturaUseCase;
 import com.teachei.api.application.ports.out.AssinaturaRepositoryPort;
-import com.teachei.api.domain.exception.AcessoNegadoException;
+import com.teachei.api.shared.domain.exception.AcessoNegadoException;
 import com.teachei.api.domain.model.Assinatura;
 
 import java.util.UUID;

@@ -1,4 +1,5 @@
 package com.teachei.api.config;
+import com.teachei.api.shared.storage.BlobStoragePort;
 
 import com.teachei.api.application.ports.in.*;
 import com.teachei.api.application.ports.out.*;

@@ -1,4 +1,4 @@
-package com.teachei.api.config;
+package com.teachei.api.shared.config;
 
 import com.azure.cosmos.CosmosClient;
 import com.azure.cosmos.CosmosClientBuilder;

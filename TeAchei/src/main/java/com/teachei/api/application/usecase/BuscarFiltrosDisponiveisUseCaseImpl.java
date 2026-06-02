@@ -8,7 +8,7 @@ import com.teachei.api.application.ports.in.BuscarFiltrosDisponiveisUseCase.Filt
 import com.teachei.api.application.ports.out.AnuncioRepositoryPort;
 import com.teachei.api.domain.model.Anuncio;
 import com.teachei.api.domain.model.OpcionalVeiculo;
-import com.teachei.api.domain.model.TipoVeiculo;
+import com.teachei.api.shared.domain.TipoVeiculo;
 import com.teachei.api.domain.model.VeiculoInfo;
 
 import org.slf4j.Logger;

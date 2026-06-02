@@ -2,8 +2,8 @@ package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.ExcluirAnuncioUseCase;
 import com.teachei.api.application.ports.out.AnuncioRepositoryPort;
-import com.teachei.api.application.ports.out.BlobStoragePort;
-import com.teachei.api.domain.exception.AcessoNegadoException;
+import com.teachei.api.shared.storage.BlobStoragePort;
+import com.teachei.api.shared.domain.exception.AcessoNegadoException;
 import com.teachei.api.domain.exception.AnuncioInvalidoException;
 import com.teachei.api.domain.exception.AnuncioNaoEncontradoException;
 import com.teachei.api.domain.model.Anuncio;
