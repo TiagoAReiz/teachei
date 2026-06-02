@@ -3,7 +3,7 @@ package com.teachei.api.perfil.web;
 import com.teachei.api.perfil.web.dto.request.AtualizarPerfilRequest;
 import com.teachei.api.perfil.web.dto.response.PerfilPublicoResponse;
 import com.teachei.api.perfil.web.dto.response.PerfilResponse;
-import com.teachei.api.application.ports.in.ExcluirContaUseCase;
+import com.teachei.api.usuario.application.ports.in.ExcluirContaUseCase;
 import com.teachei.api.perfil.application.ports.in.GerenciarPerfilUseCase;
 import com.teachei.api.shared.security.CurrentUser;
 import jakarta.validation.Valid;

@@ -5,7 +5,11 @@ import com.teachei.api.shared.domain.exception.ServicoIndisponivelException;
 import com.teachei.api.shared.domain.exception.DomainException;
 
 import com.teachei.api.shared.web.dto.response.ErrorResponse;
-import com.teachei.api.domain.exception.*;
+import com.teachei.api.anuncio.domain.exception.AnuncioInvalidoException;
+import com.teachei.api.anuncio.domain.exception.AnuncioNaoEncontradoException;
+import com.teachei.api.usuario.domain.exception.CredenciaisInvalidasException;
+import com.teachei.api.usuario.domain.exception.EmailJaCadastradoException;
+import com.teachei.api.usuario.domain.exception.UsuarioNaoEncontradoException;
 import com.teachei.api.veiculo.domain.exception.FipeApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
