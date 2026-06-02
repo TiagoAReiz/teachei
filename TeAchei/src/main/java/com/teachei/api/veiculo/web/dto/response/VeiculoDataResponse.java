@@ -1,4 +1,4 @@
-package com.teachei.api.adapter.in.web.dto.response;
+package com.teachei.api.veiculo.web.dto.response;
 
 import java.math.BigDecimal;
 import java.util.List;

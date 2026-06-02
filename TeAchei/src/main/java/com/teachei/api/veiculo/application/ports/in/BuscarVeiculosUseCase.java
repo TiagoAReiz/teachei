@@ -1,4 +1,4 @@
-package com.teachei.api.application.ports.in;
+package com.teachei.api.veiculo.application.ports.in;
 
 import com.teachei.api.domain.model.TipoVeiculo;
 

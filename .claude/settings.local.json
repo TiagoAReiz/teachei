@@ -5,7 +5,18 @@
       "Bash(git diff:*)",
       "Bash(grep -E \"\\\\.\\(sql|ddl\\)$\")",
       "Bash(./mvnw compile:*)",
-      "Bash(./mvnw test:*)"
+      "Bash(./mvnw test:*)",
+      "Bash(./mvnw -q test-compile)",
+      "Bash(echo \"--- branch ---\")",
+      "Bash(git -C C:/Users/tiago/Desktop/WorkPlace/TeAchei/.claude/worktrees/agent-afd5391b69339adca --no-pager branch --show-current)",
+      "Bash(echo \"--- commits desde main ---\")",
+      "Bash(git -C C:/Users/tiago/Desktop/WorkPlace/TeAchei/.claude/worktrees/agent-afd5391b69339adca --no-pager log --oneline main..HEAD)",
+      "Bash(git --no-pager worktree list)",
+      "Bash(git --no-pager branch -a)",
+      "Bash(git worktree *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git --no-pager log --oneline -3)"
     ]
   }
 }

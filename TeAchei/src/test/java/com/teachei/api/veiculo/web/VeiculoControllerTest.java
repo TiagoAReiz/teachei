@@ -1,7 +1,7 @@
-package com.teachei.api.adapter.in.web.controller;
+package com.teachei.api.veiculo.web;
 
-import com.teachei.api.application.ports.in.BuscarVeiculosUseCase;
-import com.teachei.api.application.ports.in.BuscarVeiculosUseCase.MarcaDTO;
+import com.teachei.api.veiculo.application.ports.in.BuscarVeiculosUseCase;
+import com.teachei.api.veiculo.application.ports.in.BuscarVeiculosUseCase.MarcaDTO;
 import com.teachei.api.adapter.in.web.GlobalExceptionHandler;
 import com.teachei.api.config.StringToTipoVeiculoConverter;
 import com.teachei.api.domain.model.TipoVeiculo;

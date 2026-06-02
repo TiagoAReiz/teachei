@@ -2,6 +2,7 @@ package com.teachei.api.adapter.in.web;
 
 import com.teachei.api.adapter.in.web.dto.response.ErrorResponse;
 import com.teachei.api.domain.exception.*;
+import com.teachei.api.veiculo.domain.exception.FipeApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

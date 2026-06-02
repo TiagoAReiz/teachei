@@ -1,6 +1,6 @@
-package com.teachei.api.adapter.out.external.fipe;
+package com.teachei.api.veiculo.external.fipe;
 
-import com.teachei.api.domain.exception.FipeApiException;
+import com.teachei.api.veiculo.domain.exception.FipeApiException;
 import com.teachei.api.domain.model.TipoVeiculo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

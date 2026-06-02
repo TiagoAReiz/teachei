@@ -1,5 +1,6 @@
-package com.teachei.api.domain.exception;
+package com.teachei.api.veiculo.domain.exception;
 
+import com.teachei.api.domain.exception.DomainException;
 import org.springframework.http.HttpStatusCode;
 
 /**
