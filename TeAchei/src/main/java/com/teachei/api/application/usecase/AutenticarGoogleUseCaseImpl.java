@@ -4,7 +4,7 @@ import com.teachei.api.application.ports.in.AutenticarGoogleUseCase;
 import com.teachei.api.application.ports.out.GoogleAuthPort;
 import com.teachei.api.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.application.ports.out.UsuarioRepositoryPort;
-import com.teachei.api.config.security.JwtService;
+import com.teachei.api.shared.security.JwtService;
 import com.teachei.api.domain.exception.CredenciaisInvalidasException;
 import com.teachei.api.domain.model.Perfil;
 import com.teachei.api.domain.model.Usuario;

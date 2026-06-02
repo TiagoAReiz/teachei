@@ -1,4 +1,4 @@
-package com.teachei.api.config.security;
+package com.teachei.api.shared.security;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

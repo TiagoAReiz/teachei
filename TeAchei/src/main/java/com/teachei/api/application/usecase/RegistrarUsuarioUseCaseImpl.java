@@ -1,10 +1,10 @@
 package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.RegistrarUsuarioUseCase;
-import com.teachei.api.application.ports.out.PasswordEncoderPort;
+import com.teachei.api.shared.security.PasswordEncoderPort;
 import com.teachei.api.application.ports.out.PerfilRepositoryPort;
 import com.teachei.api.application.ports.out.UsuarioRepositoryPort;
-import com.teachei.api.config.security.JwtService;
+import com.teachei.api.shared.security.JwtService;
 import com.teachei.api.domain.exception.EmailJaCadastradoException;
 import com.teachei.api.domain.model.Perfil;
 import com.teachei.api.domain.model.Usuario;

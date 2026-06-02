@@ -1,4 +1,4 @@
-package com.teachei.api.config.security;
+package com.teachei.api.shared.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

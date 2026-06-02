@@ -1,4 +1,4 @@
-package com.teachei.api.config.security;
+package com.teachei.api.shared.security;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;

@@ -1,4 +1,4 @@
-package com.teachei.api.config.security;
+package com.teachei.api.shared.security;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.servlet.FilterChain;

@@ -7,7 +7,7 @@ import com.teachei.api.adapter.in.web.dto.response.AnuncioResponse;
 import com.teachei.api.adapter.in.web.dto.response.FiltrosDisponiveisResponse;
 import com.teachei.api.adapter.in.web.dto.response.PaginaResponse;
 import com.teachei.api.application.ports.in.*;
-import com.teachei.api.config.security.CurrentUser;
+import com.teachei.api.shared.security.CurrentUser;
 import com.teachei.api.domain.model.TipoVeiculo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;

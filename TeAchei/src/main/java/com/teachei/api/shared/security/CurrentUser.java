@@ -1,4 +1,4 @@
-package com.teachei.api.config.security;
+package com.teachei.api.shared.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

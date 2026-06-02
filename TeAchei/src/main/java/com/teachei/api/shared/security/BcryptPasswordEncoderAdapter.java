@@ -1,6 +1,6 @@
-package com.teachei.api.adapter.out.security;
+package com.teachei.api.shared.security;
 
-import com.teachei.api.application.ports.out.PasswordEncoderPort;
+import com.teachei.api.shared.security.PasswordEncoderPort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 

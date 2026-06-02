@@ -1,11 +1,11 @@
 package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.AutenticarUsuarioUseCase;
-import com.teachei.api.application.ports.out.PasswordEncoderPort;
+import com.teachei.api.shared.security.PasswordEncoderPort;
 import com.teachei.api.application.ports.out.UsuarioRepositoryPort;
 import com.teachei.api.domain.exception.CredenciaisInvalidasException;
 import com.teachei.api.domain.model.Usuario;
-import com.teachei.api.config.security.JwtService;
+import com.teachei.api.shared.security.JwtService;
 
 /**
  * Implementation of the user authentication use case.

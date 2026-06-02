@@ -1,7 +1,7 @@
 package com.teachei.api.application.usecase;
 
 import com.teachei.api.application.ports.in.AlterarSenhaUseCase;
-import com.teachei.api.application.ports.out.PasswordEncoderPort;
+import com.teachei.api.shared.security.PasswordEncoderPort;
 import com.teachei.api.application.ports.out.UsuarioRepositoryPort;
 import com.teachei.api.domain.exception.CredenciaisInvalidasException;
 import com.teachei.api.domain.exception.UsuarioNaoEncontradoException;

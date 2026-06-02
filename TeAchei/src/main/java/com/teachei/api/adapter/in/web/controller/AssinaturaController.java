@@ -8,7 +8,7 @@ import com.teachei.api.application.ports.in.BuscarPlanosUseCase;
 import com.teachei.api.application.ports.in.CancelarAssinaturaUseCase;
 import com.teachei.api.application.ports.in.CriarAssinaturaUseCase;
 import com.teachei.api.application.ports.in.VerificarAssinaturaUseCase;
-import com.teachei.api.config.security.CurrentUser;
+import com.teachei.api.shared.security.CurrentUser;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

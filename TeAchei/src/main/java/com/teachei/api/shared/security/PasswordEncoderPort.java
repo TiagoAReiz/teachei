@@ -1,4 +1,4 @@
-package com.teachei.api.application.ports.out;
+package com.teachei.api.shared.security;
 
 /**
  * Outbound port for password encoding.

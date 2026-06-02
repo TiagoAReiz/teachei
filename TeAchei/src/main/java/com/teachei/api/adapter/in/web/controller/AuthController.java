@@ -9,7 +9,7 @@ import com.teachei.api.application.ports.in.AlterarSenhaUseCase;
 import com.teachei.api.application.ports.in.AutenticarGoogleUseCase;
 import com.teachei.api.application.ports.in.AutenticarUsuarioUseCase;
 import com.teachei.api.application.ports.in.RegistrarUsuarioUseCase;
-import com.teachei.api.config.security.CurrentUser;
+import com.teachei.api.shared.security.CurrentUser;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.teachei.api.config.security;
+package com.teachei.api.shared.security;
 
 import com.teachei.api.application.ports.out.UsuarioRepositoryPort;
 import com.teachei.api.domain.model.Usuario;
