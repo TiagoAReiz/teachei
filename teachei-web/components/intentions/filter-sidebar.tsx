@@ -265,14 +265,14 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
 
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay - above header (z-900) and bottom nav (z-50) */}
       <div
-        className="fixed inset-0 bg-black/50 z-50 transition-opacity"
+        className="fixed inset-0 bg-black/50 z-[1100] transition-opacity"
         onClick={onClose}
       />
 
-      {/* Sidebar */}
-      <div className="fixed inset-0 bg-surface z-50 shadow-xl animate-slide-in-right flex flex-col">
+      {/* Sidebar - full-screen modal above header and bottom nav */}
+      <div className="fixed inset-0 bg-surface z-[1101] shadow-xl animate-slide-in-right flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-lg font-bold text-foreground">Filtros</h2>
