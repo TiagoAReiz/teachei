@@ -1,4 +1,4 @@
-const FIPE_BASE = process.env.FIPE_API_BASE_URL ?? "https://parallelum.com.br/fipe/api/v1";
+const FIPE_BASE = "https://parallelum.com.br/fipe/api/v1";
 
 const TIPO_MAP: Record<string, string> = {
   carro: "carros",
