@@ -36,7 +36,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar - Mobile */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-72 bg-surface shadow-xl transform transition-transform duration-300 ease-in-out lg:hidden",
+          "fixed top-0 bottom-20 left-0 z-[60] w-72 bg-surface shadow-xl transform transition-transform duration-300 ease-in-out lg:hidden",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >

@@ -53,8 +53,8 @@ export function Header() {
       <div className="max-w-7xl mx-auto bg-surface-glass backdrop-blur-md border border-white/20 shadow-lg shadow-primary/5 rounded-[2rem] px-6 h-20 flex items-center justify-between transition-all duration-300">
         <div className="flex items-center gap-6">
           {/* Logo - goes to /feed if authenticated, / otherwise */}
-          <Logo size="sm" className="hidden sm:flex" href={isAuthenticated ? "/feed" : "/"} />
-          <Logo size="xs" className="sm:hidden" href={isAuthenticated ? "/feed" : "/"} />
+          <Logo size="sm" className="hidden lg:flex" href={isAuthenticated ? "/feed" : "/"} />
+          <Logo size="xs" className="lg:hidden" href={isAuthenticated ? "/feed" : "/"} />
 
           {/* Icon Navigation (Desktop) */}
           {isAuthenticated && (
@@ -129,15 +129,17 @@ export function Header() {
                 <Plus size={20} />
               </Button>
 
-              {/* Notifications */}
-              <NotificationsDropdown
-                notifications={[]}
-                onNotificationClick={(notification) => {
-                  if (notification.href) {
-                    router.push(notification.href);
-                  }
-                }}
-              />
+              {/* Notifications - hidden on mobile */}
+              <div className="hidden lg:block">
+                <NotificationsDropdown
+                  notifications={[]}
+                  onNotificationClick={(notification) => {
+                    if (notification.href) {
+                      router.push(notification.href);
+                    }
+                  }}
+                />
+              </div>
 
               {/* User Menu */}
               <div className="relative">
@@ -210,14 +212,9 @@ export function Header() {
               </div>
             </>
           ) : (
-            <>
-              <Button variant="ghost" size="sm" onClick={() => router.push("/login")}>
-                Entrar
-              </Button>
-              <Button size="sm" onClick={() => router.push("/register")}>
-                Criar Conta
-              </Button>
-            </>
+            <Button size="sm" onClick={() => router.push("/register")}>
+              Registre-se
+            </Button>
           )}
         </div>
       </div>
