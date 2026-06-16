@@ -7,60 +7,53 @@ import { useDebounce } from "@/hooks/use-debounce";
 
 interface SearchInputProps {
   className?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+  placeholder?: string;
 }
 
-export function SearchInput({ className }: SearchInputProps) {
+export function SearchInput({ className, value, onChange, placeholder }: SearchInputProps) {
+  const controlled = value !== undefined && onChange !== undefined;
+
   const router = useRouter();
   const searchParams = useSearchParams();
-  
-  // Get current URL search value  
+
   const urlSearch = searchParams.get("search") || "";
-  
-  // Local input state
   const [localSearch, setLocalSearch] = useState(urlSearch);
-  
-  // Debounce the local search value
   const debouncedSearch = useDebounce(localSearch, 500);
-  
-  // Track what we've navigated to prevent loops
   const lastNavigatedRef = useRef(urlSearch);
-  
-  // Handle input change
+
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalSearch(e.target.value);
-  }, []);
-  
-  // Navigate when debounced value changes
+    if (controlled) {
+      onChange(e.target.value);
+    } else {
+      setLocalSearch(e.target.value);
+    }
+  }, [controlled, onChange]);
+
   useEffect(() => {
+    if (controlled) return;
     const trimmedSearch = debouncedSearch.trim();
-    
-    // Only navigate if different from what we last navigated to
     if (trimmedSearch === lastNavigatedRef.current) return;
-    
     lastNavigatedRef.current = trimmedSearch;
-    
     const params = new URLSearchParams(searchParams.toString());
-    
     if (trimmedSearch.length >= 2) {
       params.set("search", trimmedSearch);
     } else {
       params.delete("search");
     }
-    
     const queryString = params.toString();
     router.push(queryString ? `/feed?${queryString}` : "/feed");
-  }, [debouncedSearch, router, searchParams]);
-  
-  // Sync input when URL changes externally (back button, filter clearing)
+  }, [controlled, debouncedSearch, router, searchParams]);
+
   useEffect(() => {
-    // Only sync if URL changed to something different than what we navigated to
+    if (controlled) return;
     if (urlSearch !== lastNavigatedRef.current) {
       lastNavigatedRef.current = urlSearch;
-      // Sync local state with URL - this is intentional for external navigation (back button)
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setLocalSearch(urlSearch);
     }
-  }, [urlSearch]);
+  }, [controlled, urlSearch]);
 
   return (
     <div className={className}>
@@ -70,9 +63,9 @@ export function SearchInput({ className }: SearchInputProps) {
         </div>
         <input
           type="text"
-          value={localSearch}
+          value={controlled ? value : localSearch}
           onChange={handleChange}
-          placeholder="Buscar por marca ou modelo..."
+          placeholder={placeholder ?? "Buscar por marca ou modelo..."}
           className="w-full bg-background border-0 ring-1 ring-border text-foreground placeholder:text-muted rounded-full h-10 pl-11 pr-4 focus:ring-2 focus:ring-primary transition-all text-sm"
         />
       </div>
