@@ -65,10 +65,7 @@ export function LocationPicker({
         <div className="relative">
           <select
             value={estado}
-            onChange={(e) => {
-              onEstadoChange(e.target.value);
-              onCidadeChange(""); // Clear city when state changes
-            }}
+            onChange={(e) => onEstadoChange(e.target.value)}
             disabled={disabled || isLoadingEstados}
             className={cn(
               "w-full appearance-none bg-surface border-0 ring-1 ring-border text-foreground rounded-full h-[52px] px-4 pr-10 focus:ring-2 focus:ring-primary focus:bg-surface transition-all text-base cursor-pointer",

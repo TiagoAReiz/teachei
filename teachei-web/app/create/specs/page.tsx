@@ -6,8 +6,11 @@ import { ArrowRight, AlertCircle, Loader2, Camera, X } from "lucide-react";
 import { Button, CurrencyInput, Select, MileageInput } from "@/components/ui";
 import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { useAvailableFilters } from "@/hooks/use-intentions";
-import { vehicleColors, generateYearOptions } from "@/lib/utils";
+import { useYears } from "@/hooks/use-vehicles";
+import { vehicleColors } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+
+const MAX_YEAR = new Date().getFullYear() + 1;
 
 export default function CreateSpecsPage() {
   const router = useRouter();
@@ -48,15 +51,25 @@ export default function CreateSpecsPage() {
     return filteredFilters?.opcionais || [];
   }, [filteredFilters]);
 
-  // Static year options (no API call needed)
-  const allYearOptions = generateYearOptions(30);
-  
-  // Filter year options based on selection
+  const { data: anosData = [], isLoading: isLoadingAnos } = useYears(
+    tipoVeiculo,
+    marcaCodigo,
+    modeloCodigo
+  );
+
+  const allYearOptions = useMemo(() => {
+    return anosData
+      .map(a => parseInt(a.nome))
+      .filter(year => year >= 1800 && year <= MAX_YEAR)
+      .sort((a, b) => b - a)
+      .map(year => ({ value: year.toString(), label: year.toString() }));
+  }, [anosData]);
+
   const yearOptionsMin = useMemo(() => {
     if (!anoMaximo) return allYearOptions;
     return allYearOptions.filter(opt => parseInt(opt.value) <= anoMaximo);
   }, [allYearOptions, anoMaximo]);
-  
+
   const yearOptionsMax = useMemo(() => {
     if (!anoMinimo) return allYearOptions;
     return allYearOptions.filter(opt => parseInt(opt.value) >= anoMinimo);
@@ -169,16 +182,18 @@ export default function CreateSpecsPage() {
         </label>
         <div className="grid grid-cols-2 gap-4">
           <Select
-            options={[{ value: "", label: "A partir de" }, ...yearOptionsMin]}
+            options={[{ value: "", label: isLoadingAnos ? "Carregando..." : "A partir de" }, ...yearOptionsMin]}
             value={anoMinimo?.toString() || ""}
             onChange={(value) => setAnos(value ? parseInt(value) : null, anoMaximo)}
             placeholder="A partir de"
+            disabled={isLoadingAnos}
           />
           <Select
-            options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
+            options={[{ value: "", label: isLoadingAnos ? "Carregando..." : "Até" }, ...yearOptionsMax]}
             value={anoMaximo?.toString() || ""}
             onChange={(value) => setAnos(anoMinimo, value ? parseInt(value) : null)}
             placeholder="Até"
+            disabled={isLoadingAnos}
           />
         </div>
         <p className="text-xs text-muted">
