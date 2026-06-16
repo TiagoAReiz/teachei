@@ -45,10 +45,17 @@ export class UsuarioSupabaseAdapter implements UsuarioRepositoryPort {
   }
 
   async updateSenha(id: string, novaSenhaHash: string): Promise<void> {
-    await supabase.from("usuarios").update({ senha_hash: novaSenhaHash }).eq("id", id);
+    const { error } = await supabase.from("usuarios").update({ senha_hash: novaSenhaHash }).eq("id", id);
+    if (error) throw new Error(error.message);
   }
 
   async delete(id: string): Promise<void> {
-    await supabase.from("usuarios").delete().eq("id", id);
+    const { error } = await supabase.from("usuarios").delete().eq("id", id);
+    if (error) throw new Error(error.message);
+  }
+
+  async linkGoogleId(id: string, googleId: string): Promise<void> {
+    const { error } = await supabase.from("usuarios").update({ google_id: googleId }).eq("id", id);
+    if (error) throw new Error(error.message);
   }
 }

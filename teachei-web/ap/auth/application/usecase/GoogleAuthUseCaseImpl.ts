@@ -17,6 +17,7 @@ async function verifyGoogleToken(credential: string): Promise<GoogleTokenPayload
   if (!res.ok) throw new ValidationError("Google token inválido");
   const data = await res.json();
   if (data.aud !== process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) throw new ValidationError("Google client_id inválido");
+  if (!data.email_verified) throw new ValidationError("Email Google não verificado");
   return { sub: data.sub, email: data.email, name: data.name };
 }
 
@@ -31,6 +32,7 @@ export class GoogleAuthUseCaseImpl implements GoogleAuthUseCase {
     if (!usuario) {
       const byEmail = await this.repo.findByEmail(googlePayload.email);
       if (byEmail) {
+        await this.repo.linkGoogleId(byEmail.id, googlePayload.sub);
         usuario = byEmail;
       } else {
         if (!aceitouTermos) throw new ValidationError("Termos de uso devem ser aceitos");

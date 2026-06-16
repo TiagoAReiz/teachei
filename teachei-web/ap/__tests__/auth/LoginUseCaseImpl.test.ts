@@ -11,6 +11,7 @@ const mockRepo: UsuarioRepositoryPort = {
   save: vi.fn(),
   updateSenha: vi.fn(),
   delete: vi.fn(),
+  linkGoogleId: vi.fn(),
 };
 
 describe("LoginUseCaseImpl", () => {

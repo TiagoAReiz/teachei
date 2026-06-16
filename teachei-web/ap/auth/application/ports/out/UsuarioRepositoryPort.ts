@@ -12,4 +12,5 @@ export interface UsuarioRepositoryPort {
   }): Promise<Usuario>;
   updateSenha(id: string, novaSenhaHash: string): Promise<void>;
   delete(id: string): Promise<void>;
+  linkGoogleId(id: string, googleId: string): Promise<void>;
 }

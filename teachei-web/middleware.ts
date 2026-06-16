@@ -19,7 +19,11 @@ function isProtected(req: NextRequest): boolean {
 }
 
 export async function middleware(req: NextRequest) {
-  if (!isProtected(req)) return NextResponse.next();
+  if (!isProtected(req)) {
+    const requestHeaders = new Headers(req.headers);
+    requestHeaders.delete("X-Usuario-Id");
+    return NextResponse.next({ request: { headers: requestHeaders } });
+  }
 
   const authHeader = req.headers.get("authorization");
   const cookieToken = req.cookies.get("teachei_token")?.value;
