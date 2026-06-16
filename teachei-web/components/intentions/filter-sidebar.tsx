@@ -281,7 +281,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
       />
 
       {/* Sidebar */}
-      <div className="fixed top-0 bottom-20 right-0 w-full bg-surface z-50 shadow-xl animate-slide-in-right flex flex-col lg:bottom-0">
+      <div className="fixed inset-0 bg-surface z-50 shadow-xl animate-slide-in-right flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-lg font-bold text-foreground">Filtros</h2>
@@ -294,7 +294,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-4 pb-24 space-y-6">
+        <div className="flex-1 overflow-y-auto p-4 space-y-6">
           {/* Location */}
           {localizacaoOptions.length > 1 && (
             <div className="space-y-3">
