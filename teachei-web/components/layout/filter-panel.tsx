@@ -328,88 +328,109 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto px-6 py-2 space-y-6 custom-scrollbar">
-        {localizacaoOptions.length > 1 && (
-          <div className="space-y-3">
-            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-              <MapPin size={14} className="text-primary" />
-              Localização
-            </label>
+        {/* Location */}
+        <div className="space-y-3">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+            <MapPin size={14} className="text-primary" />
+            Localização
+          </label>
+          {isLoadingFilters ? (
+            <div className="h-12 rounded-xl bg-muted/20 animate-pulse" />
+          ) : localizacaoOptions.length > 1 ? (
             <Select
               options={localizacaoOptions}
               value={filters.cidade && filters.estado ? `${filters.cidade}|${filters.estado}` : ""}
               onChange={(value) => handleLocalizacaoChange(value)}
-              disabled={isLoadingFilters}
               className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
-          </div>
-        )}
+          ) : (
+            <p className="text-xs text-muted">Nenhuma localização disponível.</p>
+          )}
+        </div>
+
         {/* Vehicle Type */}
         <div className="space-y-3">
           <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             Tipo de Veículo
           </label>
-          <div className="flex flex-col gap-2">
-            {availableTypes.map((type) => {
-              const Icon = type.icon;
-              const isActive = filters.tipo === type.value;
-
-              return (
-                <button
-                  key={type.value}
-                  onClick={() => handleTipoChange(type.value)}
-                  className={cn(
-                    "flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 w-full group",
-                    isActive
-                      ? "bg-primary text-white shadow-lg shadow-primary/30 transform scale-[1.02]"
-                      : "bg-background/50 text-muted-foreground hover:bg-white hover:text-primary hover:shadow-md"
-                  )}
-                >
-                  <div className={cn(
-                    "p-2 rounded-xl transition-colors",
-                    isActive ? "bg-white/20" : "bg-white group-hover:bg-primary/10"
-                  )}>
-                    <Icon size={16} />
-                  </div>
-                  <span>{type.label}</span>
-                </button>
-              );
-            })}
-          </div>
+          {isLoadingFilters ? (
+            <div className="flex flex-col gap-2">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-12 rounded-2xl bg-muted/20 animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {availableTypes.map((type) => {
+                const Icon = type.icon;
+                const isActive = filters.tipo === type.value;
+                return (
+                  <button
+                    key={type.value}
+                    onClick={() => handleTipoChange(type.value)}
+                    className={cn(
+                      "flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 w-full group",
+                      isActive
+                        ? "bg-primary text-white shadow-lg shadow-primary/30 transform scale-[1.02]"
+                        : "bg-background/50 text-muted-foreground hover:bg-white hover:text-primary hover:shadow-md"
+                    )}
+                  >
+                    <div className={cn("p-2 rounded-xl transition-colors", isActive ? "bg-white/20" : "bg-white group-hover:bg-primary/10")}>
+                      <Icon size={16} />
+                    </div>
+                    <span>{type.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Brand */}
-        {marcaOptions.length > 1 && (
-          <div className="space-y-3">
-            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-              Marca
-            </label>
+        <div className="space-y-3">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+            Marca
+          </label>
+          {isLoadingFilters ? (
+            <div className="h-12 rounded-xl bg-muted/20 animate-pulse" />
+          ) : marcaOptions.length > 1 ? (
             <Select
               options={marcaOptions}
               value={filters.marca}
               onChange={(value) => handleMarcaChange(value)}
-              disabled={isLoadingFilters}
+              portal
+              searchable
+              searchPlaceholder="Buscar marca..."
               className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
-          </div>
-        )}
+          ) : (
+            <p className="text-xs text-muted">Nenhuma marca disponível.</p>
+          )}
+        </div>
 
         {/* Model */}
-        {modeloOptions.length > 1 && (
-          <div className="space-y-3">
-            <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-              Modelo
-            </label>
+        <div className="space-y-3">
+          <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+            Modelo
+          </label>
+          {isLoadingFilteredOptions ? (
+            <div className="h-12 rounded-xl bg-muted/20 animate-pulse" />
+          ) : modeloOptions.length > 1 ? (
             <Select
               options={modeloOptions}
               value={filters.modelo}
               onChange={(value) => handleModeloChange(value)}
-              disabled={isLoadingFilters}
+              portal
+              searchable
+              searchPlaceholder="Buscar modelo..."
               className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
-          </div>
-        )}
+          ) : (
+            <p className="text-xs text-muted">Nenhum modelo disponível.</p>
+          )}
+        </div>
 
-        {/* Version (shown when base model is selected and has versions) */}
+        {/* Version */}
         {filters.modelo && versaoOptions.length > 1 && (
           <div className="space-y-3">
             <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
@@ -419,11 +440,13 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
               options={versaoOptions}
               value={filters.versao}
               onChange={(value) => handleVersaoChange(value)}
+              portal
               className="text-sm bg-background/50 border-0 shadow-inner rounded-xl h-12"
             />
           </div>
         )}
 
+        {/* Opcionais */}
         <div className="space-y-2">
           <button
             type="button"
@@ -443,19 +466,13 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
           {isOpcionaisOpen && (() => {
             const opcionaisData = filters.tipo ? filteredOptions?.opcionais : availableFilters?.opcionais;
             const isLoading = filters.tipo ? isLoadingFilteredOptions : isLoadingFilters;
-            const hasError = filters.tipo ? filteredOptionsError : filtersError;
 
-            if (hasError) {
-              return (
-                <p className="text-xs text-error py-2 font-medium">
-                  Erro ao carregar opcionais.
-                </p>
-              );
-            }
             if (isLoading) {
               return (
-                <div className="py-4 flex justify-center">
-                  <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                <div className="flex flex-col gap-2 p-2">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="h-8 rounded-xl bg-muted/20 animate-pulse" />
+                  ))}
                 </div>
               );
             }
@@ -492,11 +509,7 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
                 </div>
               );
             }
-            return (
-              <p className="text-xs text-muted py-2">
-                Nenhum opcional disponível.
-              </p>
-            );
+            return <p className="text-xs text-muted py-2">Nenhum opcional disponível.</p>;
           })()}
         </div>
 

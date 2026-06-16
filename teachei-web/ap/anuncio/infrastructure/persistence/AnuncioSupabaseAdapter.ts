@@ -33,8 +33,39 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
     if (filters.search) {
       query = query.or(`veiculo->>'marcaNome'.ilike.%${filters.search}%,veiculo->>'modeloNome'.ilike.%${filters.search}%`);
     }
+
     if (filters.cidade) query = query.eq("contato->>cidade", filters.cidade);
     if (filters.estado) query = query.eq("contato->>estado", filters.estado);
+
+    if (filters.marcaCodigo) query = query.eq("veiculo->>marcaCodigo", filters.marcaCodigo);
+
+    if (filters.modeloCodigo) {
+      query = query.eq("veiculo->>modeloCodigo", filters.modeloCodigo);
+    } else if (filters.modelos && filters.modelos.length > 0) {
+      query = query.in("veiculo->>modeloCodigo", filters.modelos);
+    }
+
+    if (filters.anoMin !== undefined) {
+      query = query.filter("veiculo->anos", "cs", `[${filters.anoMin}]`);
+    }
+
+    if (filters.precoMin !== undefined) {
+      query = query.filter("veiculo->precoMaximo", "gte", filters.precoMin);
+    }
+    if (filters.precoMax !== undefined) {
+      query = query.filter("veiculo->precoMaximo", "lte", filters.precoMax);
+    }
+
+    if (filters.kmMax !== undefined) {
+      query = query.filter("veiculo->quilometragemMaxima", "lte", filters.kmMax);
+    }
+    if (filters.kmMin !== undefined) {
+      query = query.filter("veiculo->quilometragemMinima", "gte", filters.kmMin);
+    }
+
+    if (filters.opcionais && filters.opcionais.length > 0) {
+      query = query.filter("veiculo->opcionais", "cs", JSON.stringify(filters.opcionais));
+    }
 
     const ordenar = filters.ordenar ?? "RECENTE";
     if (ordenar === "RECENTE") query = query.order("criado_em", { ascending: false });
