@@ -231,6 +231,7 @@ export interface CreateAnuncioRequest {
   dadosManuais?: boolean;
   cidade?: string;
   estado?: string;
+  whatsapp?: string;
   fotoReferenciaBase64?: string;    // Optional reference photo (Base64)
 }
 

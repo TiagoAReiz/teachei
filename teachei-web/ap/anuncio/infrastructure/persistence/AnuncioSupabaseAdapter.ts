@@ -33,8 +33,8 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
     if (filters.search) {
       query = query.or(`veiculo->>'marcaNome'.ilike.%${filters.search}%,veiculo->>'modeloNome'.ilike.%${filters.search}%`);
     }
-    if (filters.cidade) query = query.eq("contato->>'cidade'", filters.cidade);
-    if (filters.estado) query = query.eq("contato->>'estado'", filters.estado);
+    if (filters.cidade) query = query.eq("contato->>cidade", filters.cidade);
+    if (filters.estado) query = query.eq("contato->>estado", filters.estado);
 
     const ordenar = filters.ordenar ?? "RECENTE";
     if (ordenar === "RECENTE") query = query.order("criado_em", { ascending: false });

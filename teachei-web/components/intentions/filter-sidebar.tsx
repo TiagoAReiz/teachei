@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { X, Car, Bike, Truck, Loader2, AlertCircle, MapPin, ChevronDown, Search } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
-import { cn, generateYearOptions } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import type { TipoVeiculo, AvailableOpcional } from "@/types";
 
 function normalizeText(text: string): string {
@@ -66,15 +66,6 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
   // Fetch available locations from intentions (works independently of backend filters endpoint)
   const { data: availableLocations } = useAvailableLocations();
 
-  // Build year options (includes next year)
-  const allYearOptions = generateYearOptions(30);
-  
-  // Filter max year options based on selected min year
-  const yearOptionsMin = allYearOptions;
-  const yearOptionsMax = useMemo(() => {
-    if (!filters.anoMin) return allYearOptions;
-    return allYearOptions.filter(opt => parseInt(opt.value) >= filters.anoMin!);
-  }, [allYearOptions, filters.anoMin]);
   
   // Price validation error
   const priceError = useMemo(() => {
@@ -525,34 +516,24 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
             </div>
           </div>
 
-          {/* Year Range */}
+          {/* Year */}
           <div className="space-y-3">
             <label className="block text-sm font-medium text-foreground">
-              Faixa de Ano
+              Ano
             </label>
-            <div className="grid grid-cols-2 gap-4">
-              <Select
-                options={[{ value: "", label: "A partir de" }, ...yearOptionsMin]}
-                value={filters.anoMin?.toString() || ""}
-                onChange={(value) => {
-                  const newMin = value ? parseInt(value) : null;
-                  setFilters((prev) => {
-                    const newMax = prev.anoMax && newMin && prev.anoMax < newMin ? null : prev.anoMax;
-                    return { ...prev, anoMin: newMin, anoMax: newMax };
-                  });
-                }}
-                portal
-              />
-              <Select
-                options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
-                value={filters.anoMax?.toString() || ""}
-                onChange={(value) => setFilters((prev) => ({
-                  ...prev,
-                  anoMax: value ? parseInt(value) : null
-                }))}
-                portal
-              />
-            </div>
+            <input
+              type="number"
+              inputMode="numeric"
+              placeholder="Ex: 2020"
+              min={1900}
+              max={new Date().getFullYear() + 1}
+              value={filters.anoMin ?? ""}
+              onChange={(e) => {
+                const val = e.target.value ? parseInt(e.target.value) : null;
+                setFilters((prev) => ({ ...prev, anoMin: val, anoMax: val }));
+              }}
+              className="w-full bg-background/50 border-2 border-transparent text-foreground rounded-full h-[56px] px-6 text-sm font-bold shadow-inner focus:outline-none focus:bg-white focus:border-primary/10 focus:ring-2 focus:ring-primary/20 transition-all"
+            />
           </div>
         </div>
 

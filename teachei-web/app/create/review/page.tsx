@@ -147,6 +147,7 @@ export default function CreateReviewPage() {
         observacoes: finalObservacoes || undefined,
         cidade,
         estado,
+        whatsapp: telefoneContato ? stripPhoneFormatting(telefoneContato) : undefined,
         fotoReferenciaBase64: fotoReferenciaBase64 || undefined,
       },
       {

@@ -90,6 +90,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
   };
 
   const whatsappMessage = `Olá! Vi sua intenção de compra do ${intention.veiculo.marcaNome} ${intention.veiculo.modeloNome} no TeAchei e gostaria de fazer uma proposta.`;
+  const whatsappContato = intention.contato.whatsapp || sellerProfile?.whatsapp || null;
 
   // Get vehicle type icon
   const VehicleIcon = vehicleTypeIcons[intention.tipo] || Car;
@@ -356,9 +357,9 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                 {!intention.contatoOculto && (
                   <div className="space-y-3">
                     {/* WhatsApp */}
-                    {intention.contato.whatsapp && (
+                    {whatsappContato && (
                       <a
-                        href={intention.contato.whatsappLink || getWhatsAppLink(intention.contato.whatsapp, whatsappMessage)}
+                        href={intention.contato.whatsappLink || getWhatsAppLink(whatsappContato, whatsappMessage)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 p-3 bg-green-500/10 rounded-xl hover:bg-green-500/20 transition-colors"
@@ -368,7 +369,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                         </div>
                         <div>
                           <p className="text-sm text-muted">WhatsApp</p>
-                          <p className="font-medium text-foreground">{intention.contato.whatsapp}</p>
+                          <p className="font-medium text-foreground">{whatsappContato}</p>
                         </div>
                       </a>
                     )}
@@ -424,41 +425,27 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
               </a>
             ) : (
               <>
-                {intention.contato?.whatsappLink ? (
-                  <a
-                    href={intention.contato.whatsappLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1"
-                  >
-                    <Button variant="whatsapp" className="w-full" size="lg">
-                      <MessageCircle size={20} />
-                      Enviar proposta
+                {whatsappContato && (
+                  <>
+                    <a
+                      href={intention.contato.whatsappLink || getWhatsAppLink(whatsappContato, whatsappMessage)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1"
+                    >
+                      <Button variant="whatsapp" className="w-full" size="lg">
+                        <MessageCircle size={20} />
+                        Enviar proposta
+                      </Button>
+                    </a>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => { window.location.href = `tel:${whatsappContato}`; }}
+                    >
+                      <Phone size={20} />
                     </Button>
-                  </a>
-                ) : intention.contato?.whatsapp && (
-                  <a
-                    href={getWhatsAppLink(intention.contato.whatsapp, whatsappMessage)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1"
-                  >
-                    <Button variant="whatsapp" className="w-full" size="lg">
-                      <MessageCircle size={20} />
-                      Enviar proposta
-                    </Button>
-                  </a>
-                )}
-                {intention.contato?.whatsapp && (
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={() => {
-                      window.location.href = `tel:${intention.contato.whatsapp}`;
-                    }}
-                  >
-                    <Phone size={20} />
-                  </Button>
+                  </>
                 )}
               </>
             )}

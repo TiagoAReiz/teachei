@@ -6,7 +6,7 @@ export interface CriarAnuncioInput {
   anos: number[]; cores: string[]; precoMaximo: number;
   quilometragemMinima?: number; quilometragemMaxima?: number;
   opcionais?: string[]; observacoes?: string; dadosManuais?: boolean;
-  cidade?: string; estado?: string; fotoReferenciaUrl?: string;
+  cidade?: string; estado?: string; whatsapp?: string; fotoReferenciaUrl?: string;
 }
 export interface CriarAnuncioUseCase {
   execute(usuarioId: string, data: CriarAnuncioInput): Promise<Anuncio>;

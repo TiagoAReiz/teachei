@@ -20,7 +20,7 @@ export class CriarAnuncioUseCaseImpl implements CriarAnuncioUseCase {
         quilometragemMaxima: data.quilometragemMaxima, opcionais: data.opcionais,
         dadosManuais: data.dadosManuais ?? false, fotoReferenciaUrl: data.fotoReferenciaUrl,
       },
-      contato: { cidade: data.cidade, estado: data.estado },
+      contato: { cidade: data.cidade, estado: data.estado, whatsapp: data.whatsapp },
       observacoes: data.observacoes, expiraEm,
     });
   }
