@@ -1,102 +1,71 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { api } from "@/lib/api";
+import { isAuthenticated } from "@/lib/auth";
 
-const STORAGE_KEY = "teachei_saved_intentions";
+const LOCAL_KEY = "teachei_saved_intentions";
 
-/**
- * Hook to manage saved intentions in localStorage
- * Provides persistence across browser sessions
- */
+function getLocal(): string[] {
+  try {
+    const s = localStorage.getItem(LOCAL_KEY);
+    return s ? (JSON.parse(s) as string[]) : [];
+  } catch { return []; }
+}
+
+function setLocal(ids: string[]): void {
+  try { localStorage.setItem(LOCAL_KEY, JSON.stringify(ids)); } catch {}
+}
+
 export function useSavedIntentions() {
-  // Initialize with empty array, load from localStorage in effect
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
+  const authed = isAuthenticated();
 
-  // Load from localStorage on mount (client-side only)
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          // eslint-disable-next-line react-hooks/set-state-in-effect
-          setSavedIds(parsed);
-        }
-      }
-    } catch (error) {
-      console.error("Error loading saved intentions:", error);
+    if (authed) {
+      api.get<string[]>("/api/v1/favoritos")
+        .then((ids) => { setSavedIds(ids); setIsLoaded(true); })
+        .catch(() => { setSavedIds(getLocal()); setIsLoaded(true); });
+    } else {
+      setSavedIds(getLocal());
+      setIsLoaded(true);
     }
-    setIsLoaded(true);
-  }, []);
+  }, [authed]);
 
-  // Persist to localStorage whenever savedIds changes (after initial load)
-  useEffect(() => {
-    if (isLoaded) {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(savedIds));
-      } catch (error) {
-        console.error("Error saving intentions:", error);
-      }
-    }
-  }, [savedIds, isLoaded]);
+  const isSaved = useCallback((id: string) => savedIds.includes(id), [savedIds]);
 
-  /**
-   * Check if an intention is saved
-   */
-  const isSaved = useCallback(
-    (id: string): boolean => {
-      return savedIds.includes(id);
-    },
-    [savedIds]
-  );
-
-  /**
-   * Toggle save state for an intention
-   */
-  const toggleSave = useCallback((id: string) => {
-    setSavedIds((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((savedId) => savedId !== id);
+  const toggleSave = useCallback(async (id: string) => {
+    const saving = !savedIds.includes(id);
+    if (authed) {
+      if (saving) {
+        await api.post("/api/v1/favoritos", { anuncioId: id }).catch(() => {});
       } else {
-        return [...prev, id];
+        await api.delete(`/api/v1/favoritos/${id}`).catch(() => {});
       }
-    });
-  }, []);
-
-  /**
-   * Save an intention (add to saved list)
-   */
-  const save = useCallback((id: string) => {
+    }
     setSavedIds((prev) => {
-      if (prev.includes(id)) {
-        return prev;
-      }
-      return [...prev, id];
+      const next = saving ? [...prev, id] : prev.filter((x) => x !== id);
+      if (!authed) setLocal(next);
+      return next;
     });
-  }, []);
+  }, [savedIds, authed]);
 
-  /**
-   * Unsave an intention (remove from saved list)
-   */
-  const unsave = useCallback((id: string) => {
-    setSavedIds((prev) => prev.filter((savedId) => savedId !== id));
-  }, []);
+  const save = useCallback(async (id: string) => {
+    if (savedIds.includes(id)) return;
+    if (authed) await api.post("/api/v1/favoritos", { anuncioId: id }).catch(() => {});
+    setSavedIds((prev) => { const next = [...prev, id]; if (!authed) setLocal(next); return next; });
+  }, [savedIds, authed]);
 
-  /**
-   * Clear all saved intentions
-   */
-  const clearAll = useCallback(() => {
+  const unsave = useCallback(async (id: string) => {
+    if (authed) await api.delete(`/api/v1/favoritos/${id}`).catch(() => {});
+    setSavedIds((prev) => { const next = prev.filter((x) => x !== id); if (!authed) setLocal(next); return next; });
+  }, [authed]);
+
+  const clearAll = useCallback(async () => {
     setSavedIds([]);
-  }, []);
+    if (!authed) setLocal([]);
+  }, [authed]);
 
-  return {
-    savedIds,
-    isSaved,
-    toggleSave,
-    save,
-    unsave,
-    clearAll,
-    isLoaded,
-  };
+  return { savedIds, isSaved, toggleSave, save, unsave, clearAll, isLoaded };
 }
