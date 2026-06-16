@@ -1,3 +1,4 @@
+import { OAuth2Client } from "google-auth-library";
 import { signToken, TOKEN_EXPIRES_IN } from "@/ap/shared/middleware/jwt";
 import { ValidationError } from "@/ap/shared/errors";
 import type { GoogleAuthUseCase } from "@/ap/auth/application/ports/in/GoogleAuthUseCase";
@@ -10,15 +11,22 @@ interface GoogleTokenPayload {
   name?: string;
 }
 
+const client = new OAuth2Client(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID);
+
 async function verifyGoogleToken(credential: string): Promise<GoogleTokenPayload> {
-  const res = await fetch(
-    `https://oauth2.googleapis.com/tokeninfo?id_token=${credential}`
-  );
-  if (!res.ok) throw new ValidationError("Google token inválido");
-  const data = await res.json();
-  if (data.aud !== process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID) throw new ValidationError("Google client_id inválido");
-  if (!data.email_verified) throw new ValidationError("Email Google não verificado");
-  return { sub: data.sub, email: data.email, name: data.name };
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    if (!payload?.sub || !payload.email) throw new ValidationError("Google token inválido");
+    if (!payload.email_verified) throw new ValidationError("Email Google não verificado");
+    return { sub: payload.sub, email: payload.email, name: payload.name };
+  } catch (e) {
+    if (e instanceof ValidationError) throw e;
+    throw new ValidationError("Google token inválido");
+  }
 }
 
 export class GoogleAuthUseCaseImpl implements GoogleAuthUseCase {
