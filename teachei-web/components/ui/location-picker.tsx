@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -51,7 +52,8 @@ function SearchableDropdown({
 }: SearchableDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
 
   const selected = options.find((o) => o.value === value);
@@ -64,7 +66,11 @@ function SearchableDropdown({
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (
+        triggerRef.current && !triggerRef.current.contains(target) &&
+        !(target as Element).closest("[data-location-dropdown]")
+      ) {
         setIsOpen(false);
         setSearch("");
       }
@@ -77,24 +83,35 @@ function SearchableDropdown({
     if (isOpen) setTimeout(() => searchRef.current?.focus(), 50);
   }, [isOpen]);
 
+  const handleToggle = () => {
+    if (disabled || isLoading) return;
+    if (!isOpen && triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setDropdownStyle({
+        position: "fixed",
+        top: rect.bottom + 8,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 9999,
+      });
+    }
+    setIsOpen((prev) => !prev);
+  };
+
   const handleSelect = (val: string) => {
     onChange(val);
     setIsOpen(false);
     setSearch("");
   };
 
-  const handleToggle = () => {
-    if (disabled || isLoading) return;
-    setIsOpen((prev) => !prev);
-  };
-
   return (
-    <div className="w-full relative" ref={containerRef}>
+    <div className="w-full">
       <label className="block text-sm font-medium text-foreground mb-2">
         {label}
       </label>
 
       <button
+        ref={triggerRef}
         type="button"
         onClick={handleToggle}
         disabled={disabled || isLoading}
@@ -118,9 +135,11 @@ function SearchableDropdown({
         />
       </button>
 
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 z-50 animate-scale-in origin-top">
-          <div className="bg-surface rounded-[1.5rem] shadow-2xl shadow-primary/20 border border-white/20 overflow-hidden p-2">
+      {error && <p className="mt-2 text-xs text-error font-bold ml-2">{error}</p>}
+
+      {isOpen && typeof window !== "undefined" && createPortal(
+        <div style={dropdownStyle} data-location-dropdown>
+          <div className="bg-surface rounded-[1.5rem] shadow-2xl shadow-primary/20 border border-white/20 overflow-hidden p-2 animate-scale-in origin-top">
             <div className="relative mb-1 px-1 pt-1">
               <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
               <input
@@ -160,10 +179,9 @@ function SearchableDropdown({
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
-
-      {error && <p className="mt-2 text-xs text-error font-bold ml-2">{error}</p>}
     </div>
   );
 }
