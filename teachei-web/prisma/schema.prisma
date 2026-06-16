@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model Usuario {
+  id            String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email         String     @unique
+  senhaHash     String?    @map("senha_hash")
+  googleId      String?    @unique @map("google_id")
+  aceitouTermos Boolean    @default(false) @map("aceitou_termos")
+  criadoEm     DateTime   @default(now()) @map("criado_em")
+  perfil        Perfil?
+  anuncios      Anuncio[]
+  favoritos     Favorito[]
+
+  @@map("usuarios")
+}
+
+model Perfil {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId String   @unique @map("usuario_id") @db.Uuid
+  nome      String
+  bio       String?
+  fotoUrl   String?  @map("foto_url")
+  whatsapp  String?
+  instagram String?
+  facebook  String?
+  cidade    String?
+  estado    String?
+  role      String   @default("BUYER")
+  criadoEm DateTime @default(now()) @map("criado_em")
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@map("perfis")
+}
+
+model Anuncio {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId   String     @map("usuario_id") @db.Uuid
+  tipo        String
+  status      String     @default("ATIVO")
+  veiculo     Json
+  contato     Json
+  observacoes String?
+  criadoEm   DateTime   @default(now()) @map("criado_em")
+  expiraEm   DateTime?  @map("expira_em")
+  usuario     Usuario    @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  favoritos   Favorito[]
+
+  @@map("anuncios")
+}
+
+model Favorito {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  usuarioId String   @map("usuario_id") @db.Uuid
+  anuncioId String   @map("anuncio_id") @db.Uuid
+  criadoEm DateTime @default(now()) @map("criado_em")
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+  anuncio   Anuncio  @relation(fields: [anuncioId], references: [id], onDelete: Cascade)
+
+  @@unique([usuarioId, anuncioId])
+  @@map("favoritos")
+}
