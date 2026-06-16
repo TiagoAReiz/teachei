@@ -3,6 +3,7 @@ import { GerenciarPerfilUseCaseImpl } from "@/ap/perfil/application/usecase/Gere
 import { ExcluirContaUseCaseImpl } from "@/ap/auth/application/usecase/ExcluirContaUseCaseImpl";
 import { UsuarioSupabaseAdapter } from "@/ap/auth/infrastructure/persistence/UsuarioSupabaseAdapter";
 import { AppError } from "@/ap/shared/errors";
+import { uploadBase64Image, deleteStorageImage } from "@/ap/shared/storage/uploadImage";
 
 function makeUseCase() {
   return new GerenciarPerfilUseCaseImpl(new PerfilSupabaseAdapter());
@@ -28,6 +29,18 @@ export async function handleAtualizarPerfil(req: Request): Promise<Response> {
   try {
     const usuarioId = req.headers.get("X-Usuario-Id")!;
     const body = await req.json();
+
+    if (body.removerFoto) {
+      delete body.removerFoto;
+      const perfil = await makeUseCase().buscar(usuarioId);
+      if (perfil.fotoUrl) await deleteStorageImage("profile", perfil.fotoUrl);
+      body.fotoUrl = null;
+    } else if (body.foto) {
+      const base64 = body.foto as string;
+      delete body.foto;
+      body.fotoUrl = await uploadBase64Image("profile", `${usuarioId}/${Date.now()}`, base64);
+    }
+
     const perfil = await makeUseCase().atualizar(usuarioId, body);
     return Response.json(perfil);
   } catch (e) {

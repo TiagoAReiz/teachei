@@ -1,4 +1,5 @@
 import { AnuncioSupabaseAdapter } from "@/ap/anuncio/infrastructure/persistence/AnuncioSupabaseAdapter";
+import { uploadBase64Image } from "@/ap/shared/storage/uploadImage";
 import { CriarAnuncioUseCaseImpl } from "@/ap/anuncio/application/usecase/CriarAnuncioUseCaseImpl";
 import { BuscarAnunciosUseCaseImpl } from "@/ap/anuncio/application/usecase/BuscarAnunciosUseCaseImpl";
 import { BuscarAnuncioUseCaseImpl } from "@/ap/anuncio/application/usecase/BuscarAnuncioUseCaseImpl";
@@ -45,6 +46,13 @@ export async function handleCriar(req: Request): Promise<Response> {
   try {
     const usuarioId = req.headers.get("X-Usuario-Id")!;
     const body = await req.json();
+
+    if (body.fotoReferenciaBase64) {
+      const base64 = body.fotoReferenciaBase64 as string;
+      delete body.fotoReferenciaBase64;
+      body.fotoReferenciaUrl = await uploadBase64Image("vehicle", `${usuarioId}/${Date.now()}`, base64);
+    }
+
     const result = await new CriarAnuncioUseCaseImpl(makeRepo()).execute(usuarioId, body);
     return Response.json(result, { status: 201 });
   } catch (e) { return err(e); }
@@ -61,7 +69,37 @@ export async function handleAtualizar(req: Request, id: string): Promise<Respons
   try {
     const usuarioId = req.headers.get("X-Usuario-Id")!;
     const body = await req.json();
-    const result = await new AtualizarAnuncioUseCaseImpl(makeRepo()).execute(id, usuarioId, body);
+    const repo = makeRepo();
+
+    const existing = await new BuscarAnuncioUseCaseImpl(repo).execute(id);
+
+    let fotoReferenciaUrl = existing.veiculo.fotoReferenciaUrl;
+    if (body.fotoReferenciaBase64) {
+      fotoReferenciaUrl = await uploadBase64Image("vehicle", `${usuarioId}/${Date.now()}`, body.fotoReferenciaBase64 as string);
+    }
+
+    const patch = {
+      veiculo: {
+        ...existing.veiculo,
+        versoes: body.versoes ?? existing.veiculo.versoes,
+        todasVersoes: body.todasVersoes ?? existing.veiculo.todasVersoes,
+        anos: body.anos ?? existing.veiculo.anos,
+        cores: body.cores ?? existing.veiculo.cores,
+        precoMaximo: body.precoMaximo ?? existing.veiculo.precoMaximo,
+        quilometragemMinima: body.quilometragemMinima ?? existing.veiculo.quilometragemMinima,
+        quilometragemMaxima: body.quilometragemMaxima ?? existing.veiculo.quilometragemMaxima,
+        opcionais: body.opcionais ?? existing.veiculo.opcionais,
+        fotoReferenciaUrl,
+      },
+      contato: {
+        ...existing.contato,
+        cidade: body.cidade ?? existing.contato.cidade,
+        estado: body.estado ?? existing.contato.estado,
+      },
+      observacoes: body.observacoes,
+    };
+
+    const result = await new AtualizarAnuncioUseCaseImpl(repo).execute(id, usuarioId, patch);
     return Response.json(result);
   } catch (e) { return err(e); }
 }

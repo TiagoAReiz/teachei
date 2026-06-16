@@ -18,7 +18,7 @@ export class CriarAnuncioUseCaseImpl implements CriarAnuncioUseCase {
         todasVersoes: data.todasVersoes, anos: data.anos, cores: data.cores,
         precoMaximo: data.precoMaximo, quilometragemMinima: data.quilometragemMinima,
         quilometragemMaxima: data.quilometragemMaxima, opcionais: data.opcionais,
-        dadosManuais: data.dadosManuais ?? false,
+        dadosManuais: data.dadosManuais ?? false, fotoReferenciaUrl: data.fotoReferenciaUrl,
       },
       contato: { cidade: data.cidade, estado: data.estado },
       observacoes: data.observacoes, expiraEm,

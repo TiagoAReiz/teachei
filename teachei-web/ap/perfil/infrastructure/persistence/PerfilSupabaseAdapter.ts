@@ -42,7 +42,7 @@ export class PerfilSupabaseAdapter implements PerfilRepositoryPort {
     const patch: Record<string, unknown> = {};
     if (data.nome !== undefined) patch.nome = data.nome;
     if (data.bio !== undefined) patch.bio = data.bio;
-    if (data.fotoUrl !== undefined) patch.foto_url = data.fotoUrl;
+    if (data.fotoUrl !== undefined) patch.foto_url = data.fotoUrl ?? null;
     if (data.whatsapp !== undefined) patch.whatsapp = data.whatsapp;
     if (data.instagram !== undefined) patch.instagram = data.instagram;
     if (data.facebook !== undefined) patch.facebook = data.facebook;

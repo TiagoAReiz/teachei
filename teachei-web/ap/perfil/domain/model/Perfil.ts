@@ -3,7 +3,7 @@ export interface Perfil {
   usuarioId: string;
   nome: string;
   bio?: string;
-  fotoUrl?: string;
+  fotoUrl?: string | null;
   whatsapp?: string;
   instagram?: string;
   facebook?: string;
@@ -18,7 +18,7 @@ export interface Perfil {
 export interface AtualizarPerfilInput {
   nome?: string;
   bio?: string;
-  fotoUrl?: string;
+  fotoUrl?: string | null;
   whatsapp?: string;
   instagram?: string;
   facebook?: string;
