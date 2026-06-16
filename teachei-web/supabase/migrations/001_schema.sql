@@ -43,3 +43,10 @@ create table if not exists favoritos (
   criado_em   timestamptz default now(),
   unique(usuario_id, anuncio_id)
 );
+
+-- Indexes for frequent FK lookups
+create index if not exists idx_anuncios_usuario_id on anuncios(usuario_id);
+create index if not exists idx_favoritos_anuncio_id on favoritos(anuncio_id);
+
+-- One profile per user
+alter table perfis add constraint perfis_usuario_id_unique unique (usuario_id);
