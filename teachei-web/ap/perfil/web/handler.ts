@@ -60,7 +60,7 @@ export async function handleExcluirConta(req: Request): Promise<Response> {
 
 export async function handleBuscarPerfilPorId(_req: Request, id: string): Promise<Response> {
   try {
-    const perfil = await makeUseCase().buscarPorId(id);
+    const perfil = await makeUseCase().buscar(id);
     return Response.json(perfil);
   } catch (e) {
     return err(e);
