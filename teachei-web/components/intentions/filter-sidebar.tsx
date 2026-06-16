@@ -1,11 +1,15 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { X, Car, Bike, Truck, Loader2, AlertCircle, MapPin, ChevronDown } from "lucide-react";
+import { X, Car, Bike, Truck, Loader2, AlertCircle, MapPin, ChevronDown, Search } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
 import { cn, generateYearOptions } from "@/lib/utils";
 import type { TipoVeiculo, AvailableOpcional } from "@/types";
+
+function normalizeText(text: string): string {
+  return text.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+}
 
 const vehicleTypeConfig: Record<TipoVeiculo, { label: string; icon: typeof Car }> = {
   CARRO: { label: "Carros", icon: Car },
@@ -40,6 +44,7 @@ interface FilterSidebarProps {
 export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: FilterSidebarProps) {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const [isOpcionaisOpen, setIsOpcionaisOpen] = useState(false);
+  const [opcionaisSearch, setOpcionaisSearch] = useState("");
 
   // Reset local state when initialFilters change
   useEffect(() => {
@@ -276,7 +281,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
       />
 
       {/* Sidebar */}
-      <div className="fixed top-0 bottom-20 right-0 w-full md:w-[400px] bg-surface z-50 shadow-xl animate-slide-in-right flex flex-col lg:bottom-0">
+      <div className="fixed top-0 bottom-20 right-0 w-full bg-surface z-50 shadow-xl animate-slide-in-right flex flex-col lg:bottom-0">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-lg font-bold text-foreground">Filtros</h2>
@@ -346,6 +351,9 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
                 value={filters.marca}
                 onChange={(value) => handleMarcaChange(value)}
                 disabled={isLoadingFilters}
+                portal
+                searchable
+                searchPlaceholder="Buscar marca..."
               />
             </div>
           )}
@@ -361,6 +369,9 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
                 value={filters.modelo}
                 onChange={(value) => handleModeloChange(value)}
                 disabled={isLoadingFilters}
+                portal
+                searchable
+                searchPlaceholder="Buscar modelo..."
               />
             </div>
           )}
@@ -375,6 +386,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
                 options={versaoOptions}
                 value={filters.versao}
                 onChange={(value) => handleVersaoChange(value)}
+                portal
               />
             </div>
           )}
@@ -416,35 +428,49 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
                     <span className="text-sm text-muted">Carregando opcionais...</span>
                   </div>
                 ) : opcionaisDisponiveis.length > 0 ? (
-                  <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto">
-                    {opcionaisDisponiveis.map((option) => {
-                      const isSelected = filters.opcionais.includes(option.codigo);
-                      return (
-                        <button
-                          key={option.codigo}
-                          onClick={() => toggleOpcional(option.codigo)}
-                          className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-left text-sm",
-                            isSelected
-                              ? "border-primary bg-primary/5 text-primary"
-                              : "border-border hover:border-muted text-foreground"
-                          )}
-                        >
-                          <div className={cn(
-                            "w-4 h-4 rounded border flex items-center justify-center flex-shrink-0",
-                            isSelected ? "bg-primary border-primary" : "border-muted"
-                          )}>
-                            {isSelected && (
-                              <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                              </svg>
+                  <>
+                    <div className="relative mb-2">
+                      <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
+                      <input
+                        type="text"
+                        value={opcionaisSearch}
+                        onChange={(e) => setOpcionaisSearch(e.target.value)}
+                        placeholder="Buscar opcional..."
+                        className="w-full bg-background/60 border border-border text-foreground placeholder:text-muted text-sm rounded-xl h-8 pl-8 pr-3 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 max-h-52 overflow-y-auto">
+                      {opcionaisDisponiveis.filter(o =>
+                        !opcionaisSearch.trim() || normalizeText(o.label).includes(normalizeText(opcionaisSearch))
+                      ).map((option) => {
+                        const isSelected = filters.opcionais.includes(option.codigo);
+                        return (
+                          <button
+                            key={option.codigo}
+                            onClick={() => toggleOpcional(option.codigo)}
+                            className={cn(
+                              "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-left text-sm",
+                              isSelected
+                                ? "border-primary bg-primary/5 text-primary"
+                                : "border-border hover:border-muted text-foreground"
                             )}
-                          </div>
-                          <span className="truncate">{option.label}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
+                          >
+                            <div className={cn(
+                              "w-4 h-4 rounded border flex items-center justify-center flex-shrink-0",
+                              isSelected ? "bg-primary border-primary" : "border-muted"
+                            )}>
+                              {isSelected && (
+                                <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                              )}
+                            </div>
+                            <span className="truncate">{option.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </>
                 ) : (
                   <p className="text-sm text-muted py-1">
                     Nenhum opcional disponível.
@@ -511,19 +537,20 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
                 onChange={(value) => {
                   const newMin = value ? parseInt(value) : null;
                   setFilters((prev) => {
-                    // Reset max if it would become invalid
                     const newMax = prev.anoMax && newMin && prev.anoMax < newMin ? null : prev.anoMax;
                     return { ...prev, anoMin: newMin, anoMax: newMax };
                   });
                 }}
+                portal
               />
               <Select
                 options={[{ value: "", label: "Até" }, ...yearOptionsMax]}
                 value={filters.anoMax?.toString() || ""}
-                onChange={(value) => setFilters((prev) => ({ 
-                  ...prev, 
-                  anoMax: value ? parseInt(value) : null 
+                onChange={(value) => setFilters((prev) => ({
+                  ...prev,
+                  anoMax: value ? parseInt(value) : null
                 }))}
+                portal
               />
             </div>
           </div>

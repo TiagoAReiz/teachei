@@ -64,6 +64,19 @@ function SearchableDropdown({
     return options.filter((o) => normalizeText(o.label).includes(q));
   }, [options, search]);
 
+  const updatePosition = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setDropdownStyle({
+        position: "fixed",
+        top: rect.bottom + 8,
+        left: rect.left,
+        width: rect.width,
+        zIndex: 9999,
+      });
+    }
+  };
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -80,21 +93,22 @@ function SearchableDropdown({
   }, [isOpen]);
 
   useEffect(() => {
+    if (!isOpen) return;
+    window.addEventListener("scroll", updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+    return () => {
+      window.removeEventListener("scroll", updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     if (isOpen) setTimeout(() => searchRef.current?.focus(), 50);
   }, [isOpen]);
 
   const handleToggle = () => {
     if (disabled || isLoading) return;
-    if (!isOpen && triggerRef.current) {
-      const rect = triggerRef.current.getBoundingClientRect();
-      setDropdownStyle({
-        position: "fixed",
-        top: rect.bottom + 8,
-        left: rect.left,
-        width: rect.width,
-        zIndex: 9999,
-      });
-    }
+    if (!isOpen) updatePosition();
     setIsOpen((prev) => !prev);
   };
 

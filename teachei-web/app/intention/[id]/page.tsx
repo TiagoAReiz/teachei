@@ -1,23 +1,19 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { IntentionDetailsClient } from "./client";
-import { env, API_ENDPOINTS } from "@/config/env";
 import { siteConfig } from "@/config/site";
+import { BuscarAnuncioUseCaseImpl } from "@/ap/anuncio/application/usecase/BuscarAnuncioUseCaseImpl";
+import { AnuncioSupabaseAdapter } from "@/ap/anuncio/infrastructure/persistence/AnuncioSupabaseAdapter";
 import type { Anuncio } from "@/types";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
-// Server-side data fetching for SEO
 async function getIntention(id: string): Promise<Anuncio | null> {
   try {
-    const res = await fetch(`${env.API_URL}${API_ENDPOINTS.INTENTION_BY_ID(id)}`, {
-      next: { revalidate: 60 }, // Revalidate every minute
-    });
-    
-    if (!res.ok) return null;
-    return res.json();
+    const result = await new BuscarAnuncioUseCaseImpl(new AnuncioSupabaseAdapter()).execute(id);
+    return result as unknown as Anuncio;
   } catch {
     return null;
   }
