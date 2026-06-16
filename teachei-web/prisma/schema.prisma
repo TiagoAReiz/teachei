@@ -67,3 +67,14 @@ model Favorito {
   @@unique([usuarioId, anuncioId])
   @@map("favoritos")
 }
+
+model Opcional {
+  id     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  codigo String   @unique
+  label  String
+  tipos  String[] // vazio = todos os tipos; ex: ["CARRO", "CAMINHAO"]
+  ativo  Boolean  @default(true)
+  ordem  Int      @default(0)
+
+  @@map("opcionais")
+}

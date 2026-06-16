@@ -93,15 +93,18 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
   }
 
   async getAvailableFilters(tipo?: TipoVeiculo): Promise<AvailableFilters> {
-    let query = supabase.from("anuncios").select("tipo, veiculo, contato").eq("status", "ATIVO");
-    if (tipo) query = query.eq("tipo", tipo);
-    const { data } = await query;
-    const rows = data ?? [];
+    let anunciosQuery = supabase.from("anuncios").select("tipo, veiculo, contato").eq("status", "ATIVO");
+    if (tipo) anunciosQuery = anunciosQuery.eq("tipo", tipo);
 
+    const [anunciosResult, opcionaisResult] = await Promise.all([
+      anunciosQuery,
+      supabase.from("opcionais").select("codigo, label, tipos").eq("ativo", true).order("ordem"),
+    ]);
+
+    const rows = anunciosResult.data ?? [];
     const tipos = [...new Set(rows.map((r) => r.tipo))] as TipoVeiculo[];
     const marcaMap = new Map<string, { codigo: string; nome: string }>();
     const modeloMap = new Map<string, { codigo: string; nome: string; baseNome: string }>();
-    const opcionalMap = new Map<string, { codigo: string; label: string }>();
     const locMap = new Map<string, { cidade: string; estado: string }>();
 
     for (const r of rows) {
@@ -109,15 +112,18 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
       const c = r.contato as Anuncio["contato"];
       if (v.marcaCodigo && v.marcaNome) marcaMap.set(v.marcaCodigo, { codigo: v.marcaCodigo, nome: v.marcaNome });
       if (v.modeloCodigo && v.modeloNome) modeloMap.set(v.modeloCodigo, { codigo: v.modeloCodigo, nome: v.modeloNome, baseNome: v.modeloBaseNome ?? v.modeloNome });
-      if (v.opcionais) v.opcionais.forEach((op) => opcionalMap.set(op, { codigo: op, label: op }));
       if (c.cidade && c.estado) locMap.set(`${c.cidade}|${c.estado}`, { cidade: c.cidade, estado: c.estado });
     }
+
+    const opcionais = (opcionaisResult.data ?? [])
+      .filter(op => !tipo || op.tipos.length === 0 || op.tipos.includes(tipo))
+      .map(op => ({ codigo: op.codigo, label: op.label }));
 
     return {
       tipos,
       marcas: [...marcaMap.values()],
       modelos: [...modeloMap.values()],
-      opcionais: [...opcionalMap.values()],
+      opcionais,
       localizacoes: [...locMap.values()],
     };
   }

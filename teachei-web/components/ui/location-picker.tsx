@@ -1,10 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Check, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { getEstados, getCidades } from "@/lib/ibge";
+
+function normalizeText(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "");
+}
 
 export interface LocationPickerProps {
   estado: string;
@@ -17,6 +24,150 @@ export interface LocationPickerProps {
   className?: string;
 }
 
+interface SearchableDropdownProps {
+  label: string;
+  value: string;
+  placeholder: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+  isLoading?: boolean;
+  disabled?: boolean;
+  error?: string;
+  searchPlaceholder: string;
+  emptyMessage: string;
+}
+
+function SearchableDropdown({
+  label,
+  value,
+  placeholder,
+  options,
+  onChange,
+  isLoading,
+  disabled,
+  error,
+  searchPlaceholder,
+  emptyMessage,
+}: SearchableDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState("");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const selected = options.find((o) => o.value === value);
+
+  const filtered = useMemo(() => {
+    if (!search.trim()) return options;
+    const q = normalizeText(search);
+    return options.filter((o) => normalizeText(o.label).includes(q));
+  }, [options, search]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+        setSearch("");
+      }
+    };
+    if (isOpen) document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) setTimeout(() => searchRef.current?.focus(), 50);
+  }, [isOpen]);
+
+  const handleSelect = (val: string) => {
+    onChange(val);
+    setIsOpen(false);
+    setSearch("");
+  };
+
+  const handleToggle = () => {
+    if (disabled || isLoading) return;
+    setIsOpen((prev) => !prev);
+  };
+
+  return (
+    <div className="w-full relative" ref={containerRef}>
+      <label className="block text-sm font-medium text-foreground mb-2">
+        {label}
+      </label>
+
+      <button
+        type="button"
+        onClick={handleToggle}
+        disabled={disabled || isLoading}
+        className={cn(
+          "w-full flex items-center justify-between bg-background/50 border-2 border-transparent text-foreground rounded-full h-[56px] px-6 transition-all duration-300 text-sm font-bold shadow-inner hover:bg-white hover:shadow-lg hover:shadow-primary/5",
+          isOpen && "bg-white shadow-lg shadow-primary/10 border-primary/10 ring-2 ring-primary/20",
+          (disabled || isLoading) && "opacity-50 cursor-not-allowed hover:bg-background/50 hover:shadow-none",
+          error && "border-error/50 bg-error/5 text-error"
+        )}
+      >
+        <span className={cn("truncate", !selected && "text-muted-foreground font-medium")}>
+          {isLoading ? "Carregando..." : (selected ? selected.label : placeholder)}
+        </span>
+        <ChevronDown
+          size={20}
+          className={cn(
+            "text-muted-foreground transition-transform duration-300 ml-2 flex-shrink-0",
+            isOpen && "rotate-180 text-primary",
+            error && "text-error"
+          )}
+        />
+      </button>
+
+      {isOpen && (
+        <div className="absolute top-full left-0 right-0 mt-2 z-50 animate-scale-in origin-top">
+          <div className="bg-surface rounded-[1.5rem] shadow-2xl shadow-primary/20 border border-white/20 overflow-hidden p-2">
+            <div className="relative mb-1 px-1 pt-1">
+              <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
+              <input
+                ref={searchRef}
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="w-full bg-background/60 text-foreground placeholder:text-muted text-sm rounded-xl h-9 pl-9 pr-3 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all"
+              />
+            </div>
+            <div className="max-h-52 overflow-y-auto custom-scrollbar">
+              {filtered.length > 0 ? (
+                filtered.map((option) => {
+                  const isSelected = option.value === value;
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleSelect(option.value)}
+                      className={cn(
+                        "w-full flex items-center justify-between px-4 py-3 rounded-xl text-sm font-bold transition-all duration-200",
+                        isSelected
+                          ? "bg-primary/10 text-primary"
+                          : "text-foreground hover:bg-white hover:text-primary hover:shadow-md hover:shadow-primary/5"
+                      )}
+                    >
+                      <span className="truncate">{option.label}</span>
+                      {isSelected && <Check size={16} className="text-primary flex-shrink-0" />}
+                    </button>
+                  );
+                })
+              ) : (
+                <div className="px-4 py-3 text-sm text-muted text-center font-medium">
+                  {emptyMessage}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {error && <p className="mt-2 text-xs text-error font-bold ml-2">{error}</p>}
+    </div>
+  );
+}
+
 export function LocationPicker({
   estado,
   cidade,
@@ -27,107 +178,58 @@ export function LocationPicker({
   disabled = false,
   className,
 }: LocationPickerProps) {
-  // Fetch states (cached for 1 hour)
   const { data: estados = [], isLoading: isLoadingEstados } = useQuery({
     queryKey: ["ibge", "estados"],
     queryFn: getEstados,
-    staleTime: 60 * 60 * 1000, // 1 hour
-    gcTime: 24 * 60 * 60 * 1000, // 24 hours
+    staleTime: 60 * 60 * 1000,
+    gcTime: 24 * 60 * 60 * 1000,
   });
 
-  // Fetch cities for selected state
   const { data: cidades = [], isLoading: isLoadingCidades } = useQuery({
     queryKey: ["ibge", "cidades", estado],
     queryFn: () => getCidades(estado),
     enabled: !!estado,
-    staleTime: 60 * 60 * 1000, // 1 hour
-    gcTime: 24 * 60 * 60 * 1000, // 24 hours
+    staleTime: 60 * 60 * 1000,
+    gcTime: 24 * 60 * 60 * 1000,
   });
 
-  // Clear city when state changes
   useEffect(() => {
-    if (estado && cidade) {
-      // Check if current city exists in new state's cities
-      const cidadeExists = cidades.some((c) => c.nome === cidade);
-      if (!cidadeExists && cidades.length > 0) {
+    if (estado && cidade && cidades.length > 0) {
+      if (!cidades.some((c) => c.nome === cidade)) {
         onCidadeChange("");
       }
     }
   }, [estado, cidades, cidade, onCidadeChange]);
 
+  const estadoOptions = estados.map((e) => ({ value: e.sigla, label: e.nome }));
+  const cidadeOptions = cidades.map((c) => ({ value: c.nome, label: c.nome }));
+
   return (
     <div className={cn("grid grid-cols-2 gap-3", className)}>
-      {/* Estado Select */}
-      <div className="w-full">
-        <label className="block text-sm font-medium text-foreground mb-2">
-          Estado
-        </label>
-        <div className="relative">
-          <select
-            value={estado}
-            onChange={(e) => onEstadoChange(e.target.value)}
-            disabled={disabled || isLoadingEstados}
-            className={cn(
-              "w-full appearance-none bg-surface border-0 ring-1 ring-border text-foreground rounded-full h-[52px] px-4 pr-10 focus:ring-2 focus:ring-primary focus:bg-surface transition-all text-base cursor-pointer",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
-              estadoError && "ring-error focus:ring-error"
-            )}
-          >
-            <option value="">
-              {isLoadingEstados ? "Carregando..." : "Selecione"}
-            </option>
-            {estados.map((e) => (
-              <option key={e.sigla} value={e.sigla}>
-                {e.nome}
-              </option>
-            ))}
-          </select>
-          <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-muted">
-            <ChevronDown size={20} />
-          </div>
-        </div>
-        {estadoError && (
-          <p className="mt-2 text-sm text-error">{estadoError}</p>
-        )}
-      </div>
-
-      {/* Cidade Select */}
-      <div className="w-full">
-        <label className="block text-sm font-medium text-foreground mb-2">
-          Cidade
-        </label>
-        <div className="relative">
-          <select
-            value={cidade}
-            onChange={(e) => onCidadeChange(e.target.value)}
-            disabled={disabled || !estado || isLoadingCidades}
-            className={cn(
-              "w-full appearance-none bg-surface border-0 ring-1 ring-border text-foreground rounded-full h-[52px] px-4 pr-10 focus:ring-2 focus:ring-primary focus:bg-surface transition-all text-base cursor-pointer",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
-              cidadeError && "ring-error focus:ring-error"
-            )}
-          >
-            <option value="">
-              {!estado
-                ? "Selecione o estado"
-                : isLoadingCidades
-                ? "Carregando..."
-                : "Selecione"}
-            </option>
-            {cidades.map((c) => (
-              <option key={c.nome} value={c.nome}>
-                {c.nome}
-              </option>
-            ))}
-          </select>
-          <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-muted">
-            <ChevronDown size={20} />
-          </div>
-        </div>
-        {cidadeError && (
-          <p className="mt-2 text-sm text-error">{cidadeError}</p>
-        )}
-      </div>
+      <SearchableDropdown
+        label="Estado"
+        value={estado}
+        placeholder="Selecione"
+        options={estadoOptions}
+        onChange={onEstadoChange}
+        isLoading={isLoadingEstados}
+        disabled={disabled}
+        error={estadoError}
+        searchPlaceholder="Buscar estado..."
+        emptyMessage="Nenhum estado encontrado"
+      />
+      <SearchableDropdown
+        label="Cidade"
+        value={cidade}
+        placeholder={!estado ? "Selecione o estado" : "Selecione"}
+        options={cidadeOptions}
+        onChange={onCidadeChange}
+        isLoading={isLoadingCidades}
+        disabled={disabled || !estado}
+        error={cidadeError}
+        searchPlaceholder="Buscar cidade..."
+        emptyMessage="Nenhuma cidade encontrada"
+      />
     </div>
   );
 }
