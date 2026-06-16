@@ -188,22 +188,6 @@ export default function CreateReviewPage() {
     );
   };
 
-  const handleSkipProfileUpdate = () => {
-    // Update profile silently (required for backend) but don't show confirmation
-    updateProfile(
-      { whatsapp: stripPhoneFormatting(telefoneContato) },
-      {
-        onSuccess: () => {
-          setShowUpdateProfileDialog(false);
-          proceedWithCreation();
-        },
-        onError: (err) => {
-          error(err.message || "Erro ao atualizar perfil");
-        },
-      }
-    );
-  };
-
   const handleSubmit = () => {
     // Mark that user has attempted to publish (for validation display)
     setHasAttemptedPublish(true);
@@ -229,8 +213,9 @@ export default function CreateReviewPage() {
       return;
     }
 
-    // Check if phone changed from profile
-    if (telefoneContato !== user?.whatsapp) {
+    // Check if phone changed from profile (compare normalized values, since
+    // telefoneContato is formatted with mask and user.whatsapp is raw)
+    if (stripPhoneFormatting(telefoneContato) !== user?.whatsapp) {
       setShowUpdateProfileDialog(true);
       return;
     }
@@ -462,7 +447,8 @@ export default function CreateReviewPage() {
         <DialogHeader onClose={() => setShowUpdateProfileDialog(false)}>
           <DialogTitle>Atualizar telefone no perfil?</DialogTitle>
           <DialogDescription>
-            Você alterou o telefone de contato. Deseja salvar este número no seu perfil para uso futuro?
+            Este número será usado como contato do anúncio e salvo no seu perfil.
+            Deseja continuar?
           </DialogDescription>
         </DialogHeader>
         <DialogContent>
@@ -472,18 +458,18 @@ export default function CreateReviewPage() {
           </div>
         </DialogContent>
         <DialogFooter>
-          <Button 
-            variant="outline" 
-            onClick={handleSkipProfileUpdate}
-            isLoading={isUpdatingProfile}
+          <Button
+            variant="outline"
+            onClick={() => setShowUpdateProfileDialog(false)}
+            disabled={isUpdatingProfile}
           >
-            Continuar sem salvar
+            Cancelar
           </Button>
-          <Button 
+          <Button
             onClick={handleUpdateProfileAndCreate}
             isLoading={isUpdatingProfile}
           >
-            Sim, atualizar perfil
+            Salvar e publicar
           </Button>
         </DialogFooter>
       </Dialog>

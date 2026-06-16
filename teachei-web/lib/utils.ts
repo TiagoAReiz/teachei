@@ -12,11 +12,13 @@ export function cn(...inputs: ClassValue[]) {
  */
 export function sanitizeUrl(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
-  const match = url.match(/^(https?:\/\/)(.*)/);
+  const match = url.match(/^(https?:\/\/)([^?#]*)(.*)$/);
   if (!match) return url;
   const protocol = match[1];
-  const rest = match[2].replace(/\/\//g, "/");
-  return protocol + rest;
+  // Only collapse double slashes in the path; keep query/hash (match[3]) intact
+  const path = match[2].replace(/\/\//g, "/");
+  const queryAndHash = match[3];
+  return protocol + path + queryAndHash;
 }
 
 // Format currency to BRL

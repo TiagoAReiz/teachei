@@ -62,7 +62,7 @@ export const viewport: Viewport = {
   themeColor: siteConfig.themeColor,
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  // maximumScale removido: travar o zoom prejudica a acessibilidade (WCAG 1.4.4)
 };
 
 export default function RootLayout({
