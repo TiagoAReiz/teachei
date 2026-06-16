@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
+import { useEffect } from "react";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/use-auth";
@@ -59,14 +60,16 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
     enabled: !!intention.usuarioId && !isLoadingAuth && !!user,
   });
 
-  // Redirect to login if not authenticated
-  if (!isLoadingAuth && !user) {
-    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
-    return null;
-  }
+  // Redirect to login if not authenticated (side effect must run in an effect,
+  // never in the render body)
+  useEffect(() => {
+    if (!isLoadingAuth && !user) {
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+    }
+  }, [isLoadingAuth, user, router, pathname]);
 
-  // Show loading while checking auth
-  if (isLoadingAuth) {
+  // Show loading while checking auth (or while the redirect above is pending)
+  if (isLoadingAuth || !user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -143,6 +146,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
         <div className="flex items-center justify-between h-16 px-4 lg:px-6 max-w-4xl mx-auto">
           <button
             onClick={() => router.back()}
+            aria-label="Voltar"
             className="p-2 -ml-2 rounded-full text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
           >
             <ArrowLeft size={24} />
@@ -151,6 +155,8 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
           <div className="flex items-center gap-2">
             <button
               onClick={() => toggleSave(intention.id)}
+              aria-label={saved ? "Remover dos salvos" : "Salvar"}
+              aria-pressed={saved}
               className={`p-2 rounded-full transition-colors ${saved ? "bg-primary text-white" : "text-muted hover:text-foreground hover:bg-muted/10"
                 }`}
             >
@@ -158,6 +164,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
             </button>
             <button
               onClick={handleShare}
+              aria-label="Compartilhar"
               className="p-2 rounded-full text-muted hover:text-foreground hover:bg-muted/10 transition-colors"
             >
               <Share2 size={22} />
@@ -277,6 +284,8 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                 <img
                   src={sanitizeUrl(intention.veiculo.fotoReferenciaUrl)}
                   alt="Foto de referência do veículo"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full max-w-md h-auto rounded-xl border border-border object-cover"
                 />
               </CardContent>

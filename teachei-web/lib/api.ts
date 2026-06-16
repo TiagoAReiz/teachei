@@ -9,10 +9,18 @@ export function getToken(): string | null {
   return Cookies.get(TOKEN_COOKIE) || null;
 }
 
-// Set auth token in cookies
-export function setToken(token: string): void {
+// Set auth token in cookies.
+// expiresInSeconds comes from the backend (AuthResponse.expiresIn); when omitted
+// we fall back to 1 hour. js-cookie expects the expiry expressed in days.
+export function setToken(token: string, expiresInSeconds?: number): void {
+  const oneHourInDays = 1 / 24;
+  const expires =
+    expiresInSeconds && expiresInSeconds > 0
+      ? expiresInSeconds / 86400
+      : oneHourInDays;
+
   Cookies.set(TOKEN_COOKIE, token, {
-    expires: 1 / 24, // 1 hour
+    expires,
     secure: env.IS_PRODUCTION,
     sameSite: "lax",
   });

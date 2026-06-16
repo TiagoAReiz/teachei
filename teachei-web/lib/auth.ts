@@ -38,7 +38,7 @@ export async function login(credentials: LoginRequest): Promise<LoginResult> {
   );
 
   // Step 2: Store token
-  setToken(authResponse.token);
+  setToken(authResponse.token, authResponse.expiresIn);
 
   // Step 3: Fetch profile with the new token
   const perfil = await api.get<Perfil>(API_ENDPOINTS.PROFILE);
@@ -64,7 +64,7 @@ export async function register(data: RegisterRequest): Promise<LoginResult> {
   );
 
   // Step 2: Store token
-  setToken(authResponse.token);
+  setToken(authResponse.token, authResponse.expiresIn);
 
   // Step 3: Fetch profile with the new token
   const perfil = await api.get<Perfil>(API_ENDPOINTS.PROFILE);
@@ -91,7 +91,7 @@ export async function loginWithGoogle(credential: string, aceitouTermos?: boolea
   );
 
   // Step 2: Store token
-  setToken(authResponse.token);
+  setToken(authResponse.token, authResponse.expiresIn);
 
   // Step 3: Fetch profile with the new token
   const perfil = await api.get<Perfil>(API_ENDPOINTS.PROFILE);

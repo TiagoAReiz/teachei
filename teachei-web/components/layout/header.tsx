@@ -93,6 +93,8 @@ export function Header() {
           <button
             ref={searchButtonRef}
             onClick={() => setShowMobileSearch(!showMobileSearch)}
+            aria-label="Abrir busca"
+            aria-expanded={showMobileSearch}
             className="md:hidden flex items-center justify-center w-10 h-10 rounded-full bg-white text-muted hover:text-primary hover:shadow-lg transition-all"
           >
             <Search size={20} />
@@ -141,6 +143,9 @@ export function Header() {
               <div className="relative">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
+                  aria-label="Abrir menu do usuário"
+                  aria-haspopup="menu"
+                  aria-expanded={showUserMenu}
                   className="flex items-center gap-2 p-1 rounded-full hover:bg-white hover:shadow-md transition-all border-2 border-transparent hover:border-primary/10"
                 >
                   <Avatar src={user?.avatarUrl} fotoUrl={user?.fotoUrl} fallback={user?.nome} size="sm" />

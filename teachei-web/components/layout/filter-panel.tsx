@@ -35,6 +35,26 @@ interface FilterPanelProps {
   onCloseMobile?: () => void;
 }
 
+// Build the FilterState from the URL search params. Used both for the initial
+// state and to keep the panel in sync when the URL changes (back/forward).
+function parseFiltersFromParams(params: { get: (key: string) => string | null }): FilterState {
+  return {
+    cidade: params.get("cidade") || "",
+    estado: params.get("estado") || "",
+    tipo: (params.get("tipo") as TipoVeiculo) || "",
+    marca: params.get("marca") || "",
+    modelo: params.get("modelo") || "",
+    versao: params.get("versao") || "",
+    opcionais: params.get("opcionais")?.split(",").filter(Boolean) || [],
+    precoMin: params.get("precoMin") ? parseInt(params.get("precoMin")!) : null,
+    precoMax: params.get("precoMax") ? parseInt(params.get("precoMax")!) : null,
+    anoMin: params.get("anoMin") ? parseInt(params.get("anoMin")!) : null,
+    anoMax: params.get("anoMax") ? parseInt(params.get("anoMax")!) : null,
+    kmMin: params.get("kmMin") ? parseInt(params.get("kmMin")!) : null,
+    kmMax: params.get("kmMax") ? parseInt(params.get("kmMax")!) : null,
+  };
+}
+
 export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -42,21 +62,19 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
   const [isOpcionaisOpen, setIsOpcionaisOpen] = useState(false);
 
   // Parse current filters from URL
-  const [filters, setFilters] = useState<FilterState>({
-    cidade: searchParams.get("cidade") || "",
-    estado: searchParams.get("estado") || "",
-    tipo: (searchParams.get("tipo") as TipoVeiculo) || "",
-    marca: searchParams.get("marca") || "",
-    modelo: searchParams.get("modelo") || "",
-    versao: searchParams.get("versao") || "",
-    opcionais: searchParams.get("opcionais")?.split(",").filter(Boolean) || [],
-    precoMin: searchParams.get("precoMin") ? parseInt(searchParams.get("precoMin")!) : null,
-    precoMax: searchParams.get("precoMax") ? parseInt(searchParams.get("precoMax")!) : null,
-    anoMin: searchParams.get("anoMin") ? parseInt(searchParams.get("anoMin")!) : null,
-    anoMax: searchParams.get("anoMax") ? parseInt(searchParams.get("anoMax")!) : null,
-    kmMin: searchParams.get("kmMin") ? parseInt(searchParams.get("kmMin")!) : null,
-    kmMax: searchParams.get("kmMax") ? parseInt(searchParams.get("kmMax")!) : null,
-  });
+  const [filters, setFilters] = useState<FilterState>(() =>
+    parseFiltersFromParams(searchParams)
+  );
+
+  // Keep the panel in sync when the URL changes outside of this component
+  // (browser back/forward, links). Adjusting state during render on a changed
+  // key is React's recommended pattern and avoids a setState-in-effect cascade.
+  const searchParamsKey = searchParams.toString();
+  const [prevSearchParamsKey, setPrevSearchParamsKey] = useState(searchParamsKey);
+  if (prevSearchParamsKey !== searchParamsKey) {
+    setPrevSearchParamsKey(searchParamsKey);
+    setFilters(parseFiltersFromParams(new URLSearchParams(searchParamsKey)));
+  }
 
   // Fetch available filter options based on existing intentions
   // Always pass null for tipo to get all available types (we want to show all type buttons)
