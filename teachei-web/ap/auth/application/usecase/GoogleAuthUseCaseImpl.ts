@@ -2,6 +2,7 @@ import { signToken, TOKEN_EXPIRES_IN } from "@/ap/shared/middleware/jwt";
 import { ValidationError } from "@/ap/shared/errors";
 import type { GoogleAuthUseCase } from "@/ap/auth/application/ports/in/GoogleAuthUseCase";
 import type { UsuarioRepositoryPort } from "@/ap/auth/application/ports/out/UsuarioRepositoryPort";
+import type { PerfilRepositoryPort } from "@/ap/perfil/application/ports/out/PerfilRepositoryPort";
 import type { AuthResult } from "@/ap/auth/domain/model/AuthResult";
 
 interface GoogleTokenPayload {
@@ -22,12 +23,16 @@ async function verifyGoogleToken(credential: string): Promise<GoogleTokenPayload
 }
 
 export class GoogleAuthUseCaseImpl implements GoogleAuthUseCase {
-  constructor(private repo: UsuarioRepositoryPort) {}
+  constructor(
+    private repo: UsuarioRepositoryPort,
+    private perfilRepo: PerfilRepositoryPort,
+  ) {}
 
   async execute(credential: string, aceitouTermos?: boolean): Promise<AuthResult> {
     const googlePayload = await verifyGoogleToken(credential);
 
     let usuario = await this.repo.findByGoogleId(googlePayload.sub);
+    let isNew = false;
 
     if (!usuario) {
       const byEmail = await this.repo.findByEmail(googlePayload.email);
@@ -41,7 +46,13 @@ export class GoogleAuthUseCaseImpl implements GoogleAuthUseCase {
           googleId: googlePayload.sub,
           aceitouTermos: true,
         });
+        isNew = true;
       }
+    }
+
+    if (isNew) {
+      const nome = googlePayload.name ?? googlePayload.email.split("@")[0];
+      await this.perfilRepo.save(usuario.id, nome);
     }
 
     const token = await signToken({ sub: usuario.id, email: usuario.email });

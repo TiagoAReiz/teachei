@@ -1,4 +1,5 @@
 import { UsuarioSupabaseAdapter } from "@/ap/auth/infrastructure/persistence/UsuarioSupabaseAdapter";
+import { PerfilSupabaseAdapter } from "@/ap/perfil/infrastructure/persistence/PerfilSupabaseAdapter";
 import { LoginUseCaseImpl } from "@/ap/auth/application/usecase/LoginUseCaseImpl";
 import { RegisterUseCaseImpl } from "@/ap/auth/application/usecase/RegisterUseCaseImpl";
 import { GoogleAuthUseCaseImpl } from "@/ap/auth/application/usecase/GoogleAuthUseCaseImpl";
@@ -7,6 +8,7 @@ import { ExcluirContaUseCaseImpl } from "@/ap/auth/application/usecase/ExcluirCo
 import { AppError } from "@/ap/shared/errors";
 
 function makeRepo() { return new UsuarioSupabaseAdapter(); }
+function makePerfilRepo() { return new PerfilSupabaseAdapter(); }
 
 function errorResponse(err: unknown): Response {
   if (err instanceof AppError) {
@@ -27,7 +29,7 @@ export async function handleLogin(req: Request): Promise<Response> {
 export async function handleRegister(req: Request): Promise<Response> {
   try {
     const body = await req.json();
-    const result = await new RegisterUseCaseImpl(makeRepo()).execute(body);
+    const result = await new RegisterUseCaseImpl(makeRepo(), makePerfilRepo()).execute(body);
     return Response.json(result);
   } catch (err) { return errorResponse(err); }
 }
@@ -35,7 +37,7 @@ export async function handleRegister(req: Request): Promise<Response> {
 export async function handleGoogle(req: Request): Promise<Response> {
   try {
     const { credential, aceitouTermos } = await req.json();
-    const result = await new GoogleAuthUseCaseImpl(makeRepo()).execute(credential, aceitouTermos);
+    const result = await new GoogleAuthUseCaseImpl(makeRepo(), makePerfilRepo()).execute(credential, aceitouTermos);
     return Response.json(result);
   } catch (err) { return errorResponse(err); }
 }
