@@ -8,6 +8,7 @@ import { useCreateIntentionStore } from "@/stores/create-intention-store";
 import { useAvailableFilters } from "@/hooks/use-intentions";
 import { useYears } from "@/hooks/use-vehicles";
 import { vehicleColors } from "@/lib/utils";
+import { compressImage } from "@/lib/compress-image";
 import { cn } from "@/lib/utils";
 
 const MAX_YEAR = new Date().getFullYear() + 1;
@@ -124,30 +125,21 @@ export default function CreateSpecsPage() {
     }
   };
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file size (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      alert("A imagem deve ter no máximo 2MB");
-      return;
-    }
-
-    // Validate file type
     if (!file.type.startsWith("image/")) {
       alert("Selecione um arquivo de imagem");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
-      // Remove data URL prefix to get just the base64 content
-      const base64Content = base64.split(",")[1];
-      setFotoReferencia(base64Content);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const dataUrl = await compressImage(file);
+      setFotoReferencia(dataUrl);
+    } catch {
+      alert("Erro ao processar imagem. Tente novamente.");
+    }
   };
 
   const removePhoto = () => {
@@ -395,7 +387,7 @@ export default function CreateSpecsPage() {
           </button>
         )}
         <p className="text-xs text-muted">
-          Adicione uma foto do modelo que você procura para ajudar vendedores a entenderem sua busca. Máximo 2MB.
+          Adicione uma foto do modelo que você procura para ajudar vendedores a entenderem sua busca.
         </p>
       </div>
 

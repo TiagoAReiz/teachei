@@ -11,6 +11,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/components/ui/toast";
 import { isValidUF } from "@/lib/ibge";
 import { isValidBrazilianPhone, formatBrazilianPhoneInput, stripPhoneFormatting } from "@/lib/utils";
+import { compressImage } from "@/lib/compress-image";
 
 const profileSchema = z.object({
   nome: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
@@ -44,7 +45,7 @@ const passwordSchema = z.object({
 
 type PasswordFormData = z.infer<typeof passwordSchema>;
 
-const MAX_PHOTO_SIZE = 2 * 1024 * 1024; // 2MB - max size accepted by Azure Blob Storage
+
 
 export default function SettingsPage() {
   const { user, updateProfile, updateProfileAsync, isUpdatingProfile, changePassword, isChangingPassword, deleteAccount, isDeletingAccount, refetch } = useAuth();
@@ -106,40 +107,23 @@ export default function SettingsPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      error("Formato não suportado. Use JPEG, PNG ou WebP.");
+    if (!file.type.startsWith("image/")) {
+      error("Selecione um arquivo de imagem.");
       return;
     }
 
-    // Validate file size
-    if (file.size > MAX_PHOTO_SIZE) {
-      error("Imagem deve ter no máximo 2MB");
-      return;
-    }
-
-    // Convert to base64 and upload to Blob Storage
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      const base64 = event.target?.result as string;
-      
-      // Reset removal state since we're uploading a new photo
+    setIsUploadingPhoto(true);
+    try {
+      const dataUrl = await compressImage(file);
       setIsPhotoRemoved(false);
-      
-      // Upload to Blob Storage
-      setIsUploadingPhoto(true);
-      try {
-        await updateProfileAsync({ foto: base64 });
-        // Refetch user data to ensure UI is in sync with backend
-        await refetch();
-        success("Foto atualizada com sucesso!");
-      } catch (err) {
-        error(err instanceof Error ? err.message : "Erro ao atualizar foto");
-      } finally {
-        setIsUploadingPhoto(false);
-      }
-    };
-    reader.readAsDataURL(file);
+      await updateProfileAsync({ foto: dataUrl });
+      await refetch();
+      success("Foto atualizada com sucesso!");
+    } catch (err) {
+      error(err instanceof Error ? err.message : "Erro ao atualizar foto");
+    } finally {
+      setIsUploadingPhoto(false);
+    }
   };
 
   const {
@@ -258,7 +242,7 @@ export default function SettingsPage() {
             <div>
               <p className="font-medium text-foreground">Foto do perfil</p>
               <p className="text-sm text-muted">
-                Clique para alterar. Max 2MB.
+                Clique para alterar.
               </p>
               {isUploadingPhoto && (
                 <p className="text-sm text-primary">Enviando...</p>

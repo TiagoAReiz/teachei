@@ -330,7 +330,7 @@ export default function CreateReviewPage() {
               <div className="flex-1">
                 <p className="text-sm text-muted mb-2">Foto de referência</p>
                 <img 
-                  src={`data:image/jpeg;base64,${fotoReferenciaBase64}`}
+                  src={fotoReferenciaBase64}
                   alt="Foto de referência"
                   className="w-32 h-24 object-cover rounded-lg border border-border"
                 />

@@ -8,6 +8,7 @@ import { useIntention, useUpdateIntention, useAvailableFilters } from "@/hooks/u
 import { useToast } from "@/components/ui/toast";
 import { vehicleColors, generateYearOptions, sanitizeUrl } from "@/lib/utils";
 import { cn } from "@/lib/utils";
+import { compressImage } from "@/lib/compress-image";
 import type { TipoVeiculo, VersaoRequest, Anuncio } from "@/types";
 
 // Vehicle type icons
@@ -72,27 +73,21 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
   const [currentPhotoUrl] = useState<string | null>(sanitizeUrl(veiculo.fotoReferenciaUrl) || null);
   const photoInputRef = useRef<HTMLInputElement>(null);
 
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    if (file.size > 2 * 1024 * 1024) {
-      showError("A imagem deve ter no máximo 2MB");
-      return;
-    }
 
     if (!file.type.startsWith("image/")) {
       showError("Selecione um arquivo de imagem");
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64 = event.target?.result as string;
-      const base64Content = base64.split(",")[1];
-      setFotoReferenciaBase64(base64Content);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const dataUrl = await compressImage(file);
+      setFotoReferenciaBase64(dataUrl);
+    } catch {
+      showError("Erro ao processar imagem. Tente novamente.");
+    }
   };
 
   const removeNewPhoto = () => {
@@ -414,7 +409,7 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
           {fotoReferenciaBase64 ? (
             <div className="relative w-full max-w-xs">
               <img
-                src={`data:image/jpeg;base64,${fotoReferenciaBase64}`}
+                src={fotoReferenciaBase64}
                 alt="Nova foto de referência"
                 className="w-full h-48 object-cover rounded-xl border border-border"
               />
@@ -450,7 +445,7 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
             </button>
           )}
           <p className="text-xs text-muted">
-            Adicione uma foto do modelo que você procura. Máximo 2MB.
+            Adicione uma foto do modelo que você procura.
           </p>
         </div>
 
