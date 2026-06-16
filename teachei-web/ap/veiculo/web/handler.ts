@@ -18,8 +18,9 @@ async function proxyFipe(path: string): Promise<Response> {
     const data = await res.json();
     return Response.json(data);
   } catch (error) {
-    console.error("[FIPE] fetch falhou:", error);
-    return Response.json({ message: "Serviço FIPE indisponível" }, { status: 503 });
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error("[FIPE] fetch falhou:", msg);
+    return Response.json({ message: "Serviço FIPE indisponível", debug: msg, url: `${FIPE_BASE}${path}` }, { status: 503 });
   }
 }
 
