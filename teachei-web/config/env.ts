@@ -1,6 +1,6 @@
 // Environment configuration
 export const env = {
-  API_URL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080",
+  API_URL: process.env.NEXT_PUBLIC_API_URL || "",
   APP_URL: process.env.NEXT_PUBLIC_APP_URL || "https://teachei.shop",
   NODE_ENV: process.env.NODE_ENV || "development",
   IS_PRODUCTION: process.env.NODE_ENV === "production",
