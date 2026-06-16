@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import { X, Car, Bike, Truck, Loader2, AlertCircle, MapPin, ChevronDown, Search } from "lucide-react";
+import { X, Car, Bike, Truck, MapPin, ChevronDown, Search } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
 import { cn } from "@/lib/utils";
@@ -287,85 +287,101 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-6">
           {/* Location */}
-          {localizacaoOptions.length > 1 && (
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground flex items-center gap-2">
-                <MapPin size={16} className="text-primary" />
-                Localização
-              </label>
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-foreground flex items-center gap-2">
+              <MapPin size={16} className="text-primary" />
+              Localização
+            </label>
+            {isLoadingFilters ? (
+              <div className="h-[56px] rounded-full bg-muted/20 animate-pulse" />
+            ) : localizacaoOptions.length > 1 ? (
               <Select
                 options={localizacaoOptions}
                 value={filters.cidade && filters.estado ? `${filters.cidade}|${filters.estado}` : ""}
                 onChange={(value) => handleLocalizacaoChange(value)}
-                disabled={isLoadingFilters}
               />
-            </div>
-          )}
+            ) : (
+              <p className="text-sm text-muted">Nenhuma localização disponível.</p>
+            )}
+          </div>
 
           {/* Vehicle Type */}
           <div className="space-y-3">
             <label className="block text-sm font-medium text-foreground">
               Tipo de Veículo
             </label>
-            <div className="flex flex-col gap-2">
-              {availableTypes.map((type) => {
-                const Icon = type.icon;
-                const isActive = filters.tipo === type.value;
-
-                return (
-                  <button
-                    key={type.value}
-                    onClick={() => handleTipoChange(type.value)}
-                    className={cn(
-                      "flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors w-full",
-                      isActive
-                        ? "bg-primary text-white"
-                        : "bg-background border border-border text-foreground hover:bg-muted/10"
-                    )}
-                  >
-                    <Icon size={16} />
-                    <span>{type.label}</span>
-                  </button>
-                );
-              })}
-            </div>
+            {isLoadingFilters ? (
+              <div className="flex flex-col gap-2">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-10 rounded-xl bg-muted/20 animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                {availableTypes.map((type) => {
+                  const Icon = type.icon;
+                  const isActive = filters.tipo === type.value;
+                  return (
+                    <button
+                      key={type.value}
+                      onClick={() => handleTipoChange(type.value)}
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-colors w-full",
+                        isActive
+                          ? "bg-primary text-white"
+                          : "bg-background border border-border text-foreground hover:bg-muted/10"
+                      )}
+                    >
+                      <Icon size={16} />
+                      <span>{type.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Brand */}
-          {marcaOptions.length > 1 && (
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground">
-                Marca
-              </label>
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-foreground">
+              Marca
+            </label>
+            {isLoadingFilters ? (
+              <div className="h-[56px] rounded-full bg-muted/20 animate-pulse" />
+            ) : marcaOptions.length > 1 ? (
               <Select
                 options={marcaOptions}
                 value={filters.marca}
                 onChange={(value) => handleMarcaChange(value)}
-                disabled={isLoadingFilters}
                 portal
                 searchable
                 searchPlaceholder="Buscar marca..."
               />
-            </div>
-          )}
+            ) : (
+              <p className="text-sm text-muted">Nenhuma marca disponível.</p>
+            )}
+          </div>
 
           {/* Model */}
-          {modeloOptions.length > 1 && (
-            <div className="space-y-3">
-              <label className="block text-sm font-medium text-foreground">
-                Modelo
-              </label>
+          <div className="space-y-3">
+            <label className="block text-sm font-medium text-foreground">
+              Modelo
+            </label>
+            {isLoadingFilteredOptions ? (
+              <div className="h-[56px] rounded-full bg-muted/20 animate-pulse" />
+            ) : modeloOptions.length > 1 ? (
               <Select
                 options={modeloOptions}
                 value={filters.modelo}
                 onChange={(value) => handleModeloChange(value)}
-                disabled={isLoadingFilters}
                 portal
                 searchable
                 searchPlaceholder="Buscar modelo..."
               />
-            </div>
-          )}
+            ) : (
+              <p className="text-sm text-muted">Nenhum modelo disponível.</p>
+            )}
+          </div>
 
           {/* Version (shown when base model is selected and has versions) */}
           {filters.modelo && versaoOptions.length > 1 && (
@@ -408,15 +424,11 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
 
             {isOpcionaisOpen && (
               <div className="rounded-xl border border-border bg-background p-3">
-                {(filters.tipo ? filteredOptionsError : filtersError) ? (
-                  <div className="flex items-center gap-2 py-2 text-error">
-                    <AlertCircle className="w-4 h-4" />
-                    <span className="text-sm">Erro ao carregar opcionais</span>
-                  </div>
-                ) : (filters.tipo ? isLoadingFilteredOptions : isLoadingFilters) ? (
-                  <div className="flex items-center gap-2 py-2">
-                    <Loader2 className="w-4 h-4 animate-spin text-primary" />
-                    <span className="text-sm text-muted">Carregando opcionais...</span>
+                {(filters.tipo ? isLoadingFilteredOptions : isLoadingFilters) ? (
+                  <div className="flex flex-col gap-2">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="h-9 rounded-lg bg-muted/20 animate-pulse" />
+                    ))}
                   </div>
                 ) : opcionaisDisponiveis.length > 0 ? (
                   <>

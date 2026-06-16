@@ -8,16 +8,43 @@ import { useSavedIntentions } from "@/hooks/use-saved-intentions";
 import { getIntentionById } from "@/lib/intentions";
 import Link from "next/link";
 
+function CardSkeleton() {
+  return (
+    <div className="rounded-2xl bg-surface overflow-hidden border border-border animate-pulse">
+      {/* Image area */}
+      <div className="h-48 bg-muted/20" />
+      {/* Content */}
+      <div className="p-4 space-y-3">
+        {/* Title */}
+        <div className="space-y-2">
+          <div className="h-5 bg-muted/20 rounded-full w-3/4" />
+          <div className="h-4 bg-muted/20 rounded-full w-1/3" />
+        </div>
+        {/* Badge row */}
+        <div className="flex gap-2">
+          <div className="h-6 bg-muted/20 rounded-full w-16" />
+          <div className="h-6 bg-muted/20 rounded-full w-16" />
+          <div className="h-6 bg-muted/20 rounded-full w-12" />
+        </div>
+        {/* Footer */}
+        <div className="flex items-center justify-between pt-2 border-t border-border">
+          <div className="h-4 bg-muted/20 rounded-full w-24" />
+          <div className="h-4 bg-muted/20 rounded-full w-16" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FavoritesPage() {
   const { savedIds, isLoaded } = useSavedIntentions();
 
-  // Fetch each saved intention individually
   const intentionQueries = useQueries({
     queries: savedIds.map((id) => ({
       queryKey: ["intention", id],
       queryFn: () => getIntentionById(id),
       enabled: isLoaded && savedIds.length > 0,
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 5 * 60 * 1000,
     })),
   });
 
@@ -26,24 +53,20 @@ export default function FavoritesPage() {
     .map((q) => q.data)
     .filter((data): data is NonNullable<typeof data> => !!data);
 
-  // Loading state
-  if (isLoading && savedIds.length > 0) {
+  if (isLoading) {
     return (
       <div className="p-4 lg:p-6">
-        <h1 className="text-2xl font-bold text-foreground mb-6">Salvos</h1>
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-2xl font-bold text-foreground">Salvos</h1>
+          <div className="h-4 bg-muted/20 rounded-full w-20 animate-pulse" />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="h-80 bg-muted/10 rounded-2xl animate-pulse"
-            />
-          ))}
+          {[1, 2, 3].map((i) => <CardSkeleton key={i} />)}
         </div>
       </div>
     );
   }
 
-  // Empty state
   if (savedIds.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] p-4">
@@ -72,7 +95,6 @@ export default function FavoritesPage() {
           {savedIntentions.length} {savedIntentions.length === 1 ? "intenção" : "intenções"}
         </span>
       </div>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {savedIntentions.map((intention) => (
           <IntentionCard key={intention.id} intention={intention} />
