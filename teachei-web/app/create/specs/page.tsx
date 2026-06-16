@@ -366,7 +366,7 @@ export default function CreateSpecsPage() {
         {fotoReferenciaBase64 ? (
           <div className="relative w-full max-w-xs">
             <img
-              src={`data:image/jpeg;base64,${fotoReferenciaBase64}`}
+              src={fotoReferenciaBase64}
               alt="Foto de referência"
               className="w-full h-48 object-cover rounded-xl border border-border"
             />
