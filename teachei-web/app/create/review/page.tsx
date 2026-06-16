@@ -408,7 +408,7 @@ export default function CreateReviewPage() {
             </div>
             <div>
               <p className="font-semibold text-foreground">Publicação Gratuita!</p>
-              <p className="text-sm text-muted">Válido por 60 dias</p>
+              <p className="text-sm text-muted">Válido por 30 dias</p>
             </div>
           </div>
           <ul className="text-sm text-muted space-y-1">
