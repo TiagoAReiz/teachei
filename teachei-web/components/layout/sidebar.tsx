@@ -28,16 +28,17 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/50 z-[55] lg:hidden"
           onClick={onClose}
         />
       )}
 
-      {/* Sidebar - Mobile */}
+      {/* Sidebar - Mobile: starts below the floating header (top-4 + h-20 = 96px)
+          and ends above the bottom nav (h-20 = 80px) with a small gap */}
       <aside
         className={cn(
-          "fixed top-0 bottom-20 left-0 z-[60] w-72 bg-surface shadow-xl transform transition-transform duration-300 ease-in-out lg:hidden",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          "fixed top-24 bottom-24 left-4 right-4 z-[60] bg-surface shadow-xl rounded-[2rem] overflow-hidden transform transition-transform duration-300 ease-in-out lg:hidden",
+          isOpen ? "translate-x-0" : "-translate-x-[120%]"
         )}
       >
         <Suspense fallback={<div className="w-full h-full bg-surface/50 animate-pulse" />}>
