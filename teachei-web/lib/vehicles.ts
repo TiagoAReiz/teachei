@@ -22,10 +22,11 @@ export async function getModelos(
   marcaCodigo: string
 ): Promise<Modelo[]> {
   const tipo = tipoVeiculo.toLowerCase();
-  return api.get<Modelo[]>(
+  const response = await api.get<{ modelos: Modelo[] }>(
     API_ENDPOINTS.VEHICLE_MODELS(tipo, marcaCodigo),
     { requireAuth: false }
   );
+  return response.modelos;
 }
 
 export async function getAnos(
