@@ -636,13 +636,14 @@ Em `filter-sidebar.tsx`, substituir o bloco dos dois `useAvailableFilters` + o `
 
 - [ ] **Step 2: Remover o import e o uso de `useAvailableLocations`**
 
-- Trocar o import (linha ~6):
+- Trocar o import (linha ~6) e adicionar o tipo:
 
 ```ts
 import { useAvailableFilters } from "@/hooks/use-intentions";
+import type { FiltroSelecaoRequest } from "@/lib/intentions";
 ```
 
-- Remover a linha do `useAvailableLocations`.
+- Remover a linha do `useAvailableLocations` (o hook deixa de ser usado aqui).
 
 - Reescrever `localizacaoOptions` (linhas ~96-108) para usar só a faceta:
 
@@ -733,4 +734,6 @@ git commit -m "feat: painel de filtros facetado com encadeamento total"
 
 ## Observação de risco
 
-O `useEffect` de saneamento (Task 7, Step 4) e o `useMemo` de `selecao` dependem de `groupedModels`/`availableFilters`; ao reordenar declarações no arquivo, garanta que cada hook seja declarado **antes** de quem o consome (regra de hooks do React não exige ordem de definição de variáveis, mas a referência a `groupedModels` dentro de `selecao` exige que `groupedModels` já esteja no escopo). Rodar `npx tsc --noEmit` pega qualquer "used before declaration".
+- **Ciclo de dados (resolvido):** o `selecao` enviado ao fetch depende apenas de `filters` (estado local), não de `groupedModels` (que vem do resultado do fetch). O filtro de modelo é casado por `modeloBaseNome` no backend. Isso evita o loop de refetch. Ao implementar, confirme que `selecao` **não** referencia `groupedModels`/`availableFilters`.
+- **`modeloBaseNome` na listagem:** esta mudança afeta apenas o cálculo das *opções* de filtro. A listagem real (`getIntentions` → `handleApplyFilters`) continua usando `modeloCodigo`/`modelos` (códigos), computados no `handleApply` via `groupedModels` — esse caminho não muda.
+- Rodar `npx tsc --noEmit` pega qualquer "used before declaration" ao reordenar declarações.
