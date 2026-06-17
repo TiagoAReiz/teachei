@@ -49,10 +49,7 @@ export function MobileNav() {
                     <Icon size={26} />
                   </div>
                 ) : (
-                  <>
-                    <Icon size={26} />
-                    <span className="text-[11px]">{item.label}</span>
-                  </>
+                  <Icon size={26} />
                 )}
               </Link>
             );
@@ -76,10 +73,7 @@ export function MobileNav() {
                   <Icon size={26} />
                 </div>
               ) : (
-                <>
-                  <Icon size={26} />
-                  <span className="text-[11px]">{item.label}</span>
-                </>
+                <Icon size={26} />
               )}
             </Link>
           );
