@@ -79,8 +79,8 @@ export default function ProfilePage() {
             </div>
 
             {/* Actions */}
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => router.push("/settings")}>
+            <div className="flex gap-3">
+              <Button variant="secondary" size="sm" onClick={() => router.push("/settings")}>
                 <Edit2 size={16} />
                 Editar
               </Button>
