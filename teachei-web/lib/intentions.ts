@@ -110,17 +110,34 @@ export async function deleteIntention(id: string): Promise<void> {
   return api.delete(API_ENDPOINTS.INTENTION_BY_ID(id));
 }
 
+export type FiltroSelecaoRequest = IntentionFilters & { modeloBaseNome?: string };
+
 /**
- * Fetch available filter options based on existing active intentions
+ * Fetch available filter options with full faceted selection
  */
 export async function getAvailableFilters(
-  tipo?: TipoVeiculo,
-  marcaCodigo?: string
+  selecao: FiltroSelecaoRequest = {}
 ): Promise<AvailableFilters> {
   const params = new URLSearchParams();
-  
-  if (tipo) params.append("tipo", tipo);
-  if (marcaCodigo) params.append("marcaCodigo", marcaCodigo);
+
+  if (selecao.tipoVeiculo) params.append("tipo", selecao.tipoVeiculo);
+  if (selecao.marcaCodigo) params.append("marcaCodigo", selecao.marcaCodigo);
+  if (selecao.modeloBaseNome) params.append("modeloBaseNome", selecao.modeloBaseNome);
+  if (selecao.modeloCodigo) params.append("modeloCodigo", selecao.modeloCodigo);
+  if (selecao.modelos && selecao.modelos.length > 0) {
+    params.append("modelos", selecao.modelos.join(","));
+  }
+  if (selecao.cidade) params.append("cidade", selecao.cidade);
+  if (selecao.estado) params.append("estado", selecao.estado);
+  if (selecao.opcionais && selecao.opcionais.length > 0) {
+    selecao.opcionais.forEach((o) => params.append("opcionais", o));
+  }
+  if (selecao.precoMin !== undefined) params.append("precoMin", selecao.precoMin.toString());
+  if (selecao.precoMax !== undefined) params.append("precoMax", selecao.precoMax.toString());
+  if (selecao.anoMin !== undefined) params.append("anoMin", selecao.anoMin.toString());
+  if (selecao.anoMax !== undefined) params.append("anoMax", selecao.anoMax.toString());
+  if (selecao.kmMin !== undefined) params.append("kmMin", selecao.kmMin.toString());
+  if (selecao.kmMax !== undefined) params.append("kmMax", selecao.kmMax.toString());
 
   const queryString = params.toString();
   const url = queryString
@@ -128,12 +145,7 @@ export async function getAvailableFilters(
     : API_ENDPOINTS.INTENTION_FILTERS;
 
   const data = await api.get<AvailableFilters>(url, { requireAuth: false });
-  
-  // Ensure localizacoes array exists (backend may not include it yet)
-  if (!data.localizacoes) {
-    data.localizacoes = [];
-  }
-  
+  if (!data.localizacoes) data.localizacoes = [];
   return data;
 }
 

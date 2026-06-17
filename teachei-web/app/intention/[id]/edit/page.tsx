@@ -60,8 +60,7 @@ function EditIntentionForm({ intention }: { intention: Anuncio }) {
 
   // Fetch optionals filtered by vehicle type
   const { data: filteredFilters, isLoading: loadingFiltered } = useAvailableFilters(
-    intention.tipo,
-    null
+    { tipoVeiculo: intention.tipo }
   );
   const isLoadingOpcionais = loadingFiltered;
   const opcionaisDisponiveis = useMemo(() => {

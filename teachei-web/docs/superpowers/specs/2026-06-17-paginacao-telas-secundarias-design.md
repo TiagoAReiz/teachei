@@ -34,6 +34,25 @@ A paginação é **real no backend** (decisão do usuário). Tamanho de página:
 `PaginatedResponse<Anuncio>` (front) e `PaginatedAnuncios` (back) têm o mesmo formato,
 então o `getNextPageParam` do feed (`page < totalPages - 1`) funciona sem alteração.
 
+### Consumidores fora de escopo (descobertos no planejamento)
+
+Os endpoints `meus` e `usuario/[userId]` têm consumidores além das 3 telas-alvo:
+
+- `app/(main)/profile/page.tsx` (perfil do **próprio** usuário) usa `useMyIntentions`
+  e mostra `slice(0, 3)`.
+- `app/profile/[id]/page.tsx` (um **segundo** perfil público, distinto de
+  `app/user/[id]`) usa `getIntentionsByUserId` e mostra todas.
+
+Para não quebrar essas telas nem aumentar o escopo, a estratégia é **aditiva**:
+
+- `getMyIntentions()` e `getIntentionsByUserId(userId)` **continuam retornando
+  `Anuncio[]`**, agora lendo `.content` da resposta paginada com `size` grande
+  (preserva o comportamento atual: antes o handler usava `size: 1000`).
+- Funções/hook **novos** e paginados (`getMyIntentionsPage`, `getUserIntentionsPage`,
+  `useInfiniteMyIntentions`, `useInfiniteUserIntentions`) são usados **só** pelas
+  telas-alvo (`my-intentions` e `user/[id]`).
+- `app/profile/[id]/page.tsx` e `app/(main)/profile/page.tsx` ficam inalterados.
+
 ## Mudanças
 
 ### 1. Minhas intenções
@@ -47,16 +66,19 @@ então o `getNextPageParam` do feed (`page < totalPages - 1`) funciona sem alter
     força `status = ATIVO` na linha 31).
 - Retornar `result` completo (paginado), não `result.content`.
 
-**`lib/intentions.ts` → `getMyIntentions`:**
-- Nova assinatura: `getMyIntentions(params: { page?: number; size?: number; status?: StatusAnuncio })`
-  → `Promise<PaginatedResponse<Anuncio>>`.
-- Monta query string com `page`, `size`, `status` quando presentes.
+**`lib/intentions.ts` → nova `getMyIntentionsPage`:**
+- `getMyIntentionsPage(params: { page?: number; size?: number; status?: StatusAnuncio })`
+  → `Promise<PaginatedResponse<Anuncio>>`. Monta query string com `page`, `size`,
+  `status` quando presentes.
+- `getMyIntentions()` (existente) **mantida**: agora chama o endpoint com `size: 1000`
+  e retorna `res.content` (`Anuncio[]`), preservando o comportamento atual.
 
 **`hooks/use-intentions.ts` → novo `useInfiniteMyIntentions`:**
 - `useInfiniteQuery` com `queryKey: ["intentions", "mine", "infinite", status]`
   (status no key → trocar filtro reseta a paginação).
-- `queryFn: ({ pageParam = 0 }) => getMyIntentions({ page: pageParam, size: 12, status })`.
+- `queryFn: ({ pageParam = 0 }) => getMyIntentionsPage({ page: pageParam, size: 12, status })`.
 - `getNextPageParam` igual ao feed.
+- `useMyIntentions` (existente) **mantida** para `profile/page.tsx`.
 
 **Página `my-intentions/page.tsx`:**
 - Substituir `useMyIntentions()` por `useInfiniteMyIntentions(filter)` onde `filter`
@@ -78,9 +100,11 @@ então o `getNextPageParam` do feed (`page < totalPages - 1`) funciona sem alter
   `incluirTodosStatus`).
 - Retornar `result` completo (paginado), não `result.content`.
 
-**`lib/intentions.ts` → `getIntentionsByUserId`:**
-- Nova assinatura: `getIntentionsByUserId(userId, params: { page?: number; size?: number })`
+**`lib/intentions.ts` → nova `getUserIntentionsPage`:**
+- `getUserIntentionsPage(userId, params: { page?: number; size?: number })`
   → `Promise<PaginatedResponse<Anuncio>>`.
+- `getIntentionsByUserId(userId)` (existente) **mantida**: chama o endpoint com
+  `size: 1000` e retorna `res.content` (`Anuncio[]`), para `profile/[id]/page.tsx`.
 
 **`hooks/use-intentions.ts` → novo `useInfiniteUserIntentions`:**
 - `useInfiniteQuery`, `queryKey: ["intentions", "user", userId, "infinite"]`,

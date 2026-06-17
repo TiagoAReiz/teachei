@@ -1,6 +1,8 @@
 import { supabase } from "@/backend/shared/db/supabase";
 import type { AnuncioRepositoryPort, AnuncioFilters, PaginatedAnuncios, AvailableFilters } from "@/backend/anuncio/application/ports/out/AnuncioRepositoryPort";
 import type { Anuncio, TipoVeiculo } from "@/backend/anuncio/domain/model/Anuncio";
+import type { FiltroSelecao } from "@/backend/anuncio/domain/model/FiltroSelecao";
+import { computeAvailableFilters } from "@/backend/anuncio/domain/service/FiltroFacetService";
 
 function toAnuncio(row: Record<string, unknown>): Anuncio {
   return {
@@ -73,6 +75,8 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
     if (ordenar === "RECENTE") query = query.order("criado_em", { ascending: false });
     else if (ordenar === "PRECO_ASC") query = query.order("veiculo->precoMaximo", { ascending: true });
     else if (ordenar === "PRECO_DESC") query = query.order("veiculo->precoMaximo", { ascending: false });
+    else if (ordenar === "KM_ASC") query = query.order("veiculo->quilometragemMaxima", { ascending: true });
+    else if (ordenar === "ANO_DESC") query = query.order("veiculo->anos->-1", { ascending: false });
 
     query = query.range(from, to);
     const { data, count, error } = await query;
@@ -125,39 +129,19 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
     if (error) throw new Error(error.message);
   }
 
-  async getAvailableFilters(tipo?: TipoVeiculo): Promise<AvailableFilters> {
-    let anunciosQuery = supabase.from("anuncios").select("tipo, veiculo, contato").eq("status", "ATIVO");
-    if (tipo) anunciosQuery = anunciosQuery.eq("tipo", tipo);
-
+  async getAvailableFilters(selecao: FiltroSelecao): Promise<AvailableFilters> {
     const [anunciosResult, opcionaisResult] = await Promise.all([
-      anunciosQuery,
+      supabase.from("anuncios").select("*").eq("status", "ATIVO"),
       supabase.from("opcionais").select("codigo, label, tipos").eq("ativo", true).order("ordem"),
     ]);
 
-    const rows = anunciosResult.data ?? [];
-    const tipos = [...new Set(rows.map((r) => r.tipo))] as TipoVeiculo[];
-    const marcaMap = new Map<string, { codigo: string; nome: string }>();
-    const modeloMap = new Map<string, { codigo: string; nome: string; baseNome: string }>();
-    const locMap = new Map<string, { cidade: string; estado: string }>();
+    const anuncios = (anunciosResult.data ?? []).map(toAnuncio);
+    const catalogo = (opcionaisResult.data ?? []).map((op) => ({
+      codigo: op.codigo as string,
+      label: op.label as string,
+      tipos: (op.tipos ?? []) as string[],
+    }));
 
-    for (const r of rows) {
-      const v = r.veiculo as Anuncio["veiculo"];
-      const c = r.contato as Anuncio["contato"];
-      if (v.marcaCodigo && v.marcaNome) marcaMap.set(v.marcaCodigo, { codigo: v.marcaCodigo, nome: v.marcaNome });
-      if (v.modeloCodigo && v.modeloNome) modeloMap.set(v.modeloCodigo, { codigo: v.modeloCodigo, nome: v.modeloNome, baseNome: v.modeloBaseNome ?? v.modeloNome });
-      if (c.cidade && c.estado) locMap.set(`${c.cidade}|${c.estado}`, { cidade: c.cidade, estado: c.estado });
-    }
-
-    const opcionais = (opcionaisResult.data ?? [])
-      .filter(op => !tipo || op.tipos.length === 0 || op.tipos.includes(tipo))
-      .map(op => ({ codigo: op.codigo, label: op.label }));
-
-    return {
-      tipos,
-      marcas: [...marcaMap.values()],
-      modelos: [...modeloMap.values()],
-      opcionais,
-      localizacoes: [...locMap.values()],
-    };
+    return computeAvailableFilters(anuncios, selecao, catalogo);
   }
 }

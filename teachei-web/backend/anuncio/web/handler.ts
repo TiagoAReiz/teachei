@@ -131,10 +131,25 @@ export async function handleMeus(req: Request): Promise<Response> {
 
 export async function handleFiltros(req: Request): Promise<Response> {
   try {
-    const url = new URL(req.url);
-    const tipo = url.searchParams.get("tipo") as TipoVeiculo | undefined || undefined;
-    const marcaCodigo = url.searchParams.get("marcaCodigo") || undefined;
-    const result = await new BuscarFiltrosUseCaseImpl(makeRepo()).execute(tipo, marcaCodigo);
+    const p = new URL(req.url).searchParams;
+    const modelosCsv = p.get("modelos");
+    const selecao = {
+      tipo: (p.get("tipo") as TipoVeiculo | null) || undefined,
+      marcaCodigo: p.get("marcaCodigo") || undefined,
+      modeloBaseNome: p.get("modeloBaseNome") || undefined,
+      modeloCodigo: p.get("modeloCodigo") || undefined,
+      modelos: modelosCsv ? modelosCsv.split(",").filter(Boolean) : undefined,
+      cidade: p.get("cidade") || undefined,
+      estado: p.get("estado") || undefined,
+      opcionais: p.getAll("opcionais").filter(Boolean),
+      precoMin: p.get("precoMin") ? Number(p.get("precoMin")) : undefined,
+      precoMax: p.get("precoMax") ? Number(p.get("precoMax")) : undefined,
+      anoMin: p.get("anoMin") ? Number(p.get("anoMin")) : undefined,
+      anoMax: p.get("anoMax") ? Number(p.get("anoMax")) : undefined,
+      kmMin: p.get("kmMin") ? Number(p.get("kmMin")) : undefined,
+      kmMax: p.get("kmMax") ? Number(p.get("kmMax")) : undefined,
+    };
+    const result = await new BuscarFiltrosUseCaseImpl(makeRepo()).execute(selecao);
     return Response.json(result);
   } catch (e) { return err(e); }
 }

@@ -4,7 +4,8 @@ import { useState, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Car, Bike, Truck, ChevronDown, MapPin } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
-import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
+import { useAvailableFilters } from "@/hooks/use-intentions";
+import type { FiltroSelecaoRequest } from "@/lib/intentions";
 import { cn } from "@/lib/utils";
 import type { TipoVeiculo } from "@/types";
 
@@ -75,21 +76,24 @@ export function FilterPanel({ className }: FilterPanelProps) {
     setFilters(parseFiltersFromParams(new URLSearchParams(searchParamsKey)));
   }
 
-  // Fetch available filter options based on existing intentions
-  // Always pass null for tipo to get all available types (we want to show all type buttons)
-  // Only marca is filtered based on the selected type
-  const { data: availableFilters, isLoading: isLoadingFilters, error: filtersError } = useAvailableFilters(
-    null, // Always get all types to show all available type buttons
-    filters.marca || null
-  );
+  const selecao: FiltroSelecaoRequest = useMemo(() => ({
+    tipoVeiculo: filters.tipo || undefined,
+    marcaCodigo: filters.marca || undefined,
+    modeloBaseNome: filters.modelo || undefined,
+    cidade: filters.cidade || undefined,
+    estado: filters.estado || undefined,
+    opcionais: filters.opcionais.length > 0 ? filters.opcionais : undefined,
+    precoMin: filters.precoMin ?? undefined,
+    precoMax: filters.precoMax ?? undefined,
+    anoMin: filters.anoMin ?? undefined,
+    anoMax: filters.anoMax ?? undefined,
+    kmMin: filters.kmMin ?? undefined,
+    kmMax: filters.kmMax ?? undefined,
+  }), [filters]);
 
-  // Fetch types and brands filtered by selected type (for brand/model options)
-  const { data: filteredOptions, isLoading: isLoadingFilteredOptions, error: filteredOptionsError } = useAvailableFilters(
-    filters.tipo || null,
-    filters.marca || null
-  );
-
-  const { data: availableLocations } = useAvailableLocations();
+  const { data: availableFilters, isLoading: isLoadingFilters } = useAvailableFilters(selecao);
+  const filteredOptions = availableFilters;
+  const isLoadingFilteredOptions = isLoadingFilters;
 
   // Price validation error
   const priceError = useMemo(() => {
@@ -171,9 +175,7 @@ export function FilterPanel({ className }: FilterPanelProps) {
   }, [currentVersions, filters.modelo]);
 
   const localizacaoOptions = useMemo(() => {
-    const locs = (availableLocations && availableLocations.length > 0)
-      ? availableLocations
-      : availableFilters?.localizacoes;
+    const locs = availableFilters?.localizacoes;
     if (!locs || locs.length === 0) return [];
     return [
       { value: "", label: "Todas as localizações" },
@@ -182,7 +184,7 @@ export function FilterPanel({ className }: FilterPanelProps) {
         label: `${loc.cidade} - ${loc.estado}`,
       })),
     ];
-  }, [availableLocations, availableFilters]);
+  }, [availableFilters]);
 
   const handleLocalizacaoChange = (value: string) => {
     if (value) {
