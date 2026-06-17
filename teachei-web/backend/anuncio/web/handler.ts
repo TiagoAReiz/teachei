@@ -9,6 +9,7 @@ import { FinalizarAnuncioUseCaseImpl } from "@/backend/anuncio/application/useca
 import { BuscarFiltrosUseCaseImpl } from "@/backend/anuncio/application/usecase/BuscarFiltrosUseCaseImpl";
 import { AppError } from "@/backend/shared/errors";
 import type { TipoVeiculo } from "@/backend/anuncio/domain/model/Anuncio";
+import type { StatusAnuncio } from "@/backend/anuncio/domain/model/StatusAnuncio";
 
 function makeRepo() { return new AnuncioSupabaseAdapter(); }
 function err(e: unknown): Response {
@@ -123,9 +124,16 @@ export async function handleFinalizar(req: Request, id: string): Promise<Respons
 export async function handleMeus(req: Request): Promise<Response> {
   try {
     const usuarioId = req.headers.get("X-Usuario-Id")!;
-    // incluirTodosStatus: true → shows all statuses for own intentions
-    const result = await new BuscarAnunciosUseCaseImpl(makeRepo()).execute({ usuarioId, incluirTodosStatus: true, size: 1000 });
-    return Response.json(result.content);
+    const p = new URL(req.url).searchParams;
+    const page = p.get("page") ? Number(p.get("page")) : 0;
+    const size = p.get("size") ? Number(p.get("size")) : 12;
+    const status = (p.get("status") as StatusAnuncio | null) ?? undefined;
+    // sem status → incluirTodosStatus (senão o adapter força status=ATIVO)
+    const filters = status
+      ? { usuarioId, status, page, size }
+      : { usuarioId, incluirTodosStatus: true, page, size };
+    const result = await new BuscarAnunciosUseCaseImpl(makeRepo()).execute(filters);
+    return Response.json(result);
   } catch (e) { return err(e); }
 }
 
@@ -139,10 +147,13 @@ export async function handleFiltros(req: Request): Promise<Response> {
   } catch (e) { return err(e); }
 }
 
-export async function handlePorUsuario(_req: Request, userId: string): Promise<Response> {
+export async function handlePorUsuario(req: Request, userId: string): Promise<Response> {
   try {
-    // Public route: returns only ATIVO (no incluirTodosStatus)
-    const result = await new BuscarAnunciosUseCaseImpl(makeRepo()).execute({ usuarioId: userId, size: 1000 });
-    return Response.json(result.content);
+    const p = new URL(req.url).searchParams;
+    const page = p.get("page") ? Number(p.get("page")) : 0;
+    const size = p.get("size") ? Number(p.get("size")) : 12;
+    // Rota pública: só ATIVO (sem incluirTodosStatus)
+    const result = await new BuscarAnunciosUseCaseImpl(makeRepo()).execute({ usuarioId: userId, page, size });
+    return Response.json(result);
   } catch (e) { return err(e); }
 }
