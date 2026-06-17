@@ -1,4 +1,4 @@
-import { handleBuscarPorId, handleAtualizar, handleExcluir } from "@/ap/anuncio/web/handler";
+import { handleBuscarPorId, handleAtualizar, handleExcluir } from "@/backend/anuncio/web/handler";
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params; return handleBuscarPorId(req, id);
 }

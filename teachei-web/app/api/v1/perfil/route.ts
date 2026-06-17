@@ -1,4 +1,4 @@
-import { handleBuscarPerfil, handleAtualizarPerfil, handleExcluirConta } from "@/ap/perfil/web/handler";
+import { handleBuscarPerfil, handleAtualizarPerfil, handleExcluirConta } from "@/backend/perfil/web/handler";
 
 export async function GET(req: Request) {
   return handleBuscarPerfil(req);

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { verifyToken } from "@/ap/shared/middleware/jwt";
+import { verifyToken } from "@/backend/shared/middleware/jwt";
 
 const PROTECTED_ROUTES = [
   "/api/v1/perfil",

@@ -1,4 +1,4 @@
-import { handleRemover } from "@/ap/favorito/web/handler";
+import { handleRemover } from "@/backend/favorito/web/handler";
 
 export async function DELETE(
   req: Request,

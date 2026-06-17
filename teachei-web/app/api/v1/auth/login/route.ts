@@ -1,2 +1,2 @@
-import { handleLogin } from "@/ap/auth/web/handler";
+import { handleLogin } from "@/backend/auth/web/handler";
 export const POST = handleLogin;

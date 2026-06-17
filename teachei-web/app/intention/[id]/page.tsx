@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { IntentionDetailsClient } from "./client";
 import { siteConfig } from "@/config/site";
-import { BuscarAnuncioUseCaseImpl } from "@/ap/anuncio/application/usecase/BuscarAnuncioUseCaseImpl";
-import { AnuncioSupabaseAdapter } from "@/ap/anuncio/infrastructure/persistence/AnuncioSupabaseAdapter";
+import { BuscarAnuncioUseCaseImpl } from "@/backend/anuncio/application/usecase/BuscarAnuncioUseCaseImpl";
+import { AnuncioSupabaseAdapter } from "@/backend/anuncio/infrastructure/persistence/AnuncioSupabaseAdapter";
 import type { Anuncio } from "@/types";
 
 interface Props {
@@ -23,7 +23,7 @@ async function getIntention(id: string): Promise<Anuncio | null> {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const intention = await getIntention(id);
-  
+
   if (!intention) {
     return {
       title: "Intenção não encontrada",
@@ -32,10 +32,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = `Procuro ${intention.veiculo.marcaNome} ${intention.veiculo.modeloNome} - ${siteConfig.name}`;
   const anos = intention.veiculo.anos;
-  const anosText = anos.length > 0 
-    ? (anos.length === 1 ? anos[0].toString() : `${Math.min(...anos)}-${Math.max(...anos)}`) 
+  const anosText = anos.length > 0
+    ? (anos.length === 1 ? anos[0].toString() : `${Math.min(...anos)}-${Math.max(...anos)}`)
     : "";
-  const description = intention.observacoes 
+  const description = intention.observacoes
     || `Comprador procura ${intention.veiculo.marcaNome} ${intention.veiculo.modeloNome} ${anosText} ${intention.veiculo.precoMaximo ? `por até R$ ${intention.veiculo.precoMaximo.toLocaleString("pt-BR")}` : ""}`.trim();
 
   return {

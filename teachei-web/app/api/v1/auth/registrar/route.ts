@@ -1,2 +1,2 @@
-import { handleRegister } from "@/ap/auth/web/handler";
+import { handleRegister } from "@/backend/auth/web/handler";
 export const POST = handleRegister;

@@ -1,4 +1,4 @@
-import { handleListar, handleAdicionar } from "@/ap/favorito/web/handler";
+import { handleListar, handleAdicionar } from "@/backend/favorito/web/handler";
 
 export async function GET(req: Request) {
   return handleListar(req);

@@ -1,4 +1,4 @@
-import { handlePreco } from "@/ap/veiculo/web/handler";
+import { handlePreco } from "@/backend/veiculo/web/handler";
 
 export async function GET(_: Request, { params }: { params: Promise<{ tipo: string; marcaCodigo: string; modeloCodigo: string; anoCodigo: string }> }) {
   const { tipo, marcaCodigo, modeloCodigo, anoCodigo } = await params;

@@ -1,2 +1,2 @@
-import { handleGoogle } from "@/ap/auth/web/handler";
+import { handleGoogle } from "@/backend/auth/web/handler";
 export const POST = handleGoogle;

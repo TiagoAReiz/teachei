@@ -1,4 +1,4 @@
-import { handleVerificar } from "@/ap/favorito/web/handler";
+import { handleVerificar } from "@/backend/favorito/web/handler";
 
 export async function GET(
   req: Request,

@@ -1,2 +1,2 @@
-import { handleMeus } from "@/ap/anuncio/web/handler";
+import { handleMeus } from "@/backend/anuncio/web/handler";
 export async function GET(req: Request) { return handleMeus(req); }

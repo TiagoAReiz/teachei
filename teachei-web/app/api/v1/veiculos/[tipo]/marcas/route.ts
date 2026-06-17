@@ -1,4 +1,4 @@
-import { handleMarcas } from "@/ap/veiculo/web/handler";
+import { handleMarcas } from "@/backend/veiculo/web/handler";
 
 export async function GET(_: Request, { params }: { params: Promise<{ tipo: string }> }) {
   const { tipo } = await params;

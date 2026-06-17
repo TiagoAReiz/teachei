@@ -1,2 +1,2 @@
-import { handleAlterarSenha } from "@/ap/auth/web/handler";
+import { handleAlterarSenha } from "@/backend/auth/web/handler";
 export const PUT = handleAlterarSenha;
