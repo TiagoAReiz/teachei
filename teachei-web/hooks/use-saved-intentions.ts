@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import { isAuthenticated } from "@/lib/auth";
+import { getFavoriteIntentions } from "@/lib/favorites";
 
 const LOCAL_KEY = "teachei_saved_intentions";
 
@@ -68,4 +70,20 @@ export function useSavedIntentions() {
   }, [authed]);
 
   return { savedIds, isSaved, toggleSave, save, unsave, clearAll, isLoaded };
+}
+
+/**
+ * Hook for the authenticated user's favorite intentions, paginated.
+ * `enabled` deve ser true só quando o usuário está autenticado.
+ */
+export function useInfiniteFavorites(enabled: boolean) {
+  return useInfiniteQuery({
+    queryKey: ["favorites", "infinite"],
+    queryFn: ({ pageParam = 0 }) =>
+      getFavoriteIntentions({ page: pageParam, size: 12 }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages - 1 ? lastPage.page + 1 : undefined,
+    enabled,
+  });
 }
