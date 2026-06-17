@@ -1,8 +1,0 @@
-.expo
-.next
-node_modules
-npm-debug.log
-Dockerfile*
-.git
-.gitignore
-README.md
