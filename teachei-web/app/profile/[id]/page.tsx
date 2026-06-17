@@ -6,7 +6,7 @@ import { ArrowLeft, MapPin, Calendar, Car } from "lucide-react";
 import { Button, Card, CardContent, Avatar } from "@/components/ui";
 import { IntentionCard } from "@/components/intentions";
 import { getUserProfile } from "@/lib/auth";
-import { getIntentionsByUserId } from "@/lib/intentions";
+import { useInfiniteUserIntentions } from "@/hooks/use-intentions";
 import { formatRelativeTime } from "@/lib/utils";
 
 // TODO: Para cobrar assinatura, verificar se usuário tem assinatura ativa antes de mostrar perfil
@@ -27,12 +27,14 @@ export default function PublicProfilePage() {
 
   // TODO: Para cobrar assinatura, verificar se usuário tem assinatura ativa antes de buscar intenções
   // Consistente com bypass em AnuncioController.java
-  const { data: intentions = [], isLoading: isLoadingIntentions } = useQuery({
-    queryKey: ["user-intentions", userId],
-    queryFn: () => getIntentionsByUserId(userId),
-    enabled: !!userId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-  });
+  const {
+    data: intentionsData,
+    isLoading: isLoadingIntentions,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteUserIntentions(userId);
+  const intentions = intentionsData?.pages.flatMap((p) => p.content) ?? [];
 
   if (isLoading) {
     return (
@@ -122,11 +124,24 @@ export default function PublicProfilePage() {
               ))}
             </div>
           ) : intentions.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {intentions.map((intention) => (
-                <IntentionCard key={intention.id} intention={intention} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {intentions.map((intention) => (
+                  <IntentionCard key={intention.id} intention={intention} />
+                ))}
+              </div>
+              {hasNextPage && (
+                <div className="flex justify-center pt-6">
+                  <button
+                    onClick={() => fetchNextPage()}
+                    disabled={isFetchingNextPage}
+                    className="px-6 py-3 bg-surface border border-border rounded-full text-foreground font-medium hover:bg-muted/10 transition-colors disabled:opacity-50"
+                  >
+                    {isFetchingNextPage ? "Carregando..." : "Carregar mais"}
+                  </button>
+                </div>
+              )}
+            </>
           ) : (
             <Card>
               <CardContent className="p-6 text-center">
