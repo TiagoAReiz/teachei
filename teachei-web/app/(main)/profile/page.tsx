@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { Settings, Edit2, MapPin, Instagram, Facebook, Verified } from "lucide-react";
+import { Settings, Edit2, MapPin, Instagram, Facebook, Verified, LogOut } from "lucide-react";
 import { Button, Avatar, Card, CardContent } from "@/components/ui";
 import { useAuth } from "@/hooks/use-auth";
 import { useMyIntentions } from "@/hooks/use-intentions";
@@ -10,7 +10,7 @@ import { getInstagramLink } from "@/lib/utils";
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { user, isLoading: isLoadingUser } = useAuth();
+  const { user, isLoading: isLoadingUser, logout } = useAuth();
   const { data: myIntentions, isLoading: isLoadingIntentions } = useMyIntentions();
 
   if (isLoadingUser) {
@@ -83,6 +83,10 @@ export default function ProfilePage() {
               <Button variant="outline" size="sm" onClick={() => router.push("/settings")}>
                 <Edit2 size={16} />
                 Editar
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => logout()}>
+                <LogOut size={16} />
+                Sair
               </Button>
               <Button variant="ghost" size="icon" onClick={() => router.push("/settings")}>
                 <Settings size={20} />
