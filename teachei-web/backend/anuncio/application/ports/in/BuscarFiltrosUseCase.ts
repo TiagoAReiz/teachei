@@ -1,5 +1,6 @@
 import type { AvailableFilters } from "@/backend/anuncio/application/ports/out/AnuncioRepositoryPort";
-import type { TipoVeiculo } from "@/backend/anuncio/domain/model/Anuncio";
+import type { FiltroSelecao } from "@/backend/anuncio/domain/model/FiltroSelecao";
+
 export interface BuscarFiltrosUseCase {
-  execute(tipo?: TipoVeiculo, marcaCodigo?: string): Promise<AvailableFilters>;
+  execute(selecao: FiltroSelecao): Promise<AvailableFilters>;
 }

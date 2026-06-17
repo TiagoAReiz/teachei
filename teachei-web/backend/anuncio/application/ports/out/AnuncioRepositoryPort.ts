@@ -1,5 +1,6 @@
 import type { Anuncio, TipoVeiculo } from "@/backend/anuncio/domain/model/Anuncio";
 import type { StatusAnuncio } from "@/backend/anuncio/domain/model/StatusAnuncio";
+import type { FiltroSelecao } from "@/backend/anuncio/domain/model/FiltroSelecao";
 
 export interface AnuncioFilters {
   tipoVeiculo?: TipoVeiculo;
@@ -49,5 +50,5 @@ export interface AnuncioRepositoryPort {
   save(data: Omit<Anuncio, "id" | "criadoEm">): Promise<Anuncio>;
   update(id: string, data: Partial<Anuncio>): Promise<Anuncio>;
   delete(id: string): Promise<void>;
-  getAvailableFilters(tipo?: TipoVeiculo, marcaCodigo?: string): Promise<AvailableFilters>;
+  getAvailableFilters(selecao: FiltroSelecao): Promise<AvailableFilters>;
 }
