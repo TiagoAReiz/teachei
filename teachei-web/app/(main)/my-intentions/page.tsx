@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, CheckCircle, AlertCircle, Trash2, Calendar, Edit2 } from "lucide-react";
 import { Button, Card, CardContent, Badge, Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui";
-import { useMyIntentions, useDeleteIntention } from "@/hooks/use-intentions";
+import { useInfiniteMyIntentions, useDeleteIntention } from "@/hooks/use-intentions";
 import { formatCurrency, formatRelativeTime, formatExpiration, statusLabels, vehicleTypeLabels } from "@/lib/utils";
 import { SkeletonCard } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
@@ -33,11 +33,18 @@ const statusBadgeVariants: Record<StatusAnuncio, "success" | "warning" | "defaul
 
 export default function MyIntentionsPage() {
   const router = useRouter();
-  const { data: intentions, isLoading } = useMyIntentions();
   const [filter, setFilter] = useState<StatusAnuncio | "">("");
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteMyIntentions(filter || undefined);
+  const intentions = data?.pages.flatMap((p) => p.content) ?? [];
   const [deleteDialogId, setDeleteDialogId] = useState<string | null>(null);
   const { error: showError, success: showSuccess } = useToast();
-  
+
   const { mutate: deleteIntention, isPending: isDeleting } = useDeleteIntention();
 
   const handleDelete = () => {
@@ -53,10 +60,6 @@ export default function MyIntentionsPage() {
       },
     });
   };
-
-  const filteredIntentions = filter
-    ? intentions?.filter((i) => i.status === filter)
-    : intentions;
 
   return (
     <div className="p-4 lg:p-6">
@@ -96,7 +99,7 @@ export default function MyIntentionsPage() {
             <SkeletonCard key={i} />
           ))}
         </div>
-      ) : filteredIntentions?.length === 0 ? (
+      ) : intentions.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-16">
           <div className="w-20 h-20 bg-muted/10 rounded-full flex items-center justify-center mb-6">
             <Plus className="text-muted" size={32} />
@@ -112,8 +115,9 @@ export default function MyIntentionsPage() {
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredIntentions?.map((intention) => {
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {intentions.map((intention) => {
             const StatusIcon = statusIcons[intention.status] || CheckCircle;
             const anos = intention.veiculo.anos;
             const anoDisplay = anos.length > 1 
@@ -200,8 +204,20 @@ export default function MyIntentionsPage() {
                 </CardContent>
               </Card>
             );
-          })}
-        </div>
+            })}
+          </div>
+          {hasNextPage && (
+            <div className="flex justify-center pt-6">
+              <button
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className="px-6 py-3 bg-surface border border-border rounded-full text-foreground font-medium hover:bg-muted/10 transition-colors disabled:opacity-50"
+              >
+                {isFetchingNextPage ? "Carregando..." : "Carregar mais"}
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {/* Delete Confirmation Dialog */}
