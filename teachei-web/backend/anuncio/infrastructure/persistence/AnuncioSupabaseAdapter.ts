@@ -71,8 +71,8 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
 
     const ordenar = filters.ordenar ?? "RECENTE";
     if (ordenar === "RECENTE") query = query.order("criado_em", { ascending: false });
-    else if (ordenar === "PRECO_ASC") query = query.order("veiculo->>precoMaximo", { ascending: true });
-    else if (ordenar === "PRECO_DESC") query = query.order("veiculo->>precoMaximo", { ascending: false });
+    else if (ordenar === "PRECO_ASC") query = query.order("veiculo->precoMaximo", { ascending: true });
+    else if (ordenar === "PRECO_DESC") query = query.order("veiculo->precoMaximo", { ascending: false });
 
     query = query.range(from, to);
     const { data, count, error } = await query;
