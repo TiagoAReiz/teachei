@@ -3,7 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { X, Car, Bike, Truck, MapPin, ChevronDown, Search } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
-import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
+import { useAvailableFilters } from "@/hooks/use-intentions";
+import type { FiltroSelecaoRequest } from "@/lib/intentions";
 import { cn } from "@/lib/utils";
 import type { TipoVeiculo, AvailableOpcional } from "@/types";
 
@@ -51,20 +52,27 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     setFilters(initialFilters);
   }, [initialFilters]);
 
-  // Fetch all available types (regardless of current selection)
-  const { data: availableFilters, isLoading: isLoadingFilters, error: filtersError } = useAvailableFilters(
-    null, // Always get all types to show all available type buttons
-    null
-  );
-  
-  // Fetch brands and models filtered by selected type/brand
-  const { data: filteredOptions, isLoading: isLoadingFilteredOptions, error: filteredOptionsError } = useAvailableFilters(
-    filters.tipo || null,
-    filters.marca || null
-  );
+  // Fetch único facetado — a seleção depende apenas de `filters` (estado local),
+  // sem referenciar groupedModels, evitando dependência circular.
+  const selecao: FiltroSelecaoRequest = useMemo(() => ({
+    tipoVeiculo: filters.tipo || undefined,
+    marcaCodigo: filters.marca || undefined,
+    modeloBaseNome: filters.versao ? undefined : (filters.modelo || undefined),
+    modeloCodigo: filters.versao || undefined,
+    cidade: filters.cidade || undefined,
+    estado: filters.estado || undefined,
+    opcionais: filters.opcionais.length > 0 ? filters.opcionais : undefined,
+    precoMin: filters.precoMin ?? undefined,
+    precoMax: filters.precoMax ?? undefined,
+    anoMin: filters.anoMin ?? undefined,
+    anoMax: filters.anoMax ?? undefined,
+    kmMin: filters.kmMin ?? undefined,
+    kmMax: filters.kmMax ?? undefined,
+  }), [filters]);
 
-  // Fetch available locations from intentions (works independently of backend filters endpoint)
-  const { data: availableLocations } = useAvailableLocations();
+  const { data: availableFilters, isLoading: isLoadingFilters } = useAvailableFilters(selecao);
+  const filteredOptions = availableFilters;
+  const isLoadingFilteredOptions = isLoadingFilters;
 
   
   // Price validation error
@@ -92,11 +100,9 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     return types;
   }, [availableFilters]);
 
-  // Build location options - use dedicated locations hook (primary), fallback to filters endpoint
+  // Localizações vêm da faceta (encadeadas com os demais filtros)
   const localizacaoOptions = useMemo(() => {
-    const locs = (availableLocations && availableLocations.length > 0)
-      ? availableLocations
-      : availableFilters?.localizacoes;
+    const locs = availableFilters?.localizacoes;
     if (!locs || locs.length === 0) return [];
     return [
       { value: "", label: "Todas as localizações" },
@@ -105,7 +111,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
         label: `${loc.cidade} - ${loc.estado}`,
       })),
     ];
-  }, [availableLocations, availableFilters]);
+  }, [availableFilters]);
 
   // Build brand options (filtered by selected type)
   const marcaOptions = useMemo(() => {
@@ -161,6 +167,27 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     ];
   }, [currentVersions, filters.modelo]);
 
+  // Limpa seleções que não existem mais nas facetas após mudança de filtro.
+  useEffect(() => {
+    if (!availableFilters) return;
+    setFilters((prev) => {
+      let changed = false;
+      const next = { ...prev };
+      if (next.marca && !availableFilters.marcas.some((m) => m.codigo === next.marca)) {
+        next.marca = ""; next.modelo = ""; next.versao = ""; changed = true;
+      }
+      if (next.cidade && next.estado &&
+          !availableFilters.localizacoes.some((l) => l.cidade === next.cidade && l.estado === next.estado)) {
+        next.cidade = ""; next.estado = ""; changed = true;
+      }
+      if (next.opcionais.length > 0) {
+        const validos = next.opcionais.filter((o) => availableFilters.opcionais.some((op) => op.codigo === o));
+        if (validos.length !== next.opcionais.length) { next.opcionais = validos; changed = true; }
+      }
+      return changed ? next : prev;
+    });
+  }, [availableFilters]);
+
   const handleLocalizacaoChange = (value: string) => {
     if (value) {
       const [cidade, estado] = value.split("|");
@@ -181,14 +208,8 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     }));
   };
 
-  // Get available optionals - filtered by tipo when selected, or all when not
-  const opcionaisDisponiveis: AvailableOpcional[] = useMemo(() => {
-    if (filters.tipo) {
-      return filteredOptions?.opcionais || [];
-    }
-    // Show all opcionais when no tipo is selected
-    return availableFilters?.opcionais || [];
-  }, [filters.tipo, filteredOptions, availableFilters]);
+  // Opcionais já vêm restritos pela faceta
+  const opcionaisDisponiveis: AvailableOpcional[] = availableFilters?.opcionais ?? [];
 
   const handleMarcaChange = (marca: string) => {
     setFilters((prev) => ({
@@ -424,7 +445,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
 
             {isOpcionaisOpen && (
               <div className="rounded-xl border border-border bg-background p-3">
-                {(filters.tipo ? isLoadingFilteredOptions : isLoadingFilters) ? (
+                {isLoadingFilters ? (
                   <div className="flex flex-col gap-2">
                     {[1, 2, 3, 4].map((i) => (
                       <div key={i} className="h-9 rounded-lg bg-muted/20 animate-pulse" />
