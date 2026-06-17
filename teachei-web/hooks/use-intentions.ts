@@ -16,6 +16,7 @@ import {
   deleteIntention,
   getAvailableFilters,
   getAvailableLocations,
+  type FiltroSelecaoRequest,
 } from "@/lib/intentions";
 import type { CreateAnuncioRequest, UpdateAnuncioRequest, IntentionFilters, TipoVeiculo } from "@/types";
 
@@ -137,15 +138,12 @@ export function useDeleteIntention() {
 /**
  * Hook for fetching available filter options based on existing intentions
  */
-export function useAvailableFilters(
-  tipo?: TipoVeiculo | null,
-  marcaCodigo?: string | null
-) {
+export function useAvailableFilters(selecao: FiltroSelecaoRequest = {}) {
   return useQuery({
-    queryKey: ["intentions", "filters", tipo, marcaCodigo],
-    queryFn: () => getAvailableFilters(tipo || undefined, marcaCodigo || undefined),
-    staleTime: 60 * 1000, // 1 minute - filter options can change as intentions are created
-    retry: 2, // Retry failed requests up to 2 times
+    queryKey: ["intentions", "filters", selecao],
+    queryFn: () => getAvailableFilters(selecao),
+    staleTime: 60 * 1000,
+    retry: 2,
   });
 }
 

@@ -42,8 +42,7 @@ export default function CreateSpecsPage() {
 
   // Fetch optionals filtered by vehicle type
   const { data: filteredFilters, isLoading: loadingFiltered, error: filteredError } = useAvailableFilters(
-    tipoVeiculo || null,
-    null
+    { tipoVeiculo: tipoVeiculo || undefined }
   );
 
   const loadingOpcionais = loadingFiltered;
