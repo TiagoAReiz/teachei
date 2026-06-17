@@ -11,6 +11,21 @@ export class FavoritoSupabaseAdapter implements FavoritoRepositoryPort {
     return (data ?? []).map((r) => r.anuncio_id as string);
   }
 
+  async findPageByUsuarioId(usuarioId: string, page: number, size: number): Promise<{ ids: string[]; total: number }> {
+    const from = page * size;
+    const to = from + size - 1;
+    const { data, count } = await supabase
+      .from("favoritos")
+      .select("anuncio_id", { count: "exact" })
+      .eq("usuario_id", usuarioId)
+      .order("criado_em", { ascending: false })
+      .range(from, to);
+    return {
+      ids: (data ?? []).map((r) => r.anuncio_id as string),
+      total: count ?? 0,
+    };
+  }
+
   async save(usuarioId: string, anuncioId: string): Promise<void> {
     await supabase
       .from("favoritos")
