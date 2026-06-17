@@ -84,7 +84,7 @@ export default function ProfilePage() {
                 <Edit2 size={16} />
                 Editar
               </Button>
-              <Button variant="outline" size="sm" onClick={() => logout()}>
+              <Button variant="danger" size="sm" onClick={() => logout()}>
                 <LogOut size={16} />
                 Sair
               </Button>
