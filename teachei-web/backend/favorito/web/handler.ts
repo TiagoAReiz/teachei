@@ -1,5 +1,7 @@
 import { FavoritoSupabaseAdapter } from "@/backend/favorito/infrastructure/persistence/FavoritoSupabaseAdapter";
 import { GerenciarFavoritosUseCaseImpl } from "@/backend/favorito/application/usecase/GerenciarFavoritosUseCaseImpl";
+import { AnuncioSupabaseAdapter } from "@/backend/anuncio/infrastructure/persistence/AnuncioSupabaseAdapter";
+import { ListarAnunciosFavoritosUseCaseImpl } from "@/backend/favorito/application/usecase/ListarAnunciosFavoritosUseCaseImpl";
 import { AppError } from "@/backend/shared/errors";
 
 function makeUseCase() {
@@ -51,4 +53,18 @@ export async function handleVerificar(req: Request, anuncioId: string): Promise<
   } catch (e) {
     return err(e);
   }
+}
+
+export async function handleListarAnuncios(req: Request): Promise<Response> {
+  try {
+    const usuarioId = req.headers.get("X-Usuario-Id")!;
+    const p = new URL(req.url).searchParams;
+    const page = p.get("page") ? Number(p.get("page")) : 0;
+    const size = p.get("size") ? Number(p.get("size")) : 12;
+    const result = await new ListarAnunciosFavoritosUseCaseImpl(
+      new FavoritoSupabaseAdapter(),
+      new AnuncioSupabaseAdapter(),
+    ).execute(usuarioId, page, size);
+    return Response.json(result);
+  } catch (e) { return err(e); }
 }

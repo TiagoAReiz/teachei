@@ -4,6 +4,7 @@ import type { FavoritoRepositoryPort } from "@/backend/favorito/application/port
 
 const mockRepo: FavoritoRepositoryPort = {
   findByUsuarioId: vi.fn(),
+  findPageByUsuarioId: vi.fn(),
   save: vi.fn(),
   delete: vi.fn(),
   exists: vi.fn(),

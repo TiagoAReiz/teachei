@@ -97,6 +97,13 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
     return data ? toAnuncio(data) : null;
   }
 
+  async findByIds(ids: string[]): Promise<Anuncio[]> {
+    if (ids.length === 0) return [];
+    const { data, error } = await supabase.from("anuncios").select("*").in("id", ids);
+    if (error) throw new Error(error.message);
+    return (data ?? []).map(toAnuncio);
+  }
+
   async findByUsuarioId(usuarioId: string): Promise<Anuncio[]> {
     const { data } = await supabase.from("anuncios").select("*").eq("usuario_id", usuarioId).order("criado_em", { ascending: false });
     return (data ?? []).map(toAnuncio);

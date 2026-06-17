@@ -46,6 +46,7 @@ export interface AvailableFilters {
 export interface AnuncioRepositoryPort {
   findAll(filters: AnuncioFilters): Promise<PaginatedAnuncios>;
   findById(id: string): Promise<Anuncio | null>;
+  findByIds(ids: string[]): Promise<Anuncio[]>;
   findByUsuarioId(usuarioId: string): Promise<Anuncio[]>;
   save(data: Omit<Anuncio, "id" | "criadoEm">): Promise<Anuncio>;
   update(id: string, data: Partial<Anuncio>): Promise<Anuncio>;

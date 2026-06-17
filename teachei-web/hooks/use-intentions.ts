@@ -10,6 +10,8 @@ import {
   getIntentions,
   getIntentionById,
   getMyIntentions,
+  getMyIntentionsPage,
+  getUserIntentionsPage,
   createIntention,
   updateIntention,
   markAsCompleted,
@@ -18,7 +20,7 @@ import {
   getAvailableLocations,
   type FiltroSelecaoRequest,
 } from "@/lib/intentions";
-import type { CreateAnuncioRequest, UpdateAnuncioRequest, IntentionFilters, TipoVeiculo } from "@/types";
+import type { CreateAnuncioRequest, UpdateAnuncioRequest, IntentionFilters, TipoVeiculo, StatusAnuncio } from "@/types";
 
 /**
  * Hook for paginated intentions with filters
@@ -68,6 +70,35 @@ export function useMyIntentions() {
   return useQuery({
     queryKey: ["intentions", "mine"],
     queryFn: getMyIntentions,
+  });
+}
+
+/**
+ * Hook for current user's intentions with infinite pagination + status filter.
+ */
+export function useInfiniteMyIntentions(status?: StatusAnuncio) {
+  return useInfiniteQuery({
+    queryKey: ["intentions", "mine", "infinite", status ?? "ALL"],
+    queryFn: ({ pageParam = 0 }) =>
+      getMyIntentionsPage({ page: pageParam, size: 12, status }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages - 1 ? lastPage.page + 1 : undefined,
+  });
+}
+
+/**
+ * Hook for another user's intentions with infinite pagination.
+ */
+export function useInfiniteUserIntentions(userId: string) {
+  return useInfiniteQuery({
+    queryKey: ["intentions", "user", userId, "infinite"],
+    queryFn: ({ pageParam = 0 }) =>
+      getUserIntentionsPage(userId, { page: pageParam, size: 12 }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage) =>
+      lastPage.page < lastPage.totalPages - 1 ? lastPage.page + 1 : undefined,
+    enabled: !!userId,
   });
 }
 
