@@ -7,7 +7,6 @@ import { Plus, Home, Bookmark, FileText, Headphones, Gauge, Search } from "lucid
 import { Button } from "@/components/ui/button";
 import { Avatar } from "@/components/ui/avatar";
 import { Logo } from "@/components/ui/logo";
-import { NotificationsDropdown } from "@/components/notifications";
 import { useAuth } from "@/hooks/use-auth";
 import { SearchInput, SearchInputFallback } from "./search-input";
 import { cn } from "@/lib/utils";
@@ -52,9 +51,10 @@ export function Header() {
     <header className="fixed top-4 left-4 right-4 z-[900]">
       <div className="max-w-7xl mx-auto bg-surface-glass backdrop-blur-md border border-white/20 shadow-lg shadow-primary/5 rounded-[2rem] px-6 h-20 flex items-center justify-between transition-all duration-300">
         <div className="flex items-center gap-6">
-          {/* Logo - goes to /feed if authenticated, / otherwise */}
-          <Logo size="sm" className="hidden lg:flex" href={isAuthenticated ? "/feed" : "/"} />
-          <Logo size="xs" className="lg:hidden" href={isAuthenticated ? "/feed" : "/"} />
+          {/* Logo - goes to /feed if authenticated, / otherwise.
+              Same horizontal logo on mobile and desktop, just smaller on mobile. */}
+          <Logo size="sm" variant="horizontal" className="hidden lg:flex" href={isAuthenticated ? "/feed" : "/"} />
+          <Logo size="xs" variant="horizontal" className="lg:hidden" href={isAuthenticated ? "/feed" : "/"} />
 
           {/* Icon Navigation (Desktop) */}
           {isAuthenticated && (
@@ -128,18 +128,6 @@ export function Header() {
               >
                 <Plus size={20} />
               </Button>
-
-              {/* Notifications - hidden on mobile */}
-              <div className="hidden lg:block">
-                <NotificationsDropdown
-                  notifications={[]}
-                  onNotificationClick={(notification) => {
-                    if (notification.href) {
-                      router.push(notification.href);
-                    }
-                  }}
-                />
-              </div>
 
               {/* User Menu */}
               <div className="relative">
