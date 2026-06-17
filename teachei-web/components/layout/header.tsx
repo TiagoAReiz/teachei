@@ -129,8 +129,8 @@ export function Header() {
                 <Plus size={20} />
               </Button>
 
-              {/* User Menu */}
-              <div className="relative">
+              {/* User Menu - hidden on mobile, where the bottom nav already exposes Perfil */}
+              <div className="relative hidden lg:block">
                 <button
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   aria-label="Abrir menu do usuário"
