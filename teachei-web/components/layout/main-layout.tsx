@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
@@ -34,7 +34,6 @@ interface MainLayoutProps {
 
 export function MainLayout({ children, showSidebar = true, className }: MainLayoutProps) {
   const pathname = usePathname();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Check if current page should show filter sidebar
   const showFilters = FILTER_PAGES.some(
@@ -49,12 +48,7 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
       <div className="min-h-screen bg-background">
         <Header />
 
-        {showSidebar && (
-          <Sidebar
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-          />
-        )}
+        {showSidebar && <Sidebar />}
 
         <main
           className={cn(

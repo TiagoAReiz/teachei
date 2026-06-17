@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { Car, Bike, Truck, ChevronLeft, ChevronDown, MapPin } from "lucide-react";
+import { Car, Bike, Truck, ChevronDown, MapPin } from "lucide-react";
 import { Button, Select, CurrencyInput, MileageInput } from "@/components/ui";
 import { useAvailableFilters, useAvailableLocations } from "@/hooks/use-intentions";
 import { cn } from "@/lib/utils";
@@ -32,7 +32,6 @@ interface FilterState {
 
 interface FilterPanelProps {
   className?: string;
-  onCloseMobile?: () => void;
 }
 
 // Build the FilterState from the URL search params. Used both for the initial
@@ -55,7 +54,7 @@ function parseFiltersFromParams(params: { get: (key: string) => string | null })
   };
 }
 
-export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
+export function FilterPanel({ className }: FilterPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -292,20 +291,17 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
     };
     setFilters(cleared);
     applyFilters(cleared);
-    onCloseMobile?.();
   };
 
   const handleApply = () => {
     applyFilters(filters);
-    onCloseMobile?.();
   };
 
   return (
     <div className={cn(
       "flex flex-col overflow-hidden transition-all duration-300 bg-surface",
-      // Mobile styles (default)
+      // Desktop-only panel (rendered by Sidebar at lg+)
       "w-full h-full",
-      // Desktop styles
       "lg:w-72 lg:mx-4 lg:my-4 lg:h-[calc(100%-2rem)] lg:rounded-[2rem] lg:shadow-xl lg:shadow-primary/5 lg:mb-4",
       className
     )}>
@@ -315,15 +311,6 @@ export function FilterPanel({ className, onCloseMobile }: FilterPanelProps) {
           <span className="w-1 h-6 bg-primary rounded-full"></span>
           Filtros
         </h2>
-        {onCloseMobile && (
-          <button
-            onClick={onCloseMobile}
-            className="p-2 rounded-full text-muted hover:text-primary hover:bg-white hover:shadow-md transition-all lg:hidden"
-            title="Fechar filtros"
-          >
-            <ChevronLeft size={20} />
-          </button>
-        )}
       </div>
 
       {/* Content */}
