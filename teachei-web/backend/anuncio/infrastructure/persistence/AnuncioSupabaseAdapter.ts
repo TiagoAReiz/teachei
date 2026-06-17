@@ -30,8 +30,10 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
     if (filters.status) query = query.eq("status", filters.status);
     else if (!filters.incluirTodosStatus) query = query.eq("status", "ATIVO");
 
-    if (filters.search) {
-      query = query.or(`veiculo->>'marcaNome'.ilike.%${filters.search}%,veiculo->>'modeloNome'.ilike.%${filters.search}%`);
+    const search = filters.search?.trim();
+    if (search) {
+      const term = search.replace(/[%,()]/g, " ");
+      query = query.or(`veiculo->>marcaNome.ilike.%${term}%,veiculo->>modeloNome.ilike.%${term}%`);
     }
 
     if (filters.cidade) query = query.eq("contato->>cidade", filters.cidade);
@@ -69,8 +71,8 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
 
     const ordenar = filters.ordenar ?? "RECENTE";
     if (ordenar === "RECENTE") query = query.order("criado_em", { ascending: false });
-    else if (ordenar === "PRECO_ASC") query = query.order("veiculo->>'precoMaximo'", { ascending: true });
-    else if (ordenar === "PRECO_DESC") query = query.order("veiculo->>'precoMaximo'", { ascending: false });
+    else if (ordenar === "PRECO_ASC") query = query.order("veiculo->>precoMaximo", { ascending: true });
+    else if (ordenar === "PRECO_DESC") query = query.order("veiculo->>precoMaximo", { ascending: false });
 
     query = query.range(from, to);
     const { data, count, error } = await query;
