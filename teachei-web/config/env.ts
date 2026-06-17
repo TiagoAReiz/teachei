@@ -47,4 +47,7 @@ export const API_ENDPOINTS = {
   SUBSCRIPTIONS: "/api/v1/assinaturas",
   SUBSCRIPTION_PLANS: "/api/v1/assinaturas/planos",
   SUBSCRIPTION_STATUS: "/api/v1/assinaturas/minha",
+
+  // Favorites
+  FAVORITES_INTENTIONS: "/api/v1/favoritos/anuncios",
 } as const;

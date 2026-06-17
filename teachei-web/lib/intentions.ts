@@ -9,6 +9,7 @@ import type {
   PaginatedResponse,
   IntentionFilters,
   TipoVeiculo,
+  StatusAnuncio,
 } from "@/types";
 
 /**
@@ -61,20 +62,54 @@ export async function getIntentionById(id: string): Promise<Anuncio> {
 }
 
 /**
- * Fetch current user's intentions
+ * Fetch current user's intentions (array completo — usado pelo perfil próprio).
  */
 export async function getMyIntentions(): Promise<Anuncio[]> {
-  return api.get<Anuncio[]>(API_ENDPOINTS.MY_INTENTIONS);
+  const res = await api.get<PaginatedResponse<Anuncio>>(`${API_ENDPOINTS.MY_INTENTIONS}?size=1000`);
+  return res.content;
 }
 
 /**
- * Fetch intentions by user ID (public endpoint)
- * TODO: Para cobrar assinatura, verificar se usuário tem assinatura ativa antes de chamar
+ * Fetch current user's intentions, paginated (tela "minhas intenções").
+ */
+export async function getMyIntentionsPage(
+  params: { page?: number; size?: number; status?: StatusAnuncio } = {}
+): Promise<PaginatedResponse<Anuncio>> {
+  const sp = new URLSearchParams();
+  if (params.page !== undefined) sp.append("page", String(params.page));
+  if (params.size !== undefined) sp.append("size", String(params.size));
+  if (params.status) sp.append("status", params.status);
+  const qs = sp.toString();
+  const url = qs ? `${API_ENDPOINTS.MY_INTENTIONS}?${qs}` : API_ENDPOINTS.MY_INTENTIONS;
+  return api.get<PaginatedResponse<Anuncio>>(url);
+}
+
+/**
+ * Fetch intentions by user ID (array completo — usado por app/profile/[id]).
  */
 export async function getIntentionsByUserId(userId: string): Promise<Anuncio[]> {
-  return api.get<Anuncio[]>(API_ENDPOINTS.INTENTIONS_BY_USER(userId), {
-    requireAuth: false,
-  });
+  const res = await api.get<PaginatedResponse<Anuncio>>(
+    `${API_ENDPOINTS.INTENTIONS_BY_USER(userId)}?size=1000`,
+    { requireAuth: false }
+  );
+  return res.content;
+}
+
+/**
+ * Fetch intentions by user ID, paginated (tela app/user/[id]).
+ */
+export async function getUserIntentionsPage(
+  userId: string,
+  params: { page?: number; size?: number } = {}
+): Promise<PaginatedResponse<Anuncio>> {
+  const sp = new URLSearchParams();
+  if (params.page !== undefined) sp.append("page", String(params.page));
+  if (params.size !== undefined) sp.append("size", String(params.size));
+  const qs = sp.toString();
+  const url = qs
+    ? `${API_ENDPOINTS.INTENTIONS_BY_USER(userId)}?${qs}`
+    : API_ENDPOINTS.INTENTIONS_BY_USER(userId);
+  return api.get<PaginatedResponse<Anuncio>>(url, { requireAuth: false });
 }
 
 /**
