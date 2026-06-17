@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, MapPin, Verified, Instagram, Facebook, MessageCircle } from "lucide-react";
 import { Button, Card, CardContent, Avatar } from "@/components/ui";
 import { IntentionGrid } from "@/components/intentions";
+import { useInfiniteUserIntentions } from "@/hooks/use-intentions";
 import { getWhatsAppLink, getInstagramLink } from "@/lib/utils";
 import type { User } from "@/types";
 
@@ -13,6 +14,15 @@ interface UserProfileClientProps {
 
 export function UserProfileClient({ user }: UserProfileClientProps) {
   const router = useRouter();
+
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteUserIntentions(user.id);
+  const intentions = data?.pages.flatMap((p) => p.content) ?? [];
 
   const whatsappMessage = `Olá ${user.nome}! Vi seu perfil no TeAchei e gostaria de entrar em contato.`;
 
@@ -104,9 +114,14 @@ export function UserProfileClient({ user }: UserProfileClientProps) {
           <h2 className="text-xl font-bold text-foreground mb-4">
             Intenções de {user.nome.split(" ")[0]}
           </h2>
-          
-          {/* TODO: Fetch user's intentions */}
-          <IntentionGrid intentions={[]} isLoading={false} />
+
+          <IntentionGrid
+            intentions={intentions}
+            isLoading={isLoading}
+            onLoadMore={() => fetchNextPage()}
+            hasMore={hasNextPage}
+            isLoadingMore={isFetchingNextPage}
+          />
         </div>
       </main>
     </div>
