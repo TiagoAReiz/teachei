@@ -6,7 +6,6 @@ import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { MobileNav } from "./mobile-nav";
 import { Footer } from "./footer";
-import { AuthGuard } from "@/components/auth";
 import { cn } from "@/lib/utils";
 
 // Pages that should show the filter sidebar
@@ -31,28 +30,26 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
   const sidebarWidth = showSidebar && showFilters ? "lg:ml-80" : "";
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen bg-background">
-        <Header />
+    <div className="min-h-screen bg-background">
+      <Header />
 
-        {showSidebar && <Sidebar />}
+      {showSidebar && <Sidebar />}
 
-        <main
-          className={cn(
-            "min-h-screen pt-32 pb-20 lg:pb-0 transition-all duration-300 flex flex-col",
-            sidebarWidth,
-            className
-          )}
-        >
-          <div className="flex-1">
-            {children}
-          </div>
-          <Footer />
-        </main>
+      <main
+        className={cn(
+          "min-h-screen pt-32 pb-20 lg:pb-0 transition-all duration-300 flex flex-col",
+          sidebarWidth,
+          className
+        )}
+      >
+        <div className="flex-1">
+          {children}
+        </div>
+        <Footer />
+      </main>
 
-        <MobileNav />
-      </div>
-    </AuthGuard>
+      <MobileNav />
+    </div>
   );
 }
 
