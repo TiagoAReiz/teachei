@@ -11,15 +11,15 @@ interface AuthGuardProps {
 
 export function AuthGuard({ children }: AuthGuardProps) {
   const router = useRouter();
-  const { user, isLoading } = useAuth();
+  const { user, isLoading, error } = useAuth();
   const hasToken = typeof window !== "undefined" && !!getToken();
 
   useEffect(() => {
     if (isLoading) return;
-    if (!user && !hasToken) {
+    if (!user && (!hasToken || !!error)) {
       router.replace("/login");
     }
-  }, [user, isLoading, hasToken, router]);
+  }, [user, isLoading, hasToken, error, router]);
 
   if (isLoading) {
     return (
@@ -32,7 +32,7 @@ export function AuthGuard({ children }: AuthGuardProps) {
     );
   }
 
-  if (!user && !hasToken) {
+  if (!user && (!hasToken || !!error)) {
     return null;
   }
 
