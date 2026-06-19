@@ -9,19 +9,6 @@ import { Footer } from "./footer";
 import { AuthGuard } from "@/components/auth";
 import { cn } from "@/lib/utils";
 
-// Routes that don't require authentication
-const PUBLIC_ROUTES = [
-  "/",           // Main feed
-  "/feed",       // Feed page
-  "/intention",  // Public intention view
-  "/user",       // Public user profiles
-  "/termos",     // Terms of service
-  "/privacidade", // Privacy policy
-  "/contato",    // Contact page
-  "/guias",      // Guides and tips
-  "/sobre"       // About page
-];
-
 // Pages that should show the filter sidebar
 const FILTER_PAGES = ["/", "/feed"];
 
@@ -44,7 +31,7 @@ export function MainLayout({ children, showSidebar = true, className }: MainLayo
   const sidebarWidth = showSidebar && showFilters ? "lg:ml-80" : "";
 
   return (
-    <AuthGuard publicRoutes={PUBLIC_ROUTES}>
+    <AuthGuard>
       <div className="min-h-screen bg-background">
         <Header />
 
