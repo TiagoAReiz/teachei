@@ -3,7 +3,6 @@
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Script from "next/script";
-import { MainLayout } from "@/components/layout";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
 import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";
@@ -102,10 +101,8 @@ function FeedLoading() {
 
 export default function FeedPage() {
   return (
-    <MainLayout>
-      <Suspense fallback={<FeedLoading />}>
-        <FeedContent />
-      </Suspense>
-    </MainLayout>
+    <Suspense fallback={<FeedLoading />}>
+      <FeedContent />
+    </Suspense>
   );
 }

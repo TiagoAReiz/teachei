@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { MainLayout } from "@/components/layout";
 import { Users, Target, ShieldCheck } from "lucide-react";
 import { AdSense } from "@/components/adsense";
 
@@ -10,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
     return (
-        <MainLayout>
+        <>
             <AdSense />
             <div className="bg-background min-h-screen">
                 {/* Hero */}
@@ -79,6 +78,6 @@ export default function AboutPage() {
                     </div>
                 </div>
             </div>
-        </MainLayout>
+        </>
     );
 }

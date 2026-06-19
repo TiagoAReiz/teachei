@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { MainLayout } from "@/components/layout";
 import { guides } from "@/lib/guides";
 import { GuideCard } from "@/components/guide-card";
 import { AdSense } from "@/components/adsense";
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function GuidesPage() {
     return (
-        <MainLayout>
+        <>
             <AdSense />
             <div className="bg-background min-h-screen pb-20">
                 {/* Header */}
@@ -35,6 +34,6 @@ export default function GuidesPage() {
                     </div>
                 </div>
             </div>
-        </MainLayout>
+        </>
     );
 }

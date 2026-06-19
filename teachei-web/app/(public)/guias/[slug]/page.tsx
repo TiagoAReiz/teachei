@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MainLayout } from "@/components/layout";
 import { guides } from "@/lib/guides";
 import { ChevronLeft, Clock, Calendar } from "lucide-react";
 import Markdown from "react-markdown";
@@ -46,7 +45,7 @@ export default async function GuidePostPage({ params }: Props) {
     }
 
     return (
-        <MainLayout>
+        <>
             <AdSense />
             <article className="min-h-screen bg-background pb-20">
                 {/* Header */}
@@ -116,6 +115,6 @@ export default async function GuidePostPage({ params }: Props) {
                     </div>
                 </div>
             </article>
-        </MainLayout>
+        </>
     );
 }
