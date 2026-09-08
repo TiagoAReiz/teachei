@@ -1,9 +1,11 @@
+import { env } from "./env";
+
 // Site metadata configuration
 export const siteConfig = {
   name: "TeAchei",
   description: "A maneira mais fácil de encontrar seu próximo veículo. Conecte-se com vendedores e encontre o carro, moto ou caminhão dos seus sonhos.",
-  url: "https://teachei.com.br",
-  ogImage: "https://teachei.com.br/og-image.png",
+  url: env.APP_URL,
+  ogImage: `${env.APP_URL}/og-image.png`,
   keywords: [
     "comprar carro",
     "vender carro",
@@ -18,7 +20,7 @@ export const siteConfig = {
   authors: [
     {
       name: "TeAchei",
-      url: "https://teachei.com.br",
+      url: env.APP_URL,
     },
   ],
   creator: "TeAchei",
