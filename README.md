@@ -206,7 +206,8 @@ Preencha as variáveis:
 
 ```env
 # Banco de dados (Supabase Postgres, usado pelo Prisma)
-POSTGRES_PRISMA_URL="postgresql://..."
+POSTGRES_PRISMA_URL="postgresql://..."        # pooler (porta 6543)
+POSTGRES_URL_NON_POOLING="postgresql://..."   # conexão direta (porta 5432), usada pelo db push
 
 # Supabase (server-side)
 SUPABASE_URL="https://xxx.supabase.co"
@@ -226,7 +227,7 @@ NEXT_PUBLIC_API_URL=""   # vazio = usa as API Routes do próprio app
 ### 4. Sincronize o banco de dados
 
 ```bash
-npx prisma db push
+npm run db:push
 ```
 
 ### 5. Inicie o servidor de desenvolvimento
@@ -252,11 +253,14 @@ Configure todas as variáveis listadas acima no painel da Vercel em **Settings �
 
 ### Build
 
-O script de build aplica as migrations e gera o client Prisma antes de compilar:
+O build apenas gera o client Prisma e compila o Next.js — não acessa o banco:
 
 ```bash
-prisma generate && prisma db push --accept-data-loss && next build
+prisma generate && next build
 ```
+
+Alterações no `prisma/schema.prisma` são aplicadas manualmente com `npm run db:push`
+(usa `POSTGRES_URL_NON_POOLING`; o pooler em modo transação não suporta `db push`).
 
 ---
 

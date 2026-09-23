@@ -3,8 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  // Conexão direta (sem PgBouncer), usada por `prisma db push`/migrate.
+  // O pooler em modo transação (porta 6543) não suporta essas operações.
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model Usuario {
