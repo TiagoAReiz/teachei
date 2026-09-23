@@ -25,14 +25,18 @@ export function useSavedIntentions() {
   const authed = isAuthenticated();
 
   useEffect(() => {
-    if (authed) {
-      api.get<string[]>("/api/v1/favoritos")
-        .then((ids) => { setSavedIds(ids); setIsLoaded(true); })
-        .catch(() => { setSavedIds(getLocal()); setIsLoaded(true); });
-    } else {
-      setSavedIds(getLocal());
+    // Autenticado: favoritos do servidor (fallback: localStorage). Anônimo: localStorage.
+    // O estado é atualizado apenas no callback assíncrono, nunca de forma síncrona no effect.
+    let cancelled = false;
+    const load = authed
+      ? api.get<string[]>("/api/v1/favoritos").catch(() => getLocal())
+      : Promise.resolve(getLocal());
+    load.then((ids) => {
+      if (cancelled) return;
+      setSavedIds(ids);
       setIsLoaded(true);
-    }
+    });
+    return () => { cancelled = true; };
   }, [authed]);
 
   const isSaved = useCallback((id: string) => savedIds.includes(id), [savedIds]);
