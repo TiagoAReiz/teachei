@@ -1,8 +1,15 @@
 import { SignJWT, jwtVerify } from "jose";
 
-const secret = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? (() => { throw new Error("JWT_SECRET não definido"); })()
-);
+let secret: Uint8Array | undefined;
+
+// Lido no primeiro uso (não na importação) para que `next build` não dependa do segredo.
+function getSecret(): Uint8Array {
+  if (secret) return secret;
+  const value = process.env.JWT_SECRET;
+  if (!value) throw new Error("JWT_SECRET não definido");
+  secret = new TextEncoder().encode(value);
+  return secret;
+}
 
 const EXPIRES_IN = 60 * 60; // 1 hora em segundos
 
@@ -17,11 +24,11 @@ export async function signToken(payload: JwtPayload): Promise<string> {
     .setSubject(payload.sub)
     .setIssuedAt()
     .setExpirationTime(`${EXPIRES_IN}s`)
-    .sign(secret);
+    .sign(getSecret());
 }
 
 export async function verifyToken(token: string): Promise<JwtPayload> {
-  const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
+  const { payload } = await jwtVerify(token, getSecret(), { algorithms: ["HS256"] });
   return { sub: payload.sub as string, email: payload["email"] as string };
 }
 
