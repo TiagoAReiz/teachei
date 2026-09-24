@@ -18,12 +18,22 @@
 </p>
 
 <p align="center">
-  <a href="#-o-problema">O Problema</a> •
-  <a href="#-a-solução">A Solução</a> •
-  <a href="#-stack-tecnológica">Stack</a> •
-  <a href="#-arquitetura">Arquitetura</a> •
-  <a href="#-início-rápido">Início Rápido</a> •
-  <a href="#-deploy">Deploy</a>
+  <a href="https://teachei-ten.vercel.app"><img src="https://img.shields.io/badge/Demo-teachei--ten.vercel.app-5B4CF5?style=for-the-badge&logo=vercel&logoColor=white" alt="Demo ao vivo"/></a>
+  <a href="https://github.com/TiagoAReiz/teachei-api/actions/workflows/web-ci-cd.yml"><img src="https://github.com/TiagoAReiz/teachei-api/actions/workflows/web-ci-cd.yml/badge.svg" alt="CI"/></a>
+</p>
+
+<p align="center">
+  <strong><a href="https://teachei-ten.vercel.app">Acesse a demo ao vivo →</a></strong>
+</p>
+
+<p align="center">
+  <a href="#o-problema">O Problema</a> •
+  <a href="#a-solução">A Solução</a> •
+  <a href="#screenshots">Screenshots</a> •
+  <a href="#stack-tecnológica">Stack</a> •
+  <a href="#arquitetura">Arquitetura</a> •
+  <a href="#início-rápido">Início Rápido</a> •
+  <a href="#deploy">Deploy</a>
 </p>
 
 ---
@@ -71,6 +81,18 @@ No mercado tradicional de veículos:
 
 ---
 
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/landing.png" alt="Landing page do TeAchei" width="800"/>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/como-funciona.png" alt="Seção Como funciona" width="533"/>
+</p>
+
+---
+
 ## Stack Tecnológica
 
 | Camada | Tecnologia | Propósito |
@@ -100,10 +122,10 @@ Toda a aplicação roda em um único projeto Next.js. A camada de backend é imp
 │  │                                                               │   │
 │  │  ┌────────────────────┐   ┌────────────────────┐             │   │
 │  │  │   Pages / UI       │   │  API Routes        │             │   │
-│  │  │  app/(main)/       │   │  app/api/          │             │   │
-│  │  │  app/(auth)/       │   │  (auth, anuncios,  │             │   │
-│  │  │  app/feed/         │   │   perfil, fipe,    │             │   │
-│  │  │  app/profile/      │   │   pagamentos...)   │             │   │
+│  │  │  app/(public)/     │   │  app/api/v1/       │             │   │
+│  │  │  app/(private)/    │   │  (auth, anuncios,  │             │   │
+│  │  │  app/(auth)/       │   │   favoritos,       │             │   │
+│  │  │  app/(wizard)/     │   │   perfil, veiculos)│             │   │
 │  │  └────────────────────┘   └────────┬───────────┘             │   │
 │  │                                    │                          │   │
 │  │  ┌────────────────────────────────▼────────────────────────┐ │   │
@@ -127,16 +149,13 @@ Toda a aplicação roda em um único projeto Next.js. A camada de backend é imp
 ```
 teachei-web/
 ├── app/
-│   ├── (auth)/           # Páginas de login e registro
-│   ├── (main)/           # Layout principal autenticado
-│   ├── (legal)/          # Páginas de termos e privacidade
-│   ├── api/              # API Routes (endpoints REST)
-│   ├── feed/             # Feed de intenções
-│   ├── profile/          # Perfil público
-│   ├── create/           # Criar intenção
-│   └── assinatura/       # Planos e pagamentos
+│   ├── (auth)/           # Login, registro, recuperação de senha
+│   ├── (public)/         # Feed, intenção, perfil público, guias, termos/privacidade
+│   ├── (private)/        # Área autenticada: favoritos, minhas intenções, perfil, assinatura
+│   ├── (wizard)/create/  # Wizard de criação de intenção
+│   └── api/v1/           # API Routes (auth, anuncios, favoritos, perfil, veiculos/FIPE)
 │
-├── backend/              # Lógica de servidor (services, repositórios)
+├── backend/              # Lógica de servidor (arquitetura hexagonal: domain, ports, use cases)
 │   ├── auth/
 │   ├── anuncio/
 │   ├── favorito/
@@ -149,7 +168,8 @@ teachei-web/
 ├── lib/                  # Utilitários e clientes (supabase, prisma)
 ├── stores/               # Estado global (Zustand)
 ├── types/                # Tipos TypeScript
-└── prisma/               # Schema e migrations do banco
+├── prisma/               # Schema do banco (Prisma)
+└── supabase/migrations/  # SQL de criação do schema
 ```
 
 ---
@@ -166,8 +186,8 @@ teachei-web/
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/TeAchei.git
-cd TeAchei/teachei-web
+git clone https://github.com/TiagoAReiz/teachei-api.git
+cd teachei-api/teachei-web
 ```
 
 ### 2. Instale as dependências
@@ -185,29 +205,29 @@ cp .env.example .env.local
 Preencha as variáveis:
 
 ```env
-# Supabase
-DATABASE_URL="postgresql://..."
-DIRECT_URL="postgresql://..."
+# Banco de dados (Supabase Postgres, usado pelo Prisma)
+POSTGRES_PRISMA_URL="postgresql://..."        # pooler (porta 6543)
+POSTGRES_URL_NON_POOLING="postgresql://..."   # conexão direta (porta 5432), usada pelo db push
 
-# Supabase Auth
-NEXT_PUBLIC_SUPABASE_URL="https://xxx.supabase.co"
-NEXT_PUBLIC_SUPABASE_ANON_KEY="..."
+# Supabase (server-side)
+SUPABASE_URL="https://xxx.supabase.co"
+SUPABASE_SERVICE_ROLE_KEY="..."
 
-# Google OAuth
-GOOGLE_CLIENT_ID="..."
-GOOGLE_CLIENT_SECRET="..."
-
-# JWT
+# JWT (mínimo 32 caracteres)
 JWT_SECRET="..."
 
-# Mercado Pago
-MERCADO_PAGO_ACCESS_TOKEN="..."
+# Google OAuth
+NEXT_PUBLIC_GOOGLE_CLIENT_ID="..."
+
+# URLs públicas
+NEXT_PUBLIC_APP_URL="http://localhost:3000"
+NEXT_PUBLIC_API_URL=""   # vazio = usa as API Routes do próprio app
 ```
 
 ### 4. Sincronize o banco de dados
 
 ```bash
-npx prisma db push
+npm run db:push
 ```
 
 ### 5. Inicie o servidor de desenvolvimento
@@ -224,17 +244,23 @@ App disponível em `http://localhost:3000`
 
 O deploy é feito automaticamente na **Vercel** a cada push na branch `main`.
 
+- **Produção:** https://teachei-ten.vercel.app (redireciona para o domínio `teachei.shop`)
+- **CI (GitHub Actions):** lint, testes e build em cada PR que altera `teachei-web/`
+
 ### Variáveis de ambiente na Vercel
 
 Configure todas as variáveis listadas acima no painel da Vercel em **Settings → Environment Variables**.
 
 ### Build
 
-O script de build aplica as migrations e gera o client Prisma antes de compilar:
+O build apenas gera o client Prisma e compila o Next.js — não acessa o banco:
 
 ```bash
-prisma generate && prisma db push --accept-data-loss && next build
+prisma generate && next build
 ```
+
+Alterações no `prisma/schema.prisma` são aplicadas manualmente com `npm run db:push`
+(usa `POSTGRES_URL_NON_POOLING`; o pooler em modo transação não suporta `db push`).
 
 ---
 

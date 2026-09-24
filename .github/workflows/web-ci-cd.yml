@@ -10,6 +10,7 @@ on:
     branches: [main]
     paths:
       - 'teachei-web/**'
+      - '.github/workflows/web-ci-cd.yml'
 
 jobs:
   # ========================================
@@ -39,7 +40,17 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Test
+        run: npm test
+
+      # `npm run build` executa `prisma db push`, que exige um banco real.
+      # No CI geramos apenas o client Prisma e compilamos o Next.js com
+      # valores fictícios (nenhum acesso a banco/Supabase é feito no build).
       - name: Build
-        run: npm run build
+        run: npx prisma generate && npx next build
         env:
-          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL || 'https://teachei-api.azurecontainerapps.io' }}
+          NEXT_PUBLIC_API_URL: ''
+          POSTGRES_PRISMA_URL: postgresql://ci:ci@localhost:5432/ci
+          SUPABASE_URL: https://placeholder.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: ci-placeholder
+          JWT_SECRET: ci-placeholder-secret-with-32-plus-chars

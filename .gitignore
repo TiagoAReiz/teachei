@@ -1,2 +1,28 @@
+# Vercel
 .vercel
+
+# Variáveis de ambiente (o template .env.example é versionado)
 .env*
+!.env.example
+
+# Dependências e builds
+node_modules/
+.next/
+out/
+build/
+coverage/
+*.tsbuildinfo
+
+# Ferramentas locais / IDE
+.claude/
+.idea/
+.vscode/
+*.swp
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
