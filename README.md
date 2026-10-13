@@ -19,7 +19,7 @@
 
 <p align="center">
   <a href="https://teachei-ten.vercel.app"><img src="https://img.shields.io/badge/Demo-teachei--ten.vercel.app-5B4CF5?style=for-the-badge&logo=vercel&logoColor=white" alt="Demo ao vivo"/></a>
-  <a href="https://github.com/TiagoAReiz/teachei-api/actions/workflows/web-ci-cd.yml"><img src="https://github.com/TiagoAReiz/teachei-api/actions/workflows/web-ci-cd.yml/badge.svg" alt="CI"/></a>
+  <a href="https://github.com/TiagoAReiz/teachei/actions/workflows/web-ci-cd.yml"><img src="https://github.com/TiagoAReiz/teachei/actions/workflows/web-ci-cd.yml/badge.svg" alt="CI"/></a>
 </p>
 
 <p align="center">
@@ -186,8 +186,8 @@ teachei-web/
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/TiagoAReiz/teachei-api.git
-cd teachei-api/teachei-web
+git clone https://github.com/TiagoAReiz/teachei.git
+cd teachei/teachei-web
 ```
 
 ### 2. Instale as dependências
@@ -267,6 +267,9 @@ Alterações no `prisma/schema.prisma` são aplicadas manualmente com `npm run d
 ## Testes
 
 ```bash
+# Checagem de tipos
+npm run typecheck
+
 # Rodar testes
 npm test
 
