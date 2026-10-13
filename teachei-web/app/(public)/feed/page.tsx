@@ -2,7 +2,6 @@
 
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import Script from "next/script";
 import { IntentionGrid, IntentionFilters } from "@/components/intentions";
 import { useInfiniteIntentions } from "@/hooks/use-intentions";
 import type { TipoVeiculo, SortOption, IntentionFilters as Filters } from "@/types";

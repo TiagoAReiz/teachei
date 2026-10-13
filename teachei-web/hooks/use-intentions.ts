@@ -20,7 +20,7 @@ import {
   getAvailableLocations,
   type FiltroSelecaoRequest,
 } from "@/lib/intentions";
-import type { CreateAnuncioRequest, UpdateAnuncioRequest, IntentionFilters, TipoVeiculo, StatusAnuncio } from "@/types";
+import type { CreateAnuncioRequest, UpdateAnuncioRequest, IntentionFilters, StatusAnuncio } from "@/types";
 
 /**
  * Hook for paginated intentions with filters

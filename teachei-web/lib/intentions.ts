@@ -8,7 +8,6 @@ import type {
   UpdateAnuncioRequest,
   PaginatedResponse,
   IntentionFilters,
-  TipoVeiculo,
   StatusAnuncio,
 } from "@/types";
 
