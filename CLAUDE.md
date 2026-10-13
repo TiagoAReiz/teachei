@@ -1,0 +1,41 @@
+# teachei
+
+## Memória do projeto
+
+A memória persistente deste projeto fica **fora do repo**, em:
+
+`$DEV_BRAIN_HOME/memory/teachei/` (padrão: `~/dev-brain/memory/teachei/`)
+
+### Como ler (sem inflar o contexto)
+1. Leia **só** `README.md` primeiro. Ele resume o projeto e diz qual arquivo abrir para quê.
+2. Abra os outros sob demanda:
+   - `arquitetura.md`: infra, organização do código, onde fica cada coisa
+   - `decisoes.md`: por que algo é como é e o que já foi descartado
+   - `roadmap.md`: plano e próximos passos
+   - `estado-atual.md`: o que está em andamento agora
+   - `specs/`: specs detalhadas, uma por arquivo
+
+### Quando consultar
+- Ao **retomar trabalho** (início de sessão, depois de uma pausa): `README.md` + `estado-atual.md`
+- **Antes de mudanças estruturais** (nova dependência, mudar pastas, trocar lib, mexer em infra): `arquitetura.md` + `decisoes.md`
+- Ao **discutir decisões de arquitetura**: `decisoes.md`, para não repropor algo já descartado
+
+### Quando atualizar
+Ao final de uma sessão em que algo relevante mudou:
+- `estado-atual.md`: atualize o conteúdo e o campo "Última atualização" (AAAA-MM-DD)
+- `decisoes.md`: adicione uma entrada para cada decisão nova (decisão, motivo, alternativas descartadas)
+
+Implementações seguem a skill `implementar`, que atualiza a memória e commita no dev-brain no fim.
+Fora dela, **mostre o diff e peça confirmação antes de gravar** e não commite no dev-brain.
+
+Specs de features e melhorias ficam em `specs/AAAA-MM-DD-<slug>.md`, com `Status:` no topo.
+
+### A memória pode estar desatualizada
+Trate a memória como histórico, não como verdade. Se ela contradisser o código, **o código vence**: siga o código e proponha a correção na memória.
+
+## Específico deste projeto
+<!-- Gates usados pelo time de agentes quando a spec não define os seus. {arquivos} = arquivos da tarefa. -->
+Código do app em `teachei-web/` (rodar comandos de lá). Node 20, npm.
+gate-tarefa: cd teachei-web && npx eslint {arquivos} && npx vitest related {arquivos} --run
+gate-onda: cd teachei-web && npm run lint && npx tsc --noEmit && npm test && npx prisma generate && npx next build
+Convenções: lógica de servidor em `backend/<módulo>/{domain,application,infrastructure,web}` (hexagonal); testes em `backend/__tests__/`; nomes de domínio/tabelas em português; mudança de schema Prisma é aplicada manualmente com `npm run db:push` (nunca no build); nunca ler/gravar `.env*`.
