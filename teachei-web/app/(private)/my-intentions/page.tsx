@@ -6,6 +6,7 @@ import { Plus, CheckCircle, AlertCircle, Trash2, Calendar, Edit2 } from "lucide-
 import { Button, Card, CardContent, Badge, Dialog, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui";
 import { useInfiniteMyIntentions, useDeleteIntention } from "@/hooks/use-intentions";
 import { formatCurrency, formatRelativeTime, formatExpiration, statusLabels, vehicleTypeLabels } from "@/lib/utils";
+import { PendingReviews } from "@/components/avaliacoes";
 import { SkeletonCard } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import type { StatusAnuncio } from "@/types";
@@ -74,6 +75,8 @@ export default function MyIntentionsPage() {
           Nova Intenção
         </Button>
       </div>
+
+      <PendingReviews />
 
       {/* Status Filters */}
       <div className="flex flex-wrap gap-2 mb-6">

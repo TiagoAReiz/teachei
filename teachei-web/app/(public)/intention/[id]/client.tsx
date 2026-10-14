@@ -34,6 +34,7 @@ const vehicleTypeIcons: Record<TipoVeiculo, typeof Car> = {
 };
 import { Button, Card, CardContent, Badge, Avatar } from "@/components/ui";
 import { IntentionCarousel } from "@/components/intentions";
+import { SoldButton } from "@/components/avaliacoes";
 import { formatCurrency, formatRelativeTime, formatExpiration, vehicleTypeLabels, getWhatsAppLink, getInstagramLink, formatOpcional, sanitizeUrl } from "@/lib/utils";
 import { useSavedIntentions } from "@/hooks/use-saved-intentions";
 import { getUserProfile } from "@/lib/auth";
@@ -392,6 +393,10 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                       </a>
                     )}
                   </div>
+                )}
+
+                {user.id !== intention.usuarioId && intention.status === "ATIVO" && (
+                  <SoldButton anuncioId={intention.id} />
                 )}
               </CardContent>
             </Card>

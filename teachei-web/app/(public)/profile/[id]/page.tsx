@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, MapPin, Calendar, Car } from "lucide-react";
 import { Button, Card, CardContent, Avatar } from "@/components/ui";
 import { IntentionCard } from "@/components/intentions";
+import { Reputation } from "@/components/avaliacoes";
 import { getUserProfile } from "@/lib/auth";
 import { useInfiniteUserIntentions } from "@/hooks/use-intentions";
 import { formatRelativeTime } from "@/lib/utils";
@@ -110,6 +111,8 @@ export default function PublicProfilePage() {
             </div>
           </CardContent>
         </Card>
+
+        <Reputation usuarioId={userId} />
 
         {/* User's Intentions */}
         <div>
