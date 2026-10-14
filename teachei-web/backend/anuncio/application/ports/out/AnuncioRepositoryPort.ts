@@ -12,6 +12,9 @@ export interface AnuncioFilters {
   modelos?: string[];
   cidade?: string;
   estado?: string;
+  /** Quando presente, substitui cidade/estado: casa qualquer uma das localizações. */
+  localizacoes?: { cidade: string; estado: string }[];
+  raioKm?: number;  // usado pelo use case para montar `localizacoes` (exige cidade e estado)
   anoMin?: number;
   anoMax?: number;
   precoMin?: number;
@@ -51,5 +54,6 @@ export interface AnuncioRepositoryPort {
   save(data: Omit<Anuncio, "id" | "criadoEm">): Promise<Anuncio>;
   update(id: string, data: Partial<Anuncio>): Promise<Anuncio>;
   delete(id: string): Promise<void>;
+  findLocalizacoesAtivas(): Promise<{ cidade: string; estado: string }[]>;
   getAvailableFilters(selecao: FiltroSelecao): Promise<AvailableFilters>;
 }

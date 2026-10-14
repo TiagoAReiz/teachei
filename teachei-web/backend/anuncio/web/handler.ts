@@ -30,6 +30,7 @@ export async function handleListar(req: Request): Promise<Response> {
       modeloCodigo: p.get("modeloCodigo") || undefined,
       cidade: p.get("cidade") || undefined,
       estado: p.get("estado") || undefined,
+      raioKm: p.get("raioKm") ? Math.min(Number(p.get("raioKm")) || 0, 500) : undefined,
       anoMin: p.get("anoMin") ? Number(p.get("anoMin")) : undefined,
       anoMax: p.get("anoMax") ? Number(p.get("anoMax")) : undefined,
       precoMin: p.get("precoMin") ? Number(p.get("precoMin")) : undefined,

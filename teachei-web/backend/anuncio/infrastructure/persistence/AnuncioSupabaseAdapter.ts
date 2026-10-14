@@ -38,8 +38,17 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
       query = query.or(`veiculo->>marcaNome.ilike.%${term}%,veiculo->>modeloNome.ilike.%${term}%`);
     }
 
-    if (filters.cidade) query = query.eq("contato->>cidade", filters.cidade);
-    if (filters.estado) query = query.eq("contato->>estado", filters.estado);
+    if (filters.localizacoes) {
+      if (filters.localizacoes.length === 0) return { content: [], totalElements: 0, totalPages: 0, page, size, hasNext: false, hasPrevious: false };
+      const clausulas = filters.localizacoes.map((l) => {
+        const cidade = l.cidade.replace(/[",()\\]/g, " ");
+        return `and(contato->>cidade.eq."${cidade}",contato->>estado.eq.${l.estado})`;
+      });
+      query = query.or(clausulas.join(","));
+    } else {
+      if (filters.cidade) query = query.eq("contato->>cidade", filters.cidade);
+      if (filters.estado) query = query.eq("contato->>estado", filters.estado);
+    }
 
     if (filters.marcaCodigo) query = query.eq("veiculo->>marcaCodigo", filters.marcaCodigo);
 
@@ -134,6 +143,17 @@ export class AnuncioSupabaseAdapter implements AnuncioRepositoryPort {
   async delete(id: string): Promise<void> {
     const { error } = await supabase.from("anuncios").delete().eq("id", id);
     if (error) throw new Error(error.message);
+  }
+
+  async findLocalizacoesAtivas(): Promise<{ cidade: string; estado: string }[]> {
+    const { data, error } = await supabase.from("anuncios").select("contato").eq("status", "ATIVO");
+    if (error) throw new Error(error.message);
+    const vistas = new Map<string, { cidade: string; estado: string }>();
+    for (const row of data ?? []) {
+      const { cidade, estado } = (row.contato ?? {}) as { cidade?: string; estado?: string };
+      if (cidade && estado) vistas.set(`${cidade}|${estado}`, { cidade, estado });
+    }
+    return [...vistas.values()];
   }
 
   async getAvailableFilters(selecao: FiltroSelecao): Promise<AvailableFilters> {
