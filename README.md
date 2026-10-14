@@ -151,7 +151,7 @@ teachei-web/
 ├── app/
 │   ├── (auth)/           # Login, registro, recuperação de senha
 │   ├── (public)/         # Feed, intenção, perfil público, guias, termos/privacidade
-│   ├── (private)/        # Área autenticada: favoritos, minhas intenções, perfil, assinatura
+│   ├── (private)/        # Área autenticada: favoritos, minhas intenções, perfil, configurações
 │   ├── (wizard)/create/  # Wizard de criação de intenção
 │   └── api/v1/           # API Routes (auth, anuncios, favoritos, perfil, veiculos/FIPE)
 │
@@ -288,7 +288,8 @@ npm run test:coverage
 - [x] Autenticação Google OAuth
 - [x] CRUD de intenções de compra
 - [x] Integração FIPE API
-- [x] Integração Mercado Pago
+- [x] Avaliações de vendedores (vendedor declara a venda, comprador avalia)
+- [x] Filtro de localização por raio (km)
 - [x] Filtros facetados no feed
 - [x] Perfil público do usuário
 - [x] Paginação ("Carregar mais")
@@ -297,8 +298,6 @@ npm run test:coverage
 ### v1.1
 - [ ] Notificações push
 - [ ] Chat in-app
-- [ ] Sistema de avaliações
-- [ ] Busca geolocalizada
 
 ### Futuro
 - [ ] Expansão: Imóveis
