@@ -473,7 +473,7 @@ export default function SettingsPage() {
               <ul className="text-sm text-muted space-y-1">
                 <li>- Seu perfil e foto</li>
                 <li>- Todos os seus anúncios de intenção</li>
-                <li>- Suas assinaturas</li>
+                <li>- Suas avaliações feitas e recebidas</li>
                 <li>- Seus dados pessoais</li>
               </ul>
             </div>

@@ -201,8 +201,6 @@ export interface Anuncio {
   observacoes?: string;
   criadoEm: string;
   expiraEm?: string;
-  contatoOculto?: boolean;
-  assinaturaAtiva?: boolean;
 }
 
 // Version request for creating intentions

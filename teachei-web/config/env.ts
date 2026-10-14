@@ -40,14 +40,6 @@ export const API_ENDPOINTS = {
   ) =>
     `/api/v1/veiculos/${tipo}/marcas/${marcaCodigo}/modelos/${modeloCodigo}/anos/${anoCodigo}/preco`,
 
-  // Payments (webhook only - intentions are free, subscriptions via /assinaturas)
-  PAYMENT_WEBHOOK: "/api/v1/pagamentos/webhook",
-
-  // Subscriptions
-  SUBSCRIPTIONS: "/api/v1/assinaturas",
-  SUBSCRIPTION_PLANS: "/api/v1/assinaturas/planos",
-  SUBSCRIPTION_STATUS: "/api/v1/assinaturas/minha",
-
   // Favorites
   FAVORITES_INTENTIONS: "/api/v1/favoritos/anuncios",
 } as const;

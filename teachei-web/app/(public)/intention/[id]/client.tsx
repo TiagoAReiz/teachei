@@ -52,8 +52,6 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
   const intention = initialData;
   const saved = isSaved(intention.id);
 
-  // TODO: Para cobrar assinatura, adicionar verificação de assinaturaAtiva antes de mostrar perfil do vendedor
-  // Consistente com bypass em AnuncioController.java
   const { data: sellerProfile } = useQuery({
     queryKey: ["profile", intention.usuarioId],
     queryFn: () => getUserProfile(intention.usuarioId),
@@ -310,7 +308,6 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
               <CardContent className="p-6">
                 <h2 className="font-semibold text-foreground mb-4">Contato do Comprador</h2>
 
-                {/* TODO: Para cobrar assinatura, ocultar se !intention.assinaturaAtiva && !isOwner */}
                 {/* Seller Profile Info */}
                 {sellerProfile && (
                   <Link
@@ -339,24 +336,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                   </p>
                 )}
 
-                {intention.contatoOculto && (
-                  <div className="bg-primary/5 border border-primary/20 rounded-xl p-4">
-                    <p className="text-foreground font-medium mb-2">
-                      Informações de contato ocultas
-                    </p>
-                    <p className="text-sm text-muted mb-4">
-                      Assine para ver o WhatsApp e Instagram do comprador e enviar sua proposta.
-                    </p>
-                    <a href="/assinatura">
-                      <Button variant="primary" className="w-full">
-                        Ver planos de assinatura
-                      </Button>
-                    </a>
-                  </div>
-                )}
-
-                {!intention.contatoOculto && (
-                  <div className="space-y-3">
+                <div className="space-y-3">
                     {/* WhatsApp */}
                     {whatsappContato && (
                       <a
@@ -392,8 +372,7 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                         </div>
                       </a>
                     )}
-                  </div>
-                )}
+                </div>
 
                 {user.id !== intention.usuarioId && intention.status === "ATIVO" && (
                   <SoldButton anuncioId={intention.id} />
@@ -421,15 +400,6 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
         {/* Fixed CTA */}
         <div className="fixed bottom-0 left-0 right-0 bg-surface border-t border-border p-4 z-50">
           <div className="max-w-4xl mx-auto flex gap-3">
-            {/* Contact hidden - show subscription CTA */}
-            {intention.contatoOculto ? (
-              <a href="/assinatura" className="flex-1">
-                <Button variant="primary" className="w-full" size="lg">
-                  Assine para ver contato
-                </Button>
-              </a>
-            ) : (
-              <>
                 {whatsappContato && (
                   <>
                     <a
@@ -452,8 +422,6 @@ export function IntentionDetailsClient({ initialData }: IntentionDetailsClientPr
                     </Button>
                   </>
                 )}
-              </>
-            )}
           </div>
         </div>
       </main>

@@ -10,10 +10,6 @@ import { getUserProfile } from "@/lib/auth";
 import { useInfiniteUserIntentions } from "@/hooks/use-intentions";
 import { formatRelativeTime } from "@/lib/utils";
 
-// TODO: Para cobrar assinatura, verificar se usuário tem assinatura ativa antes de mostrar perfil
-// Consistente com bypass em AnuncioController.java
-// Se não tiver assinatura, redirecionar para /assinatura
-
 export default function PublicProfilePage() {
   const params = useParams();
   const router = useRouter();
@@ -26,8 +22,6 @@ export default function PublicProfilePage() {
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  // TODO: Para cobrar assinatura, verificar se usuário tem assinatura ativa antes de buscar intenções
-  // Consistente com bypass em AnuncioController.java
   const {
     data: intentionsData,
     isLoading: isLoadingIntentions,
