@@ -29,6 +29,7 @@ export async function getIntentions(
   }
   if (filters.cidade) params.append("cidade", filters.cidade);
   if (filters.estado) params.append("estado", filters.estado);
+  if (filters.raioKm) params.append("raioKm", filters.raioKm.toString());
   if (filters.anoMin !== undefined) params.append("anoMin", filters.anoMin.toString());
   if (filters.anoMax !== undefined) params.append("anoMax", filters.anoMax.toString());
   if (filters.precoMin !== undefined) params.append("precoMin", filters.precoMin.toString());

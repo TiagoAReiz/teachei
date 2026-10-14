@@ -27,6 +27,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
   const currentFilters: FilterState = useMemo(() => ({
     cidade: searchParams.get("cidade") || "",
     estado: searchParams.get("estado") || "",
+    raioKm: searchParams.get("raioKm") ? parseInt(searchParams.get("raioKm")!) : null,
     tipo: (searchParams.get("tipo") as TipoVeiculo) || "",
     marca: searchParams.get("marca") || "",
     modelo: searchParams.get("modelo") || "",
@@ -87,6 +88,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     // Apply new filters
     if (filters.cidade) params.set("cidade", filters.cidade);
     if (filters.estado) params.set("estado", filters.estado);
+    if (filters.cidade && filters.estado && filters.raioKm) params.set("raioKm", filters.raioKm.toString());
     if (filters.tipo) params.set("tipo", filters.tipo);
     if (filters.marca) params.set("marca", filters.marca);
     
@@ -130,6 +132,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("cidade");
     params.delete("estado");
+    params.delete("raioKm");
     const queryString = params.toString();
     router.push(queryString ? `/feed?${queryString}` : "/feed");
   };
@@ -222,7 +225,7 @@ export function IntentionFilters({ className }: IntentionFiltersProps) {
         <div className="flex flex-wrap items-center gap-2 text-sm">
           {(currentFilters.cidade || currentFilters.estado) && (
             <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full">
-              {currentFilters.cidade}{currentFilters.estado ? ` - ${currentFilters.estado}` : ""}
+              {currentFilters.cidade}{currentFilters.estado ? ` - ${currentFilters.estado}` : ""}{currentFilters.raioKm ? ` (+${currentFilters.raioKm} km)` : ""}
               <button
                 onClick={removeLocationFilter}
                 className="hover:bg-primary/20 rounded-full p-0.5"

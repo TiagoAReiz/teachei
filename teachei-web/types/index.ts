@@ -310,6 +310,7 @@ export interface IntentionFilters {
   modelos?: string[]; // Multiple model codes (comma-separated in URL)
   cidade?: string;
   estado?: string;
+  raioKm?: number; // raio em km ao redor de cidade/estado
   anoMin?: number;
   anoMax?: number;
   precoMin?: number;

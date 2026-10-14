@@ -18,9 +18,18 @@ const vehicleTypeConfig: Record<TipoVeiculo, { label: string; icon: typeof Car }
   CAMINHAO: { label: "Caminhões", icon: Truck },
 };
 
+const RAIO_OPTIONS = [
+  { value: "0", label: "Apenas esta cidade" },
+  { value: "50", label: "Até 50 km" },
+  { value: "100", label: "Até 100 km" },
+  { value: "200", label: "Até 200 km" },
+  { value: "300", label: "Até 300 km" },
+];
+
 export interface FilterState {
   cidade: string;
   estado: string;
+  raioKm: number | null; // só vale com cidade+estado
   tipo: TipoVeiculo | "";
   marca: string;
   modelo: string; // Base model name (e.g., "Onix")
@@ -59,8 +68,8 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     marcaCodigo: filters.marca || undefined,
     modeloBaseNome: filters.versao ? undefined : (filters.modelo || undefined),
     modeloCodigo: filters.versao || undefined,
-    cidade: filters.cidade || undefined,
-    estado: filters.estado || undefined,
+    cidade: filters.raioKm ? undefined : filters.cidade || undefined,
+    estado: filters.raioKm ? undefined : filters.estado || undefined,
     opcionais: filters.opcionais.length > 0 ? filters.opcionais : undefined,
     precoMin: filters.precoMin ?? undefined,
     precoMax: filters.precoMax ?? undefined,
@@ -193,7 +202,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
       const [cidade, estado] = value.split("|");
       setFilters((prev) => ({ ...prev, cidade, estado }));
     } else {
-      setFilters((prev) => ({ ...prev, cidade: "", estado: "" }));
+      setFilters((prev) => ({ ...prev, cidade: "", estado: "", raioKm: null }));
     }
   };
 
@@ -248,6 +257,7 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
     const cleared: FilterState = {
       cidade: "",
       estado: "",
+      raioKm: null,
       tipo: "",
       marca: "",
       modelo: "",
@@ -323,6 +333,15 @@ export function FilterSidebar({ isOpen, onClose, initialFilters, onApply }: Filt
               />
             ) : (
               <p className="text-sm text-muted">Nenhuma localização disponível.</p>
+            )}
+            {filters.cidade && filters.estado && (
+              <Select
+                options={RAIO_OPTIONS}
+                value={String(filters.raioKm ?? 0)}
+                onChange={(value) =>
+                  setFilters((prev) => ({ ...prev, raioKm: Number(value) || null }))
+                }
+              />
             )}
           </div>
 
