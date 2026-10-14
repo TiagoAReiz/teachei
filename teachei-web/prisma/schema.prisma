@@ -20,6 +20,10 @@ model Usuario {
   perfil        Perfil?
   anuncios      Anuncio[]
   favoritos     Favorito[]
+  vendasFeitas  Venda[]     @relation("VendedorVenda")
+  comprasFeitas Venda[]     @relation("CompradorVenda")
+  avaliacoesFeitas    Avaliacao[] @relation("AvaliadorAvaliacao")
+  avaliacoesRecebidas Avaliacao[] @relation("AvaliadoAvaliacao")
 
   @@map("usuarios")
 }
@@ -54,6 +58,7 @@ model Anuncio {
   expiraEm   DateTime?  @map("expira_em")
   usuario     Usuario    @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
   favoritos   Favorito[]
+  vendas      Venda[]
 
   @@map("anuncios")
 }
@@ -79,4 +84,34 @@ model Opcional {
   ordem  Int      @default(0)
 
   @@map("opcionais")
+}
+
+model Venda {
+  id          String     @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  anuncioId   String?    @map("anuncio_id") @db.Uuid
+  vendedorId  String     @map("vendedor_id") @db.Uuid
+  compradorId String     @map("comprador_id") @db.Uuid
+  criadoEm    DateTime   @default(now()) @map("criado_em")
+  anuncio     Anuncio?   @relation(fields: [anuncioId], references: [id], onDelete: SetNull)
+  vendedor    Usuario    @relation("VendedorVenda", fields: [vendedorId], references: [id], onDelete: Cascade)
+  comprador   Usuario    @relation("CompradorVenda", fields: [compradorId], references: [id], onDelete: Cascade)
+  avaliacao   Avaliacao?
+
+  @@unique([anuncioId, vendedorId])
+  @@map("vendas")
+}
+
+model Avaliacao {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  vendaId     String   @unique @map("venda_id") @db.Uuid
+  avaliadorId String   @map("avaliador_id") @db.Uuid
+  avaliadoId  String   @map("avaliado_id") @db.Uuid
+  nota        Int      @db.SmallInt
+  comentario  String?
+  criadoEm    DateTime @default(now()) @map("criado_em")
+  venda       Venda    @relation(fields: [vendaId], references: [id], onDelete: Cascade)
+  avaliador   Usuario  @relation("AvaliadorAvaliacao", fields: [avaliadorId], references: [id], onDelete: Cascade)
+  avaliado    Usuario  @relation("AvaliadoAvaliacao", fields: [avaliadoId], references: [id], onDelete: Cascade)
+
+  @@map("avaliacoes")
 }

@@ -6,6 +6,7 @@ const PROTECTED_ROUTES = [
   "/api/v1/perfil",
   "/api/v1/favoritos",
   "/api/v1/anuncios/meus",
+  "/api/v1/avaliacoes/pendentes",
 ];
 
 const PROTECTED_METHODS_ON_ANUNCIOS = ["POST", "PUT", "DELETE"];
@@ -14,6 +15,7 @@ function isProtected(req: NextRequest): boolean {
   const { pathname } = req.nextUrl;
   if (PROTECTED_ROUTES.some((r) => pathname.startsWith(r))) return true;
   if (pathname.startsWith("/api/v1/anuncios") && PROTECTED_METHODS_ON_ANUNCIOS.includes(req.method)) return true;
+  if (pathname === "/api/v1/avaliacoes" && req.method === "POST") return true;
   if (pathname.startsWith("/api/v1/auth/senha")) return true;
   return false;
 }
